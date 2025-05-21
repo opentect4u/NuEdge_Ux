@@ -1456,7 +1456,7 @@ export class NewClientComponent implements OnInit {
                       }
                 }) 
       })
-      this.dbIntr.api_call_for_nuedge_online(1,'/createClientss',formdata).subscribe(res =>{
+      this.dbIntr.api_call_for_nuedge_online(1,'/createClient',formdata).subscribe(res =>{
             console.log(res);
       })
     }
