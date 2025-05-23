@@ -2,7 +2,6 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { pluck } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
-import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'app-new-client',
@@ -172,7 +171,7 @@ export class NewClientComponent implements OnInit {
       })
   })
 
-  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
+  constructor(private dbIntr:DbIntrService) { }
 
   ngOnInit(): void {
     this.fetchTaxStatus();
@@ -260,29 +259,29 @@ export class NewClientComponent implements OnInit {
        this.new_client_form.get('customer_dtls.ckyc_number').updateValueAndValidity({emitEvent:false});
     })
 
-    //  this.new_client_form.get('contact_dtls.email')
-    // .valueChanges.subscribe(res => {
-    //   this.new_client_form.get('contact_dtls.email_rel').setValue('');
-    //    if(res){
-    //       this.new_client_form.get('contact_dtls.email_rel').setValidators([Validators.required]);
-    //    }
-    //    else{
-    //     this.new_client_form.get('contact_dtls.email_rel').removeValidators([Validators.required]);
-    //    }
-    //    this.new_client_form.get('contact_dtls.email_rel').updateValueAndValidity({emitEvent:false});
-    // })
+     this.new_client_form.get('contact_dtls.email')
+    .valueChanges.subscribe(res => {
+      this.new_client_form.get('contact_dtls.email_rel').setValue('');
+       if(res){
+          this.new_client_form.get('contact_dtls.email_rel').setValidators([Validators.required]);
+       }
+       else{
+        this.new_client_form.get('contact_dtls.email_rel').removeValidators([Validators.required]);
+       }
+       this.new_client_form.get('contact_dtls.email_rel').updateValueAndValidity({emitEvent:false});
+    })
 
-    // this.new_client_form.get('contact_dtls.mobile')
-    // .valueChanges.subscribe(res => {
-    //   this.new_client_form.get('contact_dtls.mobile_rel').setValue('');
-    //    if(res){
-    //       this.new_client_form.get('contact_dtls.mobile_rel').setValidators([Validators.required]);
-    //    }
-    //    else{
-    //     this.new_client_form.get('contact_dtls.mobile_rel').removeValidators([Validators.required]);
-    //    }
-    //    this.new_client_form.get('contact_dtls.mobile_rel').updateValueAndValidity({emitEvent:false});
-    // })
+    this.new_client_form.get('contact_dtls.mobile')
+    .valueChanges.subscribe(res => {
+      this.new_client_form.get('contact_dtls.mobile_rel').setValue('');
+       if(res){
+          this.new_client_form.get('contact_dtls.mobile_rel').setValidators([Validators.required]);
+       }
+       else{
+        this.new_client_form.get('contact_dtls.mobile_rel').removeValidators([Validators.required]);
+       }
+       this.new_client_form.get('contact_dtls.mobile_rel').updateValueAndValidity({emitEvent:false});
+    })
 
      this.new_client_form.get('customer_dtls.guardian_kyc_type')
     .valueChanges.subscribe(res => {
@@ -506,7 +505,6 @@ export class NewClientComponent implements OnInit {
         else{
           this.nominee.clear();
           for(let i=0;i<range;i++){
-            console.log(Math.round(100 / range));
             this.nominee.push(this.setNominee(Math.round(100 / range)))
           }
         }
@@ -596,7 +594,7 @@ export class NewClientComponent implements OnInit {
       nominee_address3: new FormControl(nominee_address3 ? nominee_address3 : ''),
       nominee_pincode: new FormControl(nominee_pincode ? nominee_pincode : ''),
       nominee_relationship: new FormControl(nominee_relationship ? nominee_relationship : '',[Validators.required]),
-      nominee_percentage:new FormControl(nominee_percentage,[
+      nominee_percentage:new FormControl(nominee_percentage.toFixed(2),[
         Validators.required,
         // Validators.pattern(/^\d+(\.\d{1,4})?$/),
         Validators.pattern('^[0-9]*$'),
@@ -631,8 +629,8 @@ export class NewClientComponent implements OnInit {
       acc_type: new FormControl(acc_type ? acc_type : '',[Validators.required]),
       acc_no: new FormControl(acc_no ? acc_no : '',[Validators.required,
 
-         Validators.minLength(10),
-          Validators.maxLength(10),
+         Validators.minLength(6),
+          Validators.maxLength(6),
           this.numericValidator 
       ]),
       micr: new FormControl(micr ? micr : ''),
@@ -966,16 +964,16 @@ export class NewClientComponent implements OnInit {
                         Validators.maxLength(10)
                       ])
                     }
-                    // else if(key == 'email_rel'){
-                    //         if(control.get('email').value){
-                    //            control.get(key).setValidators([Validators.required])
-                    //         }
-                    // }
-                    //  else if(key == 'mobile_rel'){
-                    //         if(control.get('mobile').value){
-                    //            control.get(key).setValidators([Validators.required])
-                    //         }
-                    // }
+                    else if(key == 'email_rel'){
+                            if(control.get('email').value){
+                               control.get(key).setValidators([Validators.required])
+                            }
+                    }
+                     else if(key == 'mobile_rel'){
+                            if(control.get('mobile').value){
+                               control.get(key).setValidators([Validators.required])
+                            }
+                    }
                     else{
                         // if(this.custEntry?.tax_status != '21' 
                         // && this.custEntry?.tax_status != '22'){
@@ -1085,12 +1083,12 @@ export class NewClientComponent implements OnInit {
            Object.keys(control.value).forEach(key =>{
                   if(formControlName == 'customer_dtls'){
                             if(key == 'pan'){control.get(key).setValidators([Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])}
-                            else if(key == 'dob'){control.get(key).setValidators([Validators.required,this.minAgeValidator(18)])}
+                            else if(key == 'dob'){control.get(key).setValidators([this.minAgeValidator(18)])}
                             else if(key == 'last_name' || key == 'middle_name' 
                               || key == 'pan' 
                               || key == 'occupation' 
                               || key == 'kyc_type' 
-                              // || key == 'gender'
+                              || key == 'gender'
                               || key == 'exempt_category'){}
                               else if(key == 'ckyc_number'){
                                 if(control.get('kyc_type').value == 'C'){
@@ -1113,26 +1111,26 @@ export class NewClientComponent implements OnInit {
                                     Validators.maxLength(10)
                                   ])
                               }
-                            // else if(key == 'email_dec_flag'){
-                            //       if(control.get('email').value){
-                            //         control.get(key).setValidators([Validators.required])
-                            //       }
-                            // }
-                            // else if(key == 'mobile_dec_flag'){
-                            //         if(control.get('mobile').value){
-                            //           control.get(key).setValidators([Validators.required])
-                            //         }
-                            // }
+                            else if(key == 'email_dec_flag'){
+                                  if(control.get('email').value){
+                                    control.get(key).setValidators([Validators.required])
+                                  }
+                            }
+                            else if(key == 'mobile_dec_flag'){
+                                    if(control.get('mobile').value){
+                                      control.get(key).setValidators([Validators.required])
+                                    }
+                            }
                             else{
-                              // if(index == 0){
-                              //   control.get(key).setValidators([Validators.required])
-                              // }
-                              // else{
-                              //   if(key == 'pan_exempt'){
-                              //       control.get(key).setValidators([Validators.required])
-                              //   }
-                              // }
-                            control.get(key).setValidators([Validators.required])
+                              if(index == 0){
+                                control.get(key).setValidators([Validators.required])
+                              }
+                              else{
+                                if(key == 'pan_exempt'){
+                                    control.get(key).setValidators([Validators.required])
+                                }
+                              }
+                            
                             }
                   } 
                   else if(formControlName == 'bank_dtls'){
@@ -1146,7 +1144,7 @@ export class NewClientComponent implements OnInit {
                         || key == 'bank_pincode'
                       ){}
                       else if(key == 'acc_no'){
-                         control.get(key).setValidators([Validators.required,Validators.minLength(10),Validators.maxLength(10),this.numericValidator])
+                         control.get(key).setValidators([Validators.required,Validators.minLength(6),Validators.maxLength(6),this.numericValidator])
                       }
                       else if(key == 'ifsc_code'){
                          control.get(key).setValidators([
@@ -1279,28 +1277,27 @@ export class NewClientComponent implements OnInit {
          this.joint_holder.at(index).get('pan').disable(); 
          this.joint_holder.at(index).get('exempt_ref_number').disable();    
         if(ev.target.value == 'N'){
-            //  if( this.joint_holder.at(index).get('first_name').value){
-            //           this.joint_holder.at(index).get('pan').setValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])
-            //  }
-            //  else{
-            //       this.joint_holder.at(index).get('pan').removeValidators([Validators.required]);
-            //       this.joint_holder.at(index).get('pan').setValidators([Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])
-            //  }
-            this.joint_holder.at(index).get('pan').setValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])
+             if( this.joint_holder.at(index).get('first_name').value){
+                      this.joint_holder.at(index).get('pan').setValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])
+             }
+             else{
+                  this.joint_holder.at(index).get('pan').removeValidators([Validators.required]);
+                  this.joint_holder.at(index).get('pan').setValidators([Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])
+             }
             this.joint_holder.at(index).get('exempt_category').removeValidators([Validators.required]);
             this.joint_holder.at(index).get('exempt_ref_number').removeValidators([Validators.required]);
             this.joint_holder.at(index).get('pan').enable();   
         }
         else if(ev.target.value == 'Y'){
             this.fetchExemptCategoryDependOnPanExempt()
-            this.joint_holder.at(index).get('pan').removeValidators([Validators.required]);
+            this.joint_holder.at(index).get('pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
             this.joint_holder.at(index).get('exempt_category').setValidators([Validators.required]);
             this.joint_holder.at(index).get('exempt_ref_number').setValidators([Validators.required]);
             this.joint_holder.at(index).get('exempt_category').enable();   
             this.joint_holder.at(index).get('exempt_ref_number').enable();
         }
         else{
-            this.joint_holder.at(index).get('pan').removeValidators([Validators.required]);
+            this.joint_holder.at(index).get('pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
             this.joint_holder.at(index).get('exempt_category').removeValidators([Validators.required])
             this.joint_holder.at(index).get('exempt_ref_number').setValidators([Validators.required]);
         }
@@ -1470,10 +1467,8 @@ export class NewClientComponent implements OnInit {
                       }
                 }) 
       })
-      this.dbIntr.api_call_for_nuedge_online(1,'/createClient',formdata)
-      .subscribe((res:any) =>{
+      this.dbIntr.api_call_for_nuedge_online(1,'/createClient',formdata).subscribe(res =>{
             console.log(res);
-             this.utility.showSnackbar(res?.suc == 1 ? 'Data saved successfully' : 'We are unable to process your request right now, Please try again after some time',res?.suc)
       })
     }
    
@@ -1490,25 +1485,25 @@ export class NewClientComponent implements OnInit {
        this.joint_holder.at(index).get('ckyc_number').updateValueAndValidity({emitEvent:false});
   }
   handleBlurForJointHolderMobile = (ev,index) =>{
-      //  this.joint_holder.at(index).get('mobile_dec_flag').setValue('');
-      //  if(ev.target.value){
-      //     this.joint_holder.at(index).get('mobile_dec_flag').setValidators([Validators.required]);
-      //  }
-      //  else{
-      //   this.joint_holder.at(index).get('mobile_dec_flag').removeValidators([Validators.required]);
-      //  }
-      //  this.joint_holder.at(index).get('mobile_dec_flag').updateValueAndValidity({emitEvent:false});
+       this.joint_holder.at(index).get('mobile_dec_flag').setValue('');
+       if(ev.target.value){
+          this.joint_holder.at(index).get('mobile_dec_flag').setValidators([Validators.required]);
+       }
+       else{
+        this.joint_holder.at(index).get('mobile_dec_flag').removeValidators([Validators.required]);
+       }
+       this.joint_holder.at(index).get('mobile_dec_flag').updateValueAndValidity({emitEvent:false});
   }
 
   handleBlurForJointHolderEmail = (ev,index) =>{
-      //  this.joint_holder.at(index).get('email_dec_flag').setValue('');
-      //  if(ev.target.value){
-      //     this.joint_holder.at(index).get('email_dec_flag').setValidators([Validators.required]);
-      //  }
-      //  else{
-      //   this.joint_holder.at(index).get('email_dec_flag').removeValidators([Validators.required]);
-      //  }
-      //  this.joint_holder.at(index).get('email_dec_flag').updateValueAndValidity({emitEvent:false});
+       this.joint_holder.at(index).get('email_dec_flag').setValue('');
+       if(ev.target.value){
+          this.joint_holder.at(index).get('email_dec_flag').setValidators([Validators.required]);
+       }
+       else{
+        this.joint_holder.at(index).get('email_dec_flag').removeValidators([Validators.required]);
+       }
+       this.joint_holder.at(index).get('email_dec_flag').updateValueAndValidity({emitEvent:false});
   }
 
   changeDefaultBankFlag = (ev,index) =>{

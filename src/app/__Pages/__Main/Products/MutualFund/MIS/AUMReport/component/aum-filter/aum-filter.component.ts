@@ -385,7 +385,7 @@ export class AumFilterComponent implements OnInit {
     } else {
          this.aum_report_filter_frm.patchValue({
           amc_id:[],
-          date:'',
+          date:new Date(),
          });
 
          this.aum_report_filter_frm.get('brn_cd').setValue([],{emitEvent:true});

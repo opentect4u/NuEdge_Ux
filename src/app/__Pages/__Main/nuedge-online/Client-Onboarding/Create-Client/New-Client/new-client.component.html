@@ -542,14 +542,14 @@
                                                             </div>
                                                             <div class="col-sm-12 my-3 "
                                                              formArrayName="joint_holder"
-                                                            *ngIf="custEntry?.mode_of_holding != 'S'">
+                                                            *ngIf="custEntry?.mode_of_holding != 1">
                                                             <div class="p-3 d-flex justify-content-between align-items-center jointHolderDtls"
                                                             >
                                                                     <div>
                                                                         <h5 class="textHeader1">JOINT HOLDER DETAILS</h5>
                                                                         <p class="m-0 textHeader">Add Joint Holder Details</p>
                                                                     </div>
-                                                                    <ng-container *ngIf="custEntry?.mode_of_holding == 'A'">
+                                                                    <ng-container *ngIf="custEntry?.mode_of_holding == 3">
                                                                             <button *ngIf="joint_holder.length < 2"
                                                                             (click)="addJointHolder()"
                                                                         pButton type="button" icon="pi pi-plus" 
@@ -1709,11 +1709,11 @@
                                                                                     >Account No.: </label>
                                                                                     <input placeholder="Enter Account No." type="text" id="acc_no_{{i}}"
                                                                                     name="acc_no_{{i}}" class="form-control"
-                                                                                    formControlName="acc_no"  minLength="6" maxLength="6"  />
+                                                                                    formControlName="acc_no"  minLength="10" maxLength="10"  />
                                                                                      <div class="invalid-feedback text-left" *ngIf="item.get('acc_no')?.invalid && (item.get('acc_no')?.dirty || item.get('acc_no')?.touched)">
                                                                                         <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['required']">**Please provide account no**</span>
-                                                                                          <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['minlength']">Minimum length is 6.</span>
-                                                                                        <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['maxlength']">Maximum length is 6.</span>
+                                                                                          <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['minlength']">Minimum length is 10.</span>
+                                                                                        <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['maxlength']">Maximum length is 10.</span>
                                                                                         <span class="invalid-feedback error_txt"  *ngIf="item.get('acc_no')?.errors?.['notNumeric']">Only numbers are allowed.</span>
                                                                                     </div>
                                                                                 </div>
@@ -2585,6 +2585,7 @@
                 <ng-template #showcreateCLientENtryScreen>
                     <app-create-customer-by-entry
                     [md_taxStatus]="md_tax"
+                    [md_clientHolding]="md_clientHolding"
                     (sendEntry)="get1stepEntry($event)"
                     ></app-create-customer-by-entry>
                 </ng-template>

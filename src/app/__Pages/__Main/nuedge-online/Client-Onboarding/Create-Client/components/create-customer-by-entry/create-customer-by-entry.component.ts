@@ -13,7 +13,7 @@ export class CreateCustomerByEntryComponent implements OnInit {
   @Output() sendEntry = new EventEmitter();
 
   @Input() md_taxStatus:any = []; 
-
+  @Input() md_clientHolding:any = [];
   customer_entry_form: FormGroup;
   constructor(private fb: FormBuilder) { 
     this.customer_entry_form = this.fb.group({
@@ -50,7 +50,7 @@ export class CreateCustomerByEntryComponent implements OnInit {
           && event.target.value != '1'){
             // this.customer_entry_form.get('mode_of_holding')?.setValue('S',{emitEvent:true});
             $moh.prop('disabled',true);
-            $moh.val('S').trigger('change');
+            $moh.val(1).trigger('change');
           }
           else{
             // this.customer_entry_form.get('mode_of_holding')?.setValue('',{emitEvent:true});
