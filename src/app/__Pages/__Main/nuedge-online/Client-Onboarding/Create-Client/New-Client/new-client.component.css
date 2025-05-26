@@ -228,3 +228,10 @@ fieldset
         font-size: 12px;
         text-align: justify;
     }
+
+    .pButtonholder{
+                font-size: 10px !important;
+                font-weight: 500;
+                padding: 7px 7px !important;
+                text-transform: uppercase;
+    }

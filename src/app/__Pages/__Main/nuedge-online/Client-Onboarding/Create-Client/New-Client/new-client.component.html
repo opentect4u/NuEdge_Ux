@@ -552,8 +552,10 @@
                                                                     <ng-container *ngIf="custEntry?.mode_of_holding == 3">
                                                                             <button *ngIf="joint_holder.length < 2"
                                                                             (click)="addJointHolder()"
-                                                                        pButton type="button" icon="pi pi-plus" 
-                                                                                class="p-button-text p-button-lg p-button-danger">
+                                                                        pButton type="button"
+                                                                                class="pButtonholder p-button-lg p-button-danger"> 
+                                                                                <i  class="pi pi-plus mx-2" ></i>
+                                                                                Add Holder
                                                                         </button>
                                                                     </ng-container>
                                                                   
@@ -939,113 +941,7 @@
                                                                                 address1**</span>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-sm-2 ">
-                                                                            <label for="foreign_address2" class="m-0 labelTitle col-form-label float-left"
-                                                                            [ngClass]="{
-                                                                                'colorLabel':hasRequiredValidator('foreign_contact_details.foreign_address2')
-                                                                            }"
-                                                                            >Address 2: </label>
-                                                                    </div>
-                                                                    <div class="col-sm-4">
-                                                                        <input placeholder="Enter Address2" type="text" id="foreign_address2"
-                                                                            name="foreign_address2" class="form-control"
-                                                                            formControlName="foreign_address2" />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12 my-3">
-                                                                <div class="form-group row m-0">
                                                                     <div class="col-sm-2">
-                                                                        <label for="foreign_address3" class="m-0 labelTitle col-form-label float-left"
-                                                                          [ngClass]="{
-                                                                                'colorLabel':hasRequiredValidator('foreign_contact_details.foreign_address3')
-                                                                            }"
-                                                                        >Address 3: </label>
-                                                                    </div>
-                                                                    <div class="col-sm-4">
-                                                                        <input placeholder="Enter Address3" type="text" id="foreign_address3"
-                                                                        name="foreign_address3" class="form-control"
-                                                                        formControlName="foreign_address3" />
-                                                                    </div>
-                                                                    <div class="col-sm-2">
-                                                                         <label for="foreign_city" class="m-0 labelTitle col-form-label float-left"
-                                                                            [ngClass]="{
-                                                                                'colorLabel':hasRequiredValidator('foreign_contact_details.foreign_city')
-                                                                            }"
-                                                                         >City: </label>
-                                                                    </div>
-                                                                    <div class="col-sm-4">
-                                                                            <input placeholder="Enter City" type="text" id="foreign_city"
-                                                                                name="foreign_city" class="form-control"
-                                                                                formControlName="foreign_city" />
-                                                                            <div class="invalid-feedback text-left"
-                                                                                *ngIf="new_client_form.get('foreign_contact_details.foreign_city')?.invalid && (new_client_form.get('foreign_contact_details.foreign_city')?.dirty || new_client_form.get('foreign_contact_details.foreign_city')?.touched)">
-                                                                                <span class="invalid-feedback error_txt"
-                                                                                    *ngIf="(new_client_form.get('foreign_contact_details.foreign_city'))?.errors?.required">**Please
-                                                                                    provide
-                                                                                    city**</span>
-                                                                            </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12">
-                                                                <div class="form-group row m-0">
-                                                                        <div class="col-sm-2">
-                                                                            <label for="foreign_state"class="m-0 labelTitle col-form-label float-left"
-                                                                                [ngClass]="{
-                                                                                'colorLabel':hasRequiredValidator('foreign_contact_details.foreign_state')
-                                                                            }"
-                                                                            >State: </label>
-                                                                        </div>
-                                                                       <div class="col-sm-4">
-                                                                            <input placeholder="Enter State" type="text" id="foreign_state"
-                                                                                name="foreign_state" class="form-control"
-                                                                                formControlName="foreign_state" />
-                                                                            <div class="invalid-feedback text-left"
-                                                                                *ngIf="new_client_form.get('foreign_contact_details.foreign_state')?.invalid && (new_client_form.get('foreign_contact_details.foreign_state')?.dirty || new_client_form.get('foreign_contact_details.foreign_state')?.touched)">
-                                                                                <span class="invalid-feedback error_txt"
-                                                                                    *ngIf="(new_client_form.get('foreign_contact_details.foreign_state'))?.errors?.required">**Please
-                                                                                    provide
-                                                                                    state**</span>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-sm-2">
-                                                                            <label for="sea_fears" class="m-0 labelTitle col-form-label float-left"
-                                                                               [ngClass]="{
-                                                                                'colorLabel':hasRequiredValidator('foreign_contact_details.sea_fears')
-                                                                            }"
-                                                                            >Sea Fears: </label>
-                                                                        </div>
-                                                                        <div class="col-sm-4 d-flex justify-content-end align-items-center">
-                                                                               <mat-radio-group aria-labelledby="sea_fears"  formControlName="sea_fears">
-                                                                                <mat-radio-button value="Yes" class="m-0 mx-2">Yes</mat-radio-button>
-                                                                                <mat-radio-button value="No" class="m-0">No</mat-radio-button>
-                                                                                </mat-radio-group>
-                                                                        </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12 my-3">
-                                                                <div class="form-group row m-0">
-                                                                    <div class="col-sm-2">
-                                                                         <label for="foreign_pincode" class="m-0 labelTitle col-form-label float-left"
-                                                                         [ngClass]="{
-                                                                                'colorLabel':hasRequiredValidator('foreign_contact_details.foreign_pincode')
-                                                                            }"
-                                                                         >Pincode : </label>
-                                                                    </div>
-                                                                     <div class="col-sm-4">
-                                                                            <input placeholder="Enter State" type="text" id="foreign_pincode"
-                                                                                name="foreign_pincode" class="form-control"
-                                                                                formControlName="foreign_pincode" />
-                                                                            <div class="invalid-feedback text-left"
-                                                                                *ngIf="new_client_form.get('foreign_contact_details.foreign_pincode')?.invalid && (new_client_form.get('foreign_contact_details.foreign_pincode')?.dirty || new_client_form.get('foreign_contact_details.foreign_pincode')?.touched)">
-                                                                                <span class="invalid-feedback error_txt"
-                                                                                    *ngIf="(new_client_form.get('foreign_contact_details.foreign_pincode'))?.errors?.required">**Please
-                                                                                    provide
-                                                                                    pincode**</span>
-                                                                            </div>
-                                                                    </div>
-                                                                      <div class="col-sm-2">
                                                                          <label for="foreign_country" class="m-0 labelTitle col-form-label float-left"
                                                                               [ngClass]="{
                                                                                 'colorLabel':hasRequiredValidator('foreign_contact_details.foreign_country')
@@ -1309,6 +1205,120 @@
                                                                                 country**</span>
                                                                         </div>
                                                                     </div>
+                                                                    <!--  -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 my-3">
+                                                                <div class="form-group row m-0">
+                                                                        <div class="col-sm-2 ">
+                                                                                <label for="foreign_address2" class="m-0 labelTitle col-form-label float-left"
+                                                                                [ngClass]="{
+                                                                                    'colorLabel':hasRequiredValidator('foreign_contact_details.foreign_address2')
+                                                                                }"
+                                                                                >Address 2: </label>
+                                                                        </div>
+                                                                        <div class="col-sm-4">
+                                                                            <input placeholder="Enter Address2" type="text" id="foreign_address2"
+                                                                                name="foreign_address2" class="form-control"
+                                                                                formControlName="foreign_address2" />
+                                                                        </div>
+                                                                    <!--  -->
+                                                                    <div class="col-sm-2">
+                                                                        <label for="foreign_state"class="m-0 labelTitle col-form-label float-left"
+                                                                            [ngClass]="{
+                                                                            'colorLabel':hasRequiredValidator('foreign_contact_details.foreign_state')
+                                                                        }"
+                                                                        >State: </label>
+                                                                    </div>
+                                                                    <div class="col-sm-4">
+                                                                        <input placeholder="Enter State" type="text" id="foreign_state"
+                                                                            name="foreign_state" class="form-control"
+                                                                            formControlName="foreign_state" />
+                                                                        <div class="invalid-feedback text-left"
+                                                                            *ngIf="new_client_form.get('foreign_contact_details.foreign_state')?.invalid && (new_client_form.get('foreign_contact_details.foreign_state')?.dirty || new_client_form.get('foreign_contact_details.foreign_state')?.touched)">
+                                                                            <span class="invalid-feedback error_txt"
+                                                                                *ngIf="(new_client_form.get('foreign_contact_details.foreign_state'))?.errors?.required">**Please
+                                                                                provide
+                                                                                state**</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!--  -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12">
+                                                                <div class="form-group row m-0">
+                                                                            <div class="col-sm-2">
+                                                                                <label for="foreign_address3" class="m-0 labelTitle col-form-label float-left"
+                                                                                [ngClass]="{
+                                                                                        'colorLabel':hasRequiredValidator('foreign_contact_details.foreign_address3')
+                                                                                    }"
+                                                                                >Address 3: </label>
+                                                                            </div>
+                                                                            <div class="col-sm-4">
+                                                                                <input placeholder="Enter Address3" type="text" id="foreign_address3"
+                                                                                name="foreign_address3" class="form-control"
+                                                                                formControlName="foreign_address3" />
+                                                                            </div>
+
+                                                                            <div class="col-sm-2">
+                                                                                <label for="foreign_city" class="m-0 labelTitle col-form-label float-left"
+                                                                                    [ngClass]="{
+                                                                                        'colorLabel':hasRequiredValidator('foreign_contact_details.foreign_city')
+                                                                                    }"
+                                                                                >City: </label>
+                                                                            </div>
+                                                                            <div class="col-sm-4">
+                                                                                    <input placeholder="Enter City" type="text" id="foreign_city"
+                                                                                        name="foreign_city" class="form-control"
+                                                                                        formControlName="foreign_city" />
+                                                                                    <div class="invalid-feedback text-left"
+                                                                                        *ngIf="new_client_form.get('foreign_contact_details.foreign_city')?.invalid && (new_client_form.get('foreign_contact_details.foreign_city')?.dirty || new_client_form.get('foreign_contact_details.foreign_city')?.touched)">
+                                                                                        <span class="invalid-feedback error_txt"
+                                                                                            *ngIf="(new_client_form.get('foreign_contact_details.foreign_city'))?.errors?.required">**Please
+                                                                                            provide
+                                                                                            city**</span>
+                                                                                    </div>
+                                                                            </div>
+                                                                        <!--  -->
+                                                                        <!-- -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-12 my-3">
+                                                                <div class="form-group row m-0">
+                                                                    <div class="col-sm-2">
+                                                                         <label for="foreign_pincode" class="m-0 labelTitle col-form-label float-left"
+                                                                         [ngClass]="{
+                                                                                'colorLabel':hasRequiredValidator('foreign_contact_details.foreign_pincode')
+                                                                            }"
+                                                                         >Pincode : </label>
+                                                                    </div>
+                                                                     <div class="col-sm-4">
+                                                                            <input placeholder="Enter Pincode" type="text" id="foreign_pincode"
+                                                                                name="foreign_pincode" class="form-control"
+                                                                                formControlName="foreign_pincode" />
+                                                                            <div class="invalid-feedback text-left"
+                                                                                *ngIf="new_client_form.get('foreign_contact_details.foreign_pincode')?.invalid && (new_client_form.get('foreign_contact_details.foreign_pincode')?.dirty || new_client_form.get('foreign_contact_details.foreign_pincode')?.touched)">
+                                                                                <span class="invalid-feedback error_txt"
+                                                                                    *ngIf="(new_client_form.get('foreign_contact_details.foreign_pincode'))?.errors?.required">**Please
+                                                                                    provide
+                                                                                    pincode**</span>
+                                                                            </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-2">
+                                                                            <label for="sea_fears" class="m-0 labelTitle col-form-label float-left"
+                                                                               [ngClass]="{
+                                                                                'colorLabel':hasRequiredValidator('foreign_contact_details.sea_fears')
+                                                                            }"
+                                                                            >Sea Fears: </label>
+                                                                        </div>
+                                                                        <div class="col-sm-4 d-flex justify-content-end align-items-center">
+                                                                               <mat-radio-group aria-labelledby="sea_fears"  formControlName="sea_fears">
+                                                                                <mat-radio-button value="Yes" class="m-0 mx-2">Yes</mat-radio-button>
+                                                                                <mat-radio-button value="No" class="m-0">No</mat-radio-button>
+                                                                                </mat-radio-group>
+                                                                        </div> 
+                                                                    
                                                                    
                                                                 </div>
 
@@ -1709,11 +1719,11 @@
                                                                                     >Account No.: </label>
                                                                                     <input placeholder="Enter Account No." type="text" id="acc_no_{{i}}"
                                                                                     name="acc_no_{{i}}" class="form-control"
-                                                                                    formControlName="acc_no"  minLength="10" maxLength="10"  />
+                                                                                    formControlName="acc_no"  minLength="6"  />
                                                                                      <div class="invalid-feedback text-left" *ngIf="item.get('acc_no')?.invalid && (item.get('acc_no')?.dirty || item.get('acc_no')?.touched)">
                                                                                         <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['required']">**Please provide account no**</span>
-                                                                                          <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['minlength']">Minimum length is 10.</span>
-                                                                                        <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['maxlength']">Maximum length is 10.</span>
+                                                                                          <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['minlength']">Minimum length is 6.</span>
+                                                                                        <!-- <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['maxlength']">Maximum length is 10.</span> -->
                                                                                         <span class="invalid-feedback error_txt"  *ngIf="item.get('acc_no')?.errors?.['notNumeric']">Only numbers are allowed.</span>
                                                                                     </div>
                                                                                 </div>
@@ -2042,7 +2052,9 @@
                                                                                    
                                                                                      <div class="invalid-feedback text-left"
                                                                                          *ngIf="item?.get('nominee_dob')?.invalid && (item?.get('nominee_dob')?.dirty || item?.get('nominee_dob')?.touched)">
-                                                                                          <span *ngIf="item.get('nominee_dob')?.touched && item.get('nominee_dob')?.errors?.['underage']">
+                                                                                         <span class="invalid-feedback error_txt"
+                                                                                             *ngIf="(item?.get('nominee_dob'))?.errors?.required">**Please provide nominee dob**</span>
+                                                                                         <span *ngIf="item.get('nominee_dob')?.touched && item.get('nominee_dob')?.errors?.['underage']">
                                                                                                 nominee must be at least 18 years old.
                                                                                             </span>
                                                                                      </div>
@@ -2065,23 +2077,32 @@
                                                                                     formControlName="nominee_address1" />
                                                                                 </div>
                                                                                 <!-- End -->
-    
-                                                                                <!-- Nominee City -->
-                                                                                <label for="nominee_city_{{i}}"
+
+                                                                                 <!-- Nominee Country -->
+                                                                                <label for="nominee_country_{{i}}"
                                                                                 class="m-0 labelTitle col-form-label col-sm-3 text-left "
                                                                                  [ngClass]="{
-                                                                                        'colorLabel':hasRequiredValidatorForNominee('nominee_city',i)
+                                                                                        'colorLabel':hasRequiredValidatorForNominee('nominee_country',i)
                                                                                     }"
-                                                                                >City: </label>
+                                                                                >Country: </label>
         
                                                                                 <div  class="col-sm-3">
-                                                                                    <select id="nominee_city_{{i}}" name="nominee_city_{{i}}"
+                                                                                    <select id="nominee_country_{{i}}" name="nominee_country_{{i}}"
                                                                                     class="js-example-responsive  form-control"
-                                                                                    formControlName="nominee_city">
-                                                                                    <option value="">-- Choose City --</option>                                                                           
+                                                                                    (change)="onChangeCountry($event,i)"
+                                                                                    formControlName="nominee_country">
+                                                                                    <option value="">-- Choose Country --</option>       
+                                                                                    <option value="{{country.id}}" *ngFor="let country of md_country">{{country.name}}</option>                                                                    
                                                                                 </select>
+                                                                                <div class="invalid-feedback text-left"
+                                                                                    *ngIf="item.get('nominee_country')?.invalid && (item.get('nominee_country')?.dirty || item.get('nominee_country')?.touched)">
+                                                                                    <span class="invalid-feedback error_txt"
+                                                                                        *ngIf="(item.get('nominee_country'))?.errors?.required">**Please provide country**</span>
+                                                                                </div>
                                                                                 </div>
                                                                                 <!-- End -->
+    
+                                                                                
                                                                            </div>
                                                                             <div class="row my-2">
                                                                                 <!-- Nominee Address2 -->
@@ -2111,9 +2132,18 @@
                                                                                 <div  class="col-sm-3">
                                                                                     <select id="nominee_state_{{i}}" name="nominee_state_{{i}}"
                                                                                     class="js-example-responsive  form-control"
-                                                                                    formControlName="nominee_state">
-                                                                                    <option value="">-- Choose State --</option>                                                                           
+                                                                                    formControlName="nominee_state"
+                                                                                     (change)="onChangeState($event,i)"
+                                                                                    >
+                                                                                    <option value="">-- Choose State --</option>   
+                                                                                    <option value="{{state.id}}" *ngFor="let state of item.get('md_nominee_state')?.value">{{state.name}}</option>
+
                                                                                 </select>
+                                                                                <div class="invalid-feedback text-left"
+                                                                                    *ngIf="item.get('nominee_state')?.invalid && (item.get('nominee_state')?.dirty || item.get('nominee_state')?.touched)">
+                                                                                    <span class="invalid-feedback error_txt"
+                                                                                        *ngIf="(item.get('nominee_state'))?.errors?.required">**Please provide state**</span>
+                                                                                </div>
                                                                                 </div>
                                                                                 <!-- End -->
                                                                            </div>
@@ -2134,21 +2164,85 @@
                                                                             </div>
                                                                             <!-- End -->
 
-                                                                            <!-- Nominee Pincode -->
-                                                                            <label for="nominee_pincode_{{i}}"
-                                                                            class="m-0 labelTitle col-form-label col-sm-3 text-left"
-                                                                             [ngClass]="{
-                                                                                        'colorLabel':hasRequiredValidatorForNominee('nominee_pincode',i)
+
+                                                                             <!-- Nominee District -->
+                                                                                <label for="nominee_district_{{i}}"
+                                                                                class="m-0 labelTitle col-form-label col-sm-3 text-left "
+                                                                                 [ngClass]="{
+                                                                                        'colorLabel':hasRequiredValidatorForNominee('nominee_district',i)
                                                                                     }"
-                                                                            >Pincode: </label>
-    
-                                                                            <div  class="col-sm-3">
-                                                                                <input placeholder="Enter Pincode" type="text"
-                                                                                id="nominee_pincode_{{i}}" name="nominee_pincode_{{i}}"
-                                                                                class="form-control "
-                                                                                formControlName="nominee_pincode" />
+                                                                                >District: </label>
+        
+                                                                                <div  class="col-sm-3">
+                                                                                    <select id="nominee_district_{{i}}" name="nominee_district_{{i}}"
+                                                                                    class="js-example-responsive  form-control"
+                                                                                    formControlName="nominee_district"
+                                                                                     (change)="onChangeDistrict($event,i)"
+                                                                                    >
+                                                                                    <option value="">-- Choose District --</option> 
+                                                                                    <option value="{{district.id}}" *ngFor="let district of item.get('md_nominee_district')?.value">{{district.name}}</option>
+
+                                                                                </select>
+                                                                                 <div class="invalid-feedback text-left"
+                                                                                    *ngIf="item.get('nominee_district')?.invalid && (item.get('nominee_district')?.dirty || item.get('nominee_district')?.touched)">
+                                                                                    <span class="invalid-feedback error_txt"
+                                                                                        *ngIf="(item.get('nominee_district'))?.errors?.required">**Please provide district**</span>
+                                                                                </div>
+                                                                                </div>
+                                                                                <!-- End -->
                                                                             </div>
-                                                                            <!-- End -->
+                                                                            <div class="row my-2">
+                                                                                <!-- Nominee City -->
+                                                                                <label for="nominee_city_{{i}}"
+                                                                                class="m-0 labelTitle col-form-label col-sm-3 text-left "
+                                                                                 [ngClass]="{
+                                                                                        'colorLabel':hasRequiredValidatorForNominee('nominee_city',i)
+                                                                                    }"
+                                                                                >City: </label>
+        
+                                                                                <div  class="col-sm-3">
+                                                                                    <select id="nominee_city_{{i}}" name="nominee_city_{{i}}"
+                                                                                    class="js-example-responsive  form-control"
+                                                                                    formControlName="nominee_city"
+                                                                                     (change)="onChangeCity($event,i)"
+                                                                                    >
+                                                                                    <option value="">-- Choose City --</option>      
+                                                                                    <option value="{{city.id}}" *ngFor="let city of item.get('md_nominee_city')?.value">{{city.name}}</option>                                                                     
+                                                                                </select>
+                                                                                 <div class="invalid-feedback text-left"
+                                                                                    *ngIf="item.get('nominee_city')?.invalid && (item.get('nominee_city')?.dirty || item.get('nominee_city')?.touched)">
+                                                                                    <span class="invalid-feedback error_txt"
+                                                                                        *ngIf="(item.get('nominee_city'))?.errors?.required">**Please provide city**</span>
+                                                                                </div>
+                                                                                </div>
+                                                                                <!-- End -->
+
+                                                                                <!-- Nominee Pincode -->
+                                                                                <label for="nominee_pincode_{{i}}"
+                                                                                class="m-0 labelTitle col-form-label col-sm-3 text-left"
+                                                                                [ngClass]="{
+                                                                                            'colorLabel':hasRequiredValidatorForNominee('nominee_pincode',i)
+                                                                                        }"
+                                                                                >Pincode: </label>
+        
+                                                                                <div  class="col-sm-3">
+                                                                                    <!-- <input placeholder="Enter Pincode" type="text"
+                                                                                    id="nominee_pincode_{{i}}" name="nominee_pincode_{{i}}"
+                                                                                    class="form-control "
+                                                                                    formControlName="nominee_pincode" /> -->
+                                                                                     <select id="nominee_pincode_{{i}}" name="nominee_pincode_{{i}}"
+                                                                                    class="js-example-responsive  form-control"
+                                                                                    formControlName="nominee_pincode">
+                                                                                    <option value="">-- Choose Pincode --</option>      
+                                                                                    <option value="{{pincode.id}}" *ngFor="let pincode of item.get('md_nominee_pincode')?.value">{{pincode.name}}</option>                                                                     
+                                                                                </select>
+                                                                                      <div class="invalid-feedback text-left"
+                                                                                    *ngIf="item.get('nominee_pincode')?.invalid && (item.get('nominee_pincode')?.dirty || item.get('nominee_pincode')?.touched)">
+                                                                                    <span class="invalid-feedback error_txt"
+                                                                                        *ngIf="(item.get('nominee_pincode'))?.errors?.required">**Please provide pincode**</span>
+                                                                                </div>
+                                                                                </div>
+                                                                                <!-- End -->
                                                                             </div>
                                                                             <div class="row my-2">
                                                                                 <!-- Nominee Relationship -->
@@ -2191,13 +2285,13 @@
                                                                                         *ngIf="item?.get('nominee_percentage')?.invalid && (item?.get('nominee_percentage')?.dirty || item?.get('nominee_percentage')?.touched)">
                                                                                             <span *ngIf="item?.get('nominee_percentage')?.errors?.['required']">**Please provide nominee percentage**</span>
                                                                                             <span *ngIf="item?.get('nominee_percentage')?.errors?.['pattern']">**Invalid percentage**</span>
-                                                                                             <span *ngIf="item.get('nominee_percentage')?.hasError('min')">
-                                                                                            Percentage must be greater than or equal to 0.
-                                                                                            </span>
-                                                                                            <span *ngIf="item.get('nominee_percentage')?.hasError('max')">
-                                                                                            Percentage cannot be greater than 100.
-                                                                                            </span>
+                                                                                             <!-- <span *ngIf="item.get('nominee_percentage')?.hasError('min')">Percentage must be greater than or equal to 0.</span>
+                                                                                            <span *ngIf="item.get('nominee_percentage')?.hasError('max')">Percentage cannot be greater than 100.</span> -->
+                                                                                                <span *ngIf="item.get('nominee_percentage')?.errors?.tooLow">Percentage must be greater than 0.</span>
+                                                                                                <span *ngIf="item.get('nominee_percentage')?.errors?.tooHigh">Percentage must be less than or equal to 100.</span>
                                                                                         </div>
+
+
                                                                                 </div>
                                                                                 <!-- End -->
                                                                             </div>

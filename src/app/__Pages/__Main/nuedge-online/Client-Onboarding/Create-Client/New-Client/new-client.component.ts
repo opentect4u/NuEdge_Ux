@@ -74,6 +74,7 @@ export class NewClientComponent implements OnInit {
   mdCommunicationMode = [];
   md_relationship = [];
   md_clientHolding = [];
+  md_nominee_state = [];
   private shouldScroll = false;
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   new_client_form = new FormGroup({
@@ -198,7 +199,10 @@ export class NewClientComponent implements OnInit {
       if(this.md_occupation.length == 0){
         this.dbIntr.api_call_for_nuedge_online(0,'/occupationCode',null)
           .pipe(pluck('data'))
-          .subscribe((res:any) =>{this.md_occupation = res;})
+          .subscribe((res:any) =>{
+            console.log(res)
+            this.md_occupation = res;
+          })
       } 
     }
 
@@ -374,7 +378,8 @@ export class NewClientComponent implements OnInit {
     this.new_client_form.get('nominee_dtls.nominee_number')
     .valueChanges.subscribe(res => {
           console.log("************* NOMINEE CHANGE ******************")
-          console.log(res);
+          // console.log(res);
+          // this.nominee.controls[index].get('nominee_dob').setValidators([Validators.required,this.minAgeValidator(18)])
           if(res){
             this.addNominee(res);
           }
@@ -506,16 +511,16 @@ export class NewClientComponent implements OnInit {
         else{
           this.nominee.clear();
           for(let i=0;i<range;i++){
-            console.log(Math.round(100 / range));
-            this.nominee.push(this.setNominee(Math.round(100 / range)))
+            let percentage = i == 0 ? 100 : 0;
+            this.nominee.push(this.setNominee(percentage))
           }
         }
   }
 
   setPercentageOfNomineesDependOnNumberOfSelectedNominee = (range) =>{
       for(let i=0;i<range;i++){
-          // this.nominee.at(i).get('nominee_percentage').setValue((100 / range).toFixed(2));
-          this.nominee.at(i).get('nominee_percentage').setValue(Math.round(100 / range));
+           const percentage = i == 0 ? 100 : 0
+          this.nominee.at(i).get('nominee_percentage').setValue(percentage);
 
       }
   }
@@ -582,13 +587,15 @@ export class NewClientComponent implements OnInit {
     nominee_relationship='',
     nominee_gaurdian_pan='',
     nominee_gaurdian_name='',
-    nominee_gaurdian_rel=''
+    nominee_gaurdian_rel='',
+    nominee_country='',
+    nominee_district='',
   ){
     return new FormGroup({
       nominee_type:new FormControl(nominee_type ? nominee_type : '',[Validators.required]),
       nominee_pan: new FormControl(nominee_pan ? nominee_pan : '',[Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]),
       nominee_name: new FormControl(nominee_name ? nominee_name : '',[Validators.required]),
-      nominee_dob: new FormControl(nominee_dob ? nominee_dob : ''),
+      nominee_dob: new FormControl(nominee_dob ? nominee_dob : '',[Validators.required,this.minAgeValidator(18)]),
       nominee_address1: new FormControl(nominee_address1 ? nominee_address1 : ''),
       nominee_city: new FormControl(nominee_city ? nominee_city : ''),
       nominee_address2: new FormControl(nominee_address2 ? nominee_address2 : ''),
@@ -598,14 +605,17 @@ export class NewClientComponent implements OnInit {
       nominee_relationship: new FormControl(nominee_relationship ? nominee_relationship : '',[Validators.required]),
       nominee_percentage:new FormControl(nominee_percentage,[
         Validators.required,
-        // Validators.pattern(/^\d+(\.\d{1,4})?$/),
         Validators.pattern('^[0-9]*$'),
-        Validators.min(0), 
-        Validators.max(100)
-      ]),
+        this.percentageValidator]),
       nominee_gaurdian_name:new FormControl({value:nominee_gaurdian_name ? nominee_gaurdian_name : '',disabled:true}),
       nominee_gaurdian_pan:new FormControl({value:nominee_gaurdian_pan ? nominee_gaurdian_pan : '',disabled:true},[Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]),
       nominee_gaurdian_rel:new FormControl({value:nominee_gaurdian_rel ? nominee_gaurdian_rel : '',disabled:true}),
+      nominee_country:new FormControl({value: nominee_country ? nominee_country : '',disabled:false}),
+      nominee_district:new FormControl({value: nominee_district ? nominee_district : '',disabled:false}),
+      md_nominee_state:new FormControl([]),
+      md_nominee_district:new FormControl([]),
+      md_nominee_city:new FormControl([]),
+      md_nominee_pincode:new FormControl([]),
     })
   }
 
@@ -631,8 +641,8 @@ export class NewClientComponent implements OnInit {
       acc_type: new FormControl(acc_type ? acc_type : '',[Validators.required]),
       acc_no: new FormControl(acc_no ? acc_no : '',[Validators.required,
 
-         Validators.minLength(10),
-          Validators.maxLength(10),
+         Validators.minLength(6),
+        //   Validators.maxLength(10),
           this.numericValidator 
       ]),
       micr: new FormControl(micr ? micr : ''),
@@ -775,6 +785,10 @@ export class NewClientComponent implements OnInit {
       if(Number(ev.tax_status) != 21){
           this.getStepWizardContent();
       }
+      else{
+         this.changeStep(this.step_wizard[0],0)
+      }
+      
      
   }
 
@@ -804,22 +818,23 @@ export class NewClientComponent implements OnInit {
       this.nominee.controls[index].get('nominee_gaurdian_name').setValue('');
       this.nominee.controls[index].get('nominee_gaurdian_pan').setValue('');
       this.nominee.controls[index].get('nominee_gaurdian_rel').setValue('');
+      // this.nominee.controls[index].get('nominee_dob').setValidators([Validators.required,this.minAgeValidator(18)])
       if(ev.target.value == 'Y'){
           this.nominee.controls[index].get('nominee_gaurdian_name').enable();
         this.nominee.controls[index].get('nominee_gaurdian_pan').enable();
         this.nominee.controls[index].get('nominee_gaurdian_rel').enable();
         this.nominee.controls[index].get('nominee_gaurdian_name').setValidators([Validators.required]);
-        this.nominee.controls[index].get('nominee_dob').clearValidators();
+        // this.nominee.controls[index].get('nominee_dob').clearValidators();
       }
       else{
         this.nominee.controls[index].get('nominee_gaurdian_name').disable();
         this.nominee.controls[index].get('nominee_gaurdian_pan').disable();
         this.nominee.controls[index].get('nominee_gaurdian_rel').disable();
         this.nominee.controls[index].get('nominee_gaurdian_name').clearValidators();
-        this.nominee.controls[index].get('nominee_dob').setValidators([this.minAgeValidator(18)]);
+        // this.nominee.controls[index].get('nominee_dob').setValidators([this.minAgeValidator(18)]);
       }
         this.nominee.controls[index].get('nominee_gaurdian_name').updateValueAndValidity({emitEvent:false});
-        this.nominee.controls[index].get('nominee_dob').updateValueAndValidity({emitEvent:false});
+        // this.nominee.controls[index].get('nominee_dob').updateValueAndValidity({emitEvent:false});
 
 
   }
@@ -1146,7 +1161,8 @@ export class NewClientComponent implements OnInit {
                         || key == 'bank_pincode'
                       ){}
                       else if(key == 'acc_no'){
-                         control.get(key).setValidators([Validators.required,Validators.minLength(10),Validators.maxLength(10),this.numericValidator])
+                         control.get(key).setValidators([Validators.required,Validators.minLength(6),
+                        this.numericValidator])
                       }
                       else if(key == 'ifsc_code'){
                          control.get(key).setValidators([
@@ -1169,6 +1185,12 @@ export class NewClientComponent implements OnInit {
                             || key == 'nominee_state'
                             || key == 'nominee_pincode'
                             || key == 'nominee_gaurdian_rel'
+                            || key == 'nominee_country'
+                            || key == 'nominee_district'
+                            || key == 'md_nominee_state'
+                            || key == 'md_nominee_district'
+                            || key == 'md_nominee_city'     
+                            || key == 'md_nominee_pincode'     
                           ){}
                           else if(key == 'nominee_type'
                             || key == 'nominee_name'
@@ -1180,7 +1202,7 @@ export class NewClientComponent implements OnInit {
                               control.get(key).setValidators([
                                   Validators.required,
                                   Validators.pattern(/^\d+(\.\d{1,4})?$/),
-                                  Validators.min(0), 
+                                  Validators.min(1), 
                                   Validators.max(100)
                                 ])
                           }
@@ -1188,10 +1210,12 @@ export class NewClientComponent implements OnInit {
                               control.get(key).setValidators([Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
                           }
                           else if(key == 'nominee_dob'){
-                            if(control.get('nominee_type').value == 'Y'){}
-                            else{
-                              control.get(key).setValidators([this.minAgeValidator(18)]);
-                            }
+                            //  console.log('nominee_dob');
+                             control.get(key).setValidators([Validators.required,this.minAgeValidator(18)]);
+                            // if(control.get('nominee_type').value == 'Y'){}
+                            // else{
+                            //   control.get(key).setValidators([this.minAgeValidator(18)]);
+                            // }
                           }
                           else{
                               if(control.get('nominee_type').value == 'Y'){
@@ -1206,6 +1230,14 @@ export class NewClientComponent implements OnInit {
     }
     
 
+    // Custom Validator Function
+      percentageValidator(control: AbstractControl): ValidationErrors | null {
+        const value = parseFloat(control.value);
+        if (isNaN(value)) return { notANumber: true };
+        if (value <= 0) return { tooLow: true };
+        if (value > 100) return { tooHigh: true };
+        return null;  // valid
+      }
 
 
      hasRequiredValidator(controlName: string): boolean {
@@ -1354,7 +1386,6 @@ export class NewClientComponent implements OnInit {
                             nestedControls.controls.forEach((el,index) =>{
                                     console.log(nestedkey)
                                     Object.keys(el.value).forEach((obj,i) =>{
-                                          console.log(obj);
                                          if(obj == 'exempt_category'){
                                               if(el.value['pan_exempt'] == 'Y'){
                                                   const exempt_cat = this.md_exempt_category?.find(ele => ele.id == el.value[obj]);
@@ -1406,8 +1437,29 @@ export class NewClientComponent implements OnInit {
                                               const TDRelationShip = this.md_relationship?.find(ele => ele.id == el.value[obj]);
                                               formdata.append(`${obj}${index + 1}`,TDRelationShip ? JSON.stringify(TDRelationShip) : null);
                                          }
+                                         else if(obj == 'nominee_country'){
+                                                const country = this.md_country.find(ele => ele.id == el.value[obj]);
+                                                formdata.append(`${obj}${index + 1}`,country ? JSON.stringify(country) : null)
+                                          } 
+                                          else if(obj == 'nominee_state'){
+                                                const state = this.nominee.controls[index].get('md_nominee_state')?.value.find(ele => ele.id == el.value[obj]);
+                                                formdata.append(`${obj}${index + 1}`,state ? JSON.stringify(state) : null)
+                                          }
+                                          else if(obj == 'nominee_city'){
+                                              const city = this.nominee.controls[index].get('md_nominee_city')?.value.find(ele => ele.id == el.value[obj]);
+                                                formdata.append(`${obj}${index + 1}`,city ? JSON.stringify(city) : null)
+                                          }
+                                          else if(obj == 'nominee_district'){
+                                              const district = this.nominee.controls[index].get('md_nominee_district')?.value.find(ele => ele.id == el.value[obj]);
+                                              formdata.append(`${obj}${index + 1}`,district ? JSON.stringify(district) : null)
+                                          }
+                                          else if(obj == 'nominee_pincode'){
+                                              const pincode = this.nominee.controls[index].get('nominee_pincode')?.value.find(ele => ele.id == el.value[obj]);
+                                              formdata.append(`${obj}${index + 1}`,pincode ? JSON.stringify(pincode) : null)
+                                          }
+                                         else if(obj == 'md_nominee_state' || obj == 'md_nominee_city' || obj == 'md_nominee_district' || obj == 'md_nominee_pincode'){}
                                          else{
-                                          formdata.append(`${obj}${index + 1}`,el.value[obj] ? el.value[obj] : '')
+                                           formdata.append(`${obj}${index + 1}`,el.value[obj] ? el.value[obj] : '')
                                          }
                                     })
                             })
@@ -1444,7 +1496,7 @@ export class NewClientComponent implements OnInit {
                                  formdata.append(nestedkey,null)
                               }
                           }
-                            else if(nestedkey == 'mobile_rel'){
+                          else if(nestedkey == 'mobile_rel'){
                               if(this.new_client_form.get('contact_dtls.mobile')?.value){
                                   const TDmobileFlag = this.mdMobileEmailDecFlag?.find(el => el.id == control.get(nestedkey)?.value);
                                   formdata.append(nestedkey,TDmobileFlag ? JSON.stringify(TDmobileFlag) : null)
@@ -1458,11 +1510,29 @@ export class NewClientComponent implements OnInit {
                                 formdata.append(nestedkey,TDcommunicationMode ? JSON.stringify(TDcommunicationMode) : null)
                           }
                           else if(nestedkey == 'div_pay_mode'){
-                              console.log(nestedkey)
-                              console.log(control.get(nestedkey)?.value)
                               const divPayMode = this.md_divPayMode?.find(ele => ele.id == control.get(nestedkey)?.value);
                               console.log(divPayMode);
                               formdata.append(nestedkey,divPayMode ? JSON.stringify(divPayMode) : null)
+                          }
+                          else if(nestedkey == 'country_id'){
+                               const country = this.md_country.find(ele => ele.id == control.get(nestedkey)?.value);
+                               formdata.append(nestedkey,country ? JSON.stringify(country) : null)
+                          } 
+                          else if(nestedkey == 'state_id'){
+                               const state = this.md_state.find(ele => ele.id == control.get(nestedkey)?.value);
+                               formdata.append(nestedkey,state ? JSON.stringify(state) : null)
+                          }
+                          else if(nestedkey == 'city_id'){
+                               const city = this.md_city.find(ele => ele.id == control.get(nestedkey)?.value);
+                               formdata.append(nestedkey,city ? JSON.stringify(city) : null)
+                          }
+                          else if(nestedkey == 'district_id'){
+                                const district = this.md_district.find(ele => ele.id == control.get(nestedkey)?.value);
+                               formdata.append(nestedkey,district ? JSON.stringify(district) : null)
+                          }
+                          else if(nestedkey == 'pincode_id'){
+                                const pincode = this.md_pincode.find(ele => ele.id == control.get(nestedkey)?.value);
+                               formdata.append(nestedkey,pincode ? JSON.stringify(pincode) : null)
                           }
                           else{
                             formdata.append(nestedkey,control.get(nestedkey)?.value)
@@ -1525,5 +1595,77 @@ export class NewClientComponent implements OnInit {
       }
     })
   }
+
+  onChangeCountry = (ev,index) =>{
+        this.nominee.controls[index].get('nominee_state').setValue('');
+        this.nominee.controls[index].get('nominee_district').setValue('');
+        this.nominee.controls[index].get('nominee_city').setValue('');
+        this.nominee.controls[index].get('nominee_pincode').setValue('');
+        this.nominee.controls[index].get('md_nominee_state').setValue([]);
+        this.nominee.controls[index].get('md_nominee_district').setValue([]);
+        this.nominee.controls[index].get('md_nominee_city').setValue([]);
+        this.nominee.controls[index].get('md_nominee_pincode').setValue([]);
+      if(ev.target?.value){
+        this.fetchNomineeStateByCountry(ev.target?.value,index)
+      }
+  }
+
+  fetchNomineeStateByCountry = (countryId,index) =>{
+      this.dbIntr.api_call(0,`/states?country_id=${countryId}`,null)
+        .pipe(pluck('data')).subscribe((res:any) =>{
+            this.nominee.controls[index].get('md_nominee_state').setValue(res);
+        })
+  }
+
+  onChangeState = (ev,index) =>{
+      this.nominee.controls[index].get('nominee_district').setValue('');
+      this.nominee.controls[index].get('nominee_city').setValue('');
+      this.nominee.controls[index].get('nominee_pincode').setValue('');
+      this.nominee.controls[index].get('md_nominee_district').setValue([]);
+      this.nominee.controls[index].get('md_nominee_city').setValue([]);
+      this.nominee.controls[index].get('md_nominee_pincode').setValue([]);
+       if(ev.target?.value){
+        this.fetchNomineeDistrictByState(ev.target?.value,index)
+      }
+  }
+
+  fetchNomineeDistrictByState = (stateId,index) =>{
+      this.dbIntr.api_call(0,`/districts?state_id=${stateId}`,null)
+        .pipe(pluck('data')).subscribe((res:any) =>{
+            this.nominee.controls[index].get('md_nominee_district').setValue(res);
+        })
+  }
+
+  onChangeDistrict = (ev,index) =>{
+      this.nominee.controls[index].get('nominee_city').setValue('');
+      this.nominee.controls[index].get('md_nominee_city').setValue([]);
+      this.nominee.controls[index].get('nominee_pincode').setValue('');
+      this.nominee.controls[index].get('md_nominee_pincode').setValue([]);
+      if(ev.target?.value){
+        this.fetchNomineeCityByDistrict(ev.target?.value,index)
+      }
+  }
+
+  fetchNomineeCityByDistrict = (districtId,index) =>{
+        this.dbIntr.api_call(0,`/city?district_id=${districtId}`,null)
+        .pipe(pluck('data')).subscribe((res:any) =>{
+            this.nominee.controls[index].get('md_nominee_city').setValue(res);
+        })
+  }
+
+  onChangeCity = (ev,index) =>{
+      this.nominee.controls[index].get('nominee_pincode').setValue('');
+      this.nominee.controls[index].get('md_nominee_pincode').setValue([]);
+      if(ev.target?.value){
+        this.fetchNomineePincodeByCity(ev.target?.value,index)
+      }
+  }
+  fetchNomineePincodeByCity = (cityId,index) =>{
+          this.dbIntr.api_call(0,`/pincode?city_id=${cityId}`,null)
+          .pipe(pluck('data')).subscribe((res:any) =>{
+              this.nominee.controls[index].get('md_nominee_pincode').setValue(res);
+          })
+    }
+
 
 }
