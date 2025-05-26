@@ -1454,7 +1454,7 @@ export class NewClientComponent implements OnInit {
                                               formdata.append(`${obj}${index + 1}`,district ? JSON.stringify(district) : null)
                                           }
                                           else if(obj == 'nominee_pincode'){
-                                              const pincode = this.nominee.controls[index].get('nominee_pincode')?.value.find(ele => ele.id == el.value[obj]);
+                                              const pincode = this.nominee.controls[index].get('md_nominee_pincode')?.value.find(ele => ele.id == el.value[obj]);
                                               formdata.append(`${obj}${index + 1}`,pincode ? JSON.stringify(pincode) : null)
                                           }
                                          else if(obj == 'md_nominee_state' || obj == 'md_nominee_city' || obj == 'md_nominee_district' || obj == 'md_nominee_pincode'){}
