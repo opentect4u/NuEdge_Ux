@@ -2234,7 +2234,7 @@
                                                                                     class="js-example-responsive  form-control"
                                                                                     formControlName="nominee_pincode">
                                                                                     <option value="">-- Choose Pincode --</option>      
-                                                                                    <option value="{{pincode.id}}" *ngFor="let pincode of item.get('md_nominee_pincode')?.value">{{pincode.name}}</option>                                                                     
+                                                                                    <option value="{{pincode.id}}" *ngFor="let pincode of item.get('md_nominee_pincode')?.value">{{pincode.pincode}}</option>                                                                     
                                                                                 </select>
                                                                                       <div class="invalid-feedback text-left"
                                                                                     *ngIf="item.get('nominee_pincode')?.invalid && (item.get('nominee_pincode')?.dirty || item.get('nominee_pincode')?.touched)">

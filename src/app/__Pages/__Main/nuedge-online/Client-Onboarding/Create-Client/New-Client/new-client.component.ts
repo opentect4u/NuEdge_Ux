@@ -742,6 +742,7 @@ export class NewClientComponent implements OnInit {
       this.dbIntr.api_call(0,`/pincode?city_id=${cityId}`,null)
       .pipe(pluck('data')).subscribe((res:any) =>{
         this.md_pincode = res;
+        console.log(this.md_pincode)
      })
     }
   }
@@ -1390,72 +1391,72 @@ export class NewClientComponent implements OnInit {
                                               if(el.value['pan_exempt'] == 'Y'){
                                                   const exempt_cat = this.md_exempt_category?.find(ele => ele.id == el.value[obj]);
                                                   console.log(exempt_cat);
-                                                  formdata.append(`${obj}${index + 1}`,exempt_cat ? JSON.stringify(exempt_cat) : null)
+                                                  formdata.append(`${obj}${index + 1}`,exempt_cat ? JSON.stringify(exempt_cat) : '')
                                               }
                                               else{
-                                                formdata.append(`${obj}${index + 1}`,null)
+                                                formdata.append(`${obj}${index + 1}`,'')
                                               }
                                          }
                                          else if(obj == 'occupation'){
                                                   const td_occupation = this.md_occupation?.find(ele => ele.id == el.value[obj]);
-                                                  formdata.append(`${obj}${index + 1}`,td_occupation ? JSON.stringify(td_occupation) : null)
+                                                  formdata.append(`${obj}${index + 1}`,td_occupation ? JSON.stringify(td_occupation) : '')
                                          }
                                          else if(obj == 'acc_type'){
                                                   const td_accType = this.md_accountType?.find(ele => ele.id == el.value[obj]);
-                                                  formdata.append(`${obj}${index + 1}`,td_accType ? JSON.stringify(td_accType) : null)
+                                                  formdata.append(`${obj}${index + 1}`,td_accType ? JSON.stringify(td_accType) : '')
                                          }
                                          else if(obj == 'mobile_dec_flag'){
                                                 if(el.value['mobile']){
                                                       const tdMobileFlag = this.mdMobileEmailDecFlag?.find(ele => ele.id == el.value[obj]);
-                                                      formdata.append(`${obj}${index + 1}`,tdMobileFlag ? JSON.stringify(tdMobileFlag) : null)
+                                                      formdata.append(`${obj}${index + 1}`,tdMobileFlag ? JSON.stringify(tdMobileFlag) : '')
                                                 }
                                                 else{
-                                                    formdata.append(`${obj}${index + 1}`,null)
+                                                    formdata.append(`${obj}${index + 1}`,'')
                                                 }
                                          }
                                         else if(obj == 'email_dec_flag'){
                                                 if(el.value['email']){
                                                       const tdEmailFlag = this.mdMobileEmailDecFlag?.find(ele => ele.id == el.value[obj]);
-                                                      formdata.append(`${obj}${index + 1}`,tdEmailFlag ? JSON.stringify(tdEmailFlag) : null);
+                                                      formdata.append(`${obj}${index + 1}`,tdEmailFlag ? JSON.stringify(tdEmailFlag) : '');
                                                 }
                                                 else{
-                                                    formdata.append(`${obj}${index + 1}`,null)
+                                                    formdata.append(`${obj}${index + 1}`,'')
                                                 }
                                          }
                                          else if(obj == 'nominee_relationship'){
                                               const TDRelationShip = this.md_relationship?.find(ele => ele.id == el.value[obj]);
-                                              formdata.append(`${obj}${index + 1}`,TDRelationShip ? JSON.stringify(TDRelationShip) : null);
+                                              formdata.append(`${obj}${index + 1}`,TDRelationShip ? JSON.stringify(TDRelationShip) : '');
                                          }
                                          else if(obj == 'nominee_gaurdian_rel'){
                                                 if(el.value['nominee_type'] == 'Y'){
                                                         const TDRelationShip = this.md_relationship?.find(ele => ele.id == el.value[obj]);
-                                                        formdata.append(`${obj}${index + 1}`,TDRelationShip ? JSON.stringify(TDRelationShip) : null);
+                                                        formdata.append(`${obj}${index + 1}`,TDRelationShip ? JSON.stringify(TDRelationShip) : '');
                                                 }
                                                 else{
-                                                    formdata.append(`${obj}${index + 1}`,null)
+                                                    formdata.append(`${obj}${index + 1}`,'')
                                                 }
                                               const TDRelationShip = this.md_relationship?.find(ele => ele.id == el.value[obj]);
-                                              formdata.append(`${obj}${index + 1}`,TDRelationShip ? JSON.stringify(TDRelationShip) : null);
+                                              formdata.append(`${obj}${index + 1}`,TDRelationShip ? JSON.stringify(TDRelationShip) : '');
                                          }
                                          else if(obj == 'nominee_country'){
                                                 const country = this.md_country.find(ele => ele.id == el.value[obj]);
-                                                formdata.append(`${obj}${index + 1}`,country ? JSON.stringify(country) : null)
+                                                formdata.append(`${obj}${index + 1}`,country ? JSON.stringify(country) : '')
                                           } 
                                           else if(obj == 'nominee_state'){
                                                 const state = this.nominee.controls[index].get('md_nominee_state')?.value.find(ele => ele.id == el.value[obj]);
-                                                formdata.append(`${obj}${index + 1}`,state ? JSON.stringify(state) : null)
+                                                formdata.append(`${obj}${index + 1}`,state ? JSON.stringify(state) : '')
                                           }
                                           else if(obj == 'nominee_city'){
                                               const city = this.nominee.controls[index].get('md_nominee_city')?.value.find(ele => ele.id == el.value[obj]);
-                                                formdata.append(`${obj}${index + 1}`,city ? JSON.stringify(city) : null)
+                                                formdata.append(`${obj}${index + 1}`,city ? JSON.stringify(city) : '')
                                           }
                                           else if(obj == 'nominee_district'){
                                               const district = this.nominee.controls[index].get('md_nominee_district')?.value.find(ele => ele.id == el.value[obj]);
-                                              formdata.append(`${obj}${index + 1}`,district ? JSON.stringify(district) : null)
+                                              formdata.append(`${obj}${index + 1}`,district ? JSON.stringify(district) : '')
                                           }
                                           else if(obj == 'nominee_pincode'){
                                               const pincode = this.nominee.controls[index].get('md_nominee_pincode')?.value.find(ele => ele.id == el.value[obj]);
-                                              formdata.append(`${obj}${index + 1}`,pincode ? JSON.stringify(pincode) : null)
+                                              formdata.append(`${obj}${index + 1}`,pincode ? JSON.stringify(pincode) : '')
                                           }
                                          else if(obj == 'md_nominee_state' || obj == 'md_nominee_city' || obj == 'md_nominee_district' || obj == 'md_nominee_pincode'){}
                                          else{
@@ -1467,72 +1468,72 @@ export class NewClientComponent implements OnInit {
                       else{
                           if(nestedkey == 'occupation'){
                             const occupations = this.md_occupation?.find(el => el.id == control.get(nestedkey)?.value);
-                            formdata.append(nestedkey,occupations ? JSON.stringify(occupations) : null)
+                            formdata.append(nestedkey,occupations ? JSON.stringify(occupations) : '')
                           }
                           else if(nestedkey == 'exempt_category'){
                               if(this.new_client_form.get('customer_dtls.pan_exempt')?.value == 'Y'){
                                   const exempt_cat = this.md_exempt_category?.find(el => el.id == control.get(nestedkey)?.value);
-                                  formdata.append(nestedkey,exempt_cat ? JSON.stringify(exempt_cat) : null)
+                                  formdata.append(nestedkey,exempt_cat ? JSON.stringify(exempt_cat) : '')
                               }
                               else{
-                                 formdata.append(nestedkey,null)
+                                 formdata.append(nestedkey,'')
                               }
                           }
                           else if(nestedkey == 'guardian_exempt_category'){
                               if(this.new_client_form.get('customer_dtls.guardian_pan_exempt')?.value == 'Y'){
                                   const exempt_cat = this.md_gaurdian_exempt_category?.find(el => el.id == control.get(nestedkey)?.value);
-                                  formdata.append(nestedkey,exempt_cat ? JSON.stringify(exempt_cat) : null)
+                                  formdata.append(nestedkey,exempt_cat ? JSON.stringify(exempt_cat) : '')
                               }
                               else{
-                                 formdata.append(nestedkey,null)
+                                 formdata.append(nestedkey,'')
                               }
                           }
                            else if(nestedkey == 'email_rel'){
                               if(this.new_client_form.get('contact_dtls.email')?.value){
                                   const TDemailFlag = this.mdMobileEmailDecFlag?.find(el => el.id == control.get(nestedkey)?.value);
-                                  formdata.append(nestedkey,TDemailFlag ? JSON.stringify(TDemailFlag) : null)
+                                  formdata.append(nestedkey,TDemailFlag ? JSON.stringify(TDemailFlag) : '')
                               }
                               else{
-                                 formdata.append(nestedkey,null)
+                                 formdata.append(nestedkey,'')
                               }
                           }
                           else if(nestedkey == 'mobile_rel'){
                               if(this.new_client_form.get('contact_dtls.mobile')?.value){
                                   const TDmobileFlag = this.mdMobileEmailDecFlag?.find(el => el.id == control.get(nestedkey)?.value);
-                                  formdata.append(nestedkey,TDmobileFlag ? JSON.stringify(TDmobileFlag) : null)
+                                  formdata.append(nestedkey,TDmobileFlag ? JSON.stringify(TDmobileFlag) : '')
                               }
                               else{
-                                  formdata.append(nestedkey,null)
+                                  formdata.append(nestedkey,'')
                               }
                           }
                           else if(nestedkey == 'communication_mode'){
                                 const TDcommunicationMode = this.mdCommunicationMode?.find(el => el.id == control.get(nestedkey)?.value);
-                                formdata.append(nestedkey,TDcommunicationMode ? JSON.stringify(TDcommunicationMode) : null)
+                                formdata.append(nestedkey,TDcommunicationMode ? JSON.stringify(TDcommunicationMode) : '')
                           }
                           else if(nestedkey == 'div_pay_mode'){
                               const divPayMode = this.md_divPayMode?.find(ele => ele.id == control.get(nestedkey)?.value);
                               console.log(divPayMode);
-                              formdata.append(nestedkey,divPayMode ? JSON.stringify(divPayMode) : null)
+                              formdata.append(nestedkey,divPayMode ? JSON.stringify(divPayMode) : '')
                           }
                           else if(nestedkey == 'country_id'){
                                const country = this.md_country.find(ele => ele.id == control.get(nestedkey)?.value);
-                               formdata.append(nestedkey,country ? JSON.stringify(country) : null)
+                               formdata.append(nestedkey,country ? JSON.stringify(country) : '')
                           } 
                           else if(nestedkey == 'state_id'){
                                const state = this.md_state.find(ele => ele.id == control.get(nestedkey)?.value);
-                               formdata.append(nestedkey,state ? JSON.stringify(state) : null)
+                               formdata.append(nestedkey,state ? JSON.stringify(state) : '')
                           }
                           else if(nestedkey == 'city_id'){
                                const city = this.md_city.find(ele => ele.id == control.get(nestedkey)?.value);
-                               formdata.append(nestedkey,city ? JSON.stringify(city) : null)
+                               formdata.append(nestedkey,city ? JSON.stringify(city) : '')
                           }
                           else if(nestedkey == 'district_id'){
                                 const district = this.md_district.find(ele => ele.id == control.get(nestedkey)?.value);
-                               formdata.append(nestedkey,district ? JSON.stringify(district) : null)
+                               formdata.append(nestedkey,district ? JSON.stringify(district) : '')
                           }
                           else if(nestedkey == 'pincode_id'){
                                 const pincode = this.md_pincode.find(ele => ele.id == control.get(nestedkey)?.value);
-                               formdata.append(nestedkey,pincode ? JSON.stringify(pincode) : null)
+                               formdata.append(nestedkey,pincode ? JSON.stringify(pincode) : '')
                           }
                           else{
                             formdata.append(nestedkey,control.get(nestedkey)?.value)

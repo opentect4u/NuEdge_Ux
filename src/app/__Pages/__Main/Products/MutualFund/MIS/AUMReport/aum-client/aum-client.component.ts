@@ -307,6 +307,7 @@ export class AumClientComponent implements OnInit {
       // Create a new
       this.worker_for_footer = new Worker(new URL('./aum-by-client-footer-calculation.worker', import.meta.url));
       this.worker_for_footer.onmessage = ({ data }) => {
+            console.log(data)
             this.footerDT = {
               ...this.footerDT,
               xirr:data

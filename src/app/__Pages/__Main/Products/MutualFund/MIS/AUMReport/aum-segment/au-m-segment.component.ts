@@ -7,6 +7,7 @@ import moment from 'moment';
 import { Calendar } from 'primeng/calendar';
 import { global } from 'src/app/__Utility/globalFunc';
 import { pluck } from 'rxjs/operators';
+import { UtiliService } from 'src/app/__Services/utils.service';
 @Component({
   selector: 'app-au-m-segment',
   templateUrl: './au-m-segment.component.html',
@@ -29,7 +30,7 @@ export class AuMSegmentComponent implements OnInit {
     bu_type_id: new FormControl(""),
   })
 
-  constructor(private dbIntr: DbIntrService) { }
+  constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {
     // this.getBranchMst();
@@ -53,6 +54,8 @@ export class AuMSegmentComponent implements OnInit {
     this.__formDate = moment(this.aum_report_filter_frm.value.date).format('YYYY-MM-DD');
     this.dbIntr.api_call(1,'/clients/aumSegment',formdata).pipe(pluck('data')).subscribe((res:any) =>{
         console.log(res);
+        this.md_aum_by_segment = [];
+        this.footerDT = null;
         this.calculateAUMByBranch(res);
     })
   }
@@ -60,7 +63,13 @@ export class AuMSegmentComponent implements OnInit {
 
     calculateAUMByBranch = (res) =>{
                 let originalDt = [];
-                const filteredBySegment = res.filter(el => el.bu_type_id)
+                let filteredBySegment = [];
+                filteredBySegment = res.filter(el => el.bu_type_id);
+                if(this.aum_report_filter_frm.value?.bu_type_id){
+                      filteredBySegment = filteredBySegment.filter(el => el.bu_type_id == this.aum_report_filter_frm.value?.bu_type_id)
+                }
+                if(filteredBySegment.length > 0){
+
                 const groupBySegment = this.groupBy(filteredBySegment, 'bu_type_id');
                 const totalInv = global.Total__Count(filteredBySegment, (x:any) => x?.inv_cost ? Number(x.inv_cost) : 0);
                 console.log(totalInv);
@@ -104,8 +113,12 @@ export class AuMSegmentComponent implements OnInit {
                         /**** END */
                 })
                 this.md_aum_by_segment = originalDt;
-                // this.md_aum_by_branch = originalDt;
                 this.createParentFooter(originalDt)
+                }
+                else{
+                  this.utility.showSnackbar('No data available for this segment',3)
+                }
+
     }
     groupBy(xs, key) {
       return xs.reduce(function(rv, x) {

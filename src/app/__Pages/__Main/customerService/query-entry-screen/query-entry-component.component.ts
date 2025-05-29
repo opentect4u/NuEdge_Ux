@@ -154,6 +154,7 @@ export class QueryEntryComponentComponent implements OnInit {
     private __dbIntr:DbIntrService, private  utility:UtiliService) {}
 
   ngOnInit(): void {
+    debugger;
     this.fetchHoliday();
     // console.log(this.utility.DcryptText(this.RtDt.snapshot.params.queryId));
     // this.productId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.productId));
@@ -390,7 +391,11 @@ export class QueryEntryComponentComponent implements OnInit {
 
         if(res.length > 0){
           // console.log(res)
+          console.log('sadasdasdasdsdasdsad');
+          console.log(res[0].folio_no);
           this.fetchSchemeByFolio(res[0].folio_no);
+          console.log('sadasdasdasdsdasdsad');
+
         }
         else{
           this.md_scheme = [];
@@ -612,7 +617,9 @@ export class QueryEntryComponentComponent implements OnInit {
           // console.log(res);
 
           if(this.queryId?.toString() != '0'){
+                console.log(this.formData);
                 res.forEach(el =>{
+                  console.log(el);
                         const dt = this.formData?.allscheme.filter(item => item?.product_code == el.product_code && item?.isin_no == el.isin_no);
                         if(dt.length > 0){
                             this.schemeDtls.push(
@@ -664,11 +671,11 @@ export class QueryEntryComponentComponent implements OnInit {
   createItem(el): FormGroup {
     return new FormGroup({
       id: new FormControl(el.id),
-      product_code: new FormControl(el.product_code ? el.product_code : 'N/A'),
-      isin_no: new FormControl(el.isin_no  ? el.isin_no : 'N/A'),
-      scheme_name: new FormControl(el.scheme_name ? `${el.scheme_name}-${el.plan_name}-${el.option_name}` : 'N/A'),
+      product_code: new FormControl(el.product_code ? el.product_code : ''),
+      isin_no: new FormControl(el.isin_no  ? el.isin_no : ''),
+      scheme_name: new FormControl(el.scheme_name ? `${el.scheme_name}-${el.plan_name}-${el.option_name}` : ''),
       isActive:new FormControl(false),
-      folio_no:new FormControl(el.folio_no ? el.folio_no : 'N/A'),
+      folio_no:new FormControl(el.folio_no ? el.folio_no : ''),
       curr_val:new FormControl(el.curr_val ? (Number(el.curr_val) >= 0 ? Number(el.curr_val) : 0.00) : 0.00),
     });
   }

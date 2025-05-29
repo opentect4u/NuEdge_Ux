@@ -5,8 +5,8 @@ import moment from 'moment';
 
 addEventListener('message', ({ data }) => {
     console.log(data)
-    let  all_amount_arr = [...(data.res.map(el => el.xirr_amt_arr))];
-    let  all_date_arr = [...data.res.map(el =>el.xirr_date_arr)];
+    let  all_amount_arr = [...(data.res.map(el => el.xirr_amt_arr.filter(el => el)))];
+    let  all_date_arr = [...data.res.map(el =>el.xirr_date_arr.filter(el => el))];
   
     // const xirr_amt_arr = [...all_amount_arr.reduce((acc, val) => acc.concat(val), []),Number(data.footerDT?.AUM).toFixed(2)];
     // const xirr_date_arr = [...all_date_arr.reduce((acc, val) => acc.concat(val), []),data.date];

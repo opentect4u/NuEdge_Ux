@@ -223,7 +223,7 @@ export class UtiliService {
    * @returns
    */
   mapIdfromArray = (arr,key) =>{
-     return JSON.stringify(arr.map(item => {return item[key]}))
+     return JSON.stringify(arr.map(item => {return item[key] ? item[key] : ''}))
   }
 
 

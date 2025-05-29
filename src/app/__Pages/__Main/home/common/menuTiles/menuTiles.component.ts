@@ -69,17 +69,18 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
       .subscribe((res:any) =>{
           console.log(res);
           let chart_data = [];
-          const categories = Object.keys(res?.data).map(key => moment(key).format('MMM-YYYY'));
-          Object.keys(res?.data).forEach(key =>{
+          const categories = Object.keys(res?.data).sort().map(key => moment(key).format('MMM-YYYY'));
+          Object.keys(res?.data).sort().forEach(key =>{
               console.log(key);
               chart_data.push(Number(res?.data[key]))
           });
           console.log(chart_data);
           this.chart_dtls = {
-            categories:categories.reverse(),
-            chart_data:chart_data.reverse(),
+            categories:categories,
+            chart_data:chart_data,
             title:"AUM"
           }
+          console.log(this.chart_dtls)
       },
        err =>{
         this.chart_dtls = {

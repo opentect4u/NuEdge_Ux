@@ -6,7 +6,6 @@ import * as CryptoJs from '../../../../../../../../assets/js/EnDcrypt.js';
 import { AES_IV, HASH_EN_DE } from '../../../../../../../strings/localStorage_key';
 
 addEventListener('message', ({ data }) => {
-    console.log(data.res.filter(el => el.first_client_name == 'AARTI KUMARI'));
     let obj = {};
     const groupByClientPan =  groupBy(data.res.filter(el => !el.first_client_pan), 'first_client_pan');
     const groupByClientName =  groupBy(data.res.filter(el => el.first_client_pan), 'first_client_name');
@@ -23,7 +22,10 @@ addEventListener('message', ({ data }) => {
     let  all_amount_arr = [...(grpObj[el].map(el => JSON.parse(el.all_amount_arr)))];
     let  all_date_arr = [...grpObj[el].map(el => JSON.parse(el.all_date_arr))];
     // console.log(all_amount_arr.reduce((acc, val) => acc.concat(val), []));
-    // console.log(all_date_arr);
+    console.log(`********${el.first_client_name}***************`);
+    console.log(all_date_arr);
+    console.log(all_amount_arr);
+    console.log('***********END***********')
 
     // let xirr_amt_arr = [...all_amount_arr,]
 

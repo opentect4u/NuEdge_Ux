@@ -45,7 +45,11 @@ constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
     }
       this.dbIntr.api_call(1,'/clients/aumCityType',ev).pipe(pluck('data')).subscribe((res:any) =>{
           console.log(res);
-          this.calculateAUMByCityType(res);
+          let originalRes = res;
+          if(ev?.city_type_id){
+            originalRes = originalRes.filter(el => el.city_type_id == Number(ev?.city_type_id))
+          }
+          this.calculateAUMByCityType(originalRes);
       })
   }
   
@@ -56,8 +60,10 @@ constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
   }
 
       calculateAUMByCityType = (res) =>{
+                  if(res.length > 0){
+
                   let originalDt = [];
-                  const filteredByCityType = res.filter(el => el.city_type_id)
+                  let filteredByCityType = res.filter(el => el.city_type_id);
                   const groupByCityType = this.groupBy(filteredByCityType, 'city_type_name');
                   const totalInv = global.Total__Count(filteredByCityType, (x:any) => x?.inv_cost ? Number(x.inv_cost) : 0);
                   console.log(totalInv);
@@ -100,6 +106,11 @@ constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
                   this.md_aum_city_type = originalDt;
                   // this.md_aum_by_branch = originalDt;
                   this.createParentFooter(originalDt)
+                  }
+                  else{
+                     this.utility.showSnackbar('No data available for this City type',3)
+                  }
+
       }
       groupBy(xs, key) {
         return xs.reduce(function(rv, x) {

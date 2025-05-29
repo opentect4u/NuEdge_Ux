@@ -93,39 +93,50 @@ export class AumGrowthComponent implements OnInit {
       this.dbIntr.api_call(1,'/clients/aumGrowth',fd)
       .pipe(pluck('data'))
       .subscribe((res:any) =>{
-        if(res.length > 0){
-          let mainResponse = res;
-          const chart_data = mainResponse.slice().reverse().slice(0, -1);
-          console.log(chart_data)
-          this.chartData = {
-            categories:chart_data.map(el => finYear == 'Last 5 Year' ? el?.date :   moment(el.date).format('MMM YYYY')),
-            chart_data:chart_data.map(el => ({name: finYear == 'Last 5 Year' ? el?.date :   moment(el.date).format('MMM YYYY'),y:Number(el.aum.toFixed(2))}))
-          }
-  
-          // Calculation of Trend
-          const result = res.map((item, index) => {
-              if (index === 0) {
-                  return { ...item,
-                    isPositive:null,
-                    month:finYear == 'Last 5 Year' ? item?.date :   moment(item.date).format('MMM YYYY'),
-                    aumChange: null }; // No previous item
-              }
-              // const aumChange = item.aum - res[index - 1].aum;
-              const aumChange = res[index - 1].aum - item.aum;
-  
-              return { 
-                ...item, 
-                isPositive:aumChange > 0,
-                month:finYear == 'Last 5 Year' ? item?.date :   moment(item.date).format('MMM YYYY'),
-                aumChange:Number(aumChange.toFixed(2)) };
+          console.log(res)
+         
+        if(Object.keys(res).length > 0){
+            let chart_dt = [];
+            let result = [];
+            const categories = Object.keys(res).sort().slice(1);
+            categories.forEach((key)=>{
+                chart_dt.push({name: finYear == 'Last 5 Year' ? key :   moment(key).format('MMM YYYY'),y:Number(res[key])})
             });
-            this.dataSource = result.slice().reverse().slice(0, -1);
-        }
-        else{
-          this.utility.showSnackbar(`No data available in selected financial year`,2)
-        }
-
-
+            this.chartData = {
+              categories:categories.map(el => finYear == 'Last 5 Year' ? el :   moment(el).format('MMM YYYY')).reverse(),
+              chart_data:chart_dt
+            }
+            const keys = Object.keys(res).sort();
+            keys.forEach((item, index) => {
+                if (index === 0) {
+                    result.push({
+                      date:item,
+                      isPositive:null,
+                      // month:finYear == 'Last 5 Year' ? item :   moment(item).format('MMM YYYY'),
+                      month:item,
+                      aumChange: null,
+                      aum:res[item]
+                    });
+                }
+                else{
+                  const aumChange = res[item] - res[keys[index - 1]];
+                  result.push({ 
+                    date:item,
+                    isPositive:aumChange > 0,
+                    // month:finYear == 'Last 5 Year' ? item :   moment(item).format('MMM YYYY'),
+                    month:item,
+                    aumChange:Number(aumChange.toFixed(2)),
+                    aum:res[item]
+                  });
+                }
+                
+              });
+              this.dataSource = result.slice(1);
+              console.log(result)
+          }
+          else{
+            this.utility.showSnackbar(`No data available in selected financial year`,2)
+          }
         })
   }
 }

@@ -293,12 +293,17 @@ export class AumTopClientComponent implements OnInit {
           }
         }
     this.has_sub_column = this.misTrxnRpt.value.view_type != 'F';
+        console.log(this.misTrxnRpt.value.family_members);
 
         const TrxnDt = new FormData();
         TrxnDt.append('view_type',this.misTrxnRpt.value.view_type);
         TrxnDt.append('client_name',this.misTrxnRpt.getRawValue().client_name);
-        TrxnDt.append('family_members_pan',this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members.filter(item => item.pan),'pan') : '[]');
-        TrxnDt.append('family_members_name',this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members.filter(item => !item.pan),'client_name') : '[]');
+        // TrxnDt.append('family_members_pan',this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members.filter(item => item.pan),'pan') : '[]');
+        // TrxnDt.append('family_members_name',this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members.filter(item => !item.pan),'client_name') : '[]');
+        const pan_list = this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members,'pan');
+
+        TrxnDt.append('family_members_pan',this.misTrxnRpt.value.view_type == 'F' ?  pan_list : '[]');
+        TrxnDt.append('family_members_name',this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members,'client_name') : '[]');
         // TrxnDt.append('date_range',global.getActualVal(this.dateRange.inputFieldValue));
         TrxnDt.append('date',this.misTrxnRpt.value.date ?  moment(this.misTrxnRpt.value.date).format('YYYY-MM-DD') : '');
         TrxnDt.append('folio_no',global.getActualVal(this.misTrxnRpt.value.folio_no));
@@ -328,15 +333,15 @@ export class AumTopClientComponent implements OnInit {
           this.dbIntr.api_call(1,'/clients/aumClient',TrxnDt)
           .pipe(pluck('data')).subscribe((res:any) =>{
             console.log(this.misTrxnRpt.value.view_type);
-            this.aum_client_Column = AumClientColumn.column.map(el =>{
-                if(el.field == 'client_name'){
-                  if(this.misTrxnRpt.value.view_type == 'F'){
-                    el.field =  'family_head_name';
-                    el.header = 'Family Head / Individual';
-                    console.log(el);
-                  }
-                    
+            const clm = AumClientColumn.column;
+            console.log(clm)
+            this.aum_client_Column = clm.map(el =>{
+              console.log(el.field)
+                if(el.field == 'client_name' || el.field == 'family_head_name'){
+                    el.field = this.misTrxnRpt.value.view_type == 'F' ?  'family_head_name' : "client_name";
+                    el.header =  this.misTrxnRpt.value.view_type == 'F' ? 'Family Head / Individual' : "Client";
                 }
+                console.log(el);
                 return el;
               })
               console.log(this.aum_client_Column)
@@ -423,6 +428,7 @@ export class AumTopClientComponent implements OnInit {
           // Create a new
           this.worker = new Worker(new URL('../aum-client/aum-by-client-calculations.worker', import.meta.url));
           this.worker.onmessage = ({ data }) => {
+            console.log(data);
             const main_res = data.sort((firstEl,secondEl)=> secondEl.curr_aum - firstEl.curr_aum).slice(0,this.misTrxnRpt.value.number ? this.misTrxnRpt.value.number : data.length)
             this.createParentFooter(main_res);
             // this.worker.terminate();

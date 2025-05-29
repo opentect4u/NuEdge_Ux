@@ -55,7 +55,7 @@
              </mat-card-content>
         </mat-card>
 
-        <mat-card  class="mat-elevation-z0 border" *ngIf="chartData">
+        <mat-card  class="mat-elevation-z0 border mb-3" *ngIf="chartData">
             <mat-card-header class="border-bottom">
                 <mat-card-title><h4 class="filterHeader">AUM Growth Report</h4></mat-card-title>
                 <div class="pr-3 my-auto d-flex align-items-center">
@@ -64,7 +64,7 @@
             <mat-card-content>
                 <p-table #dt [value]="dataSource"
                 loadingIcon="pi pi-spinner pi-spin"
-                [rows]="10" [paginator]="true"
+                [rows]="10" [paginator]="false"
                   [rowHover]="true" [responsive]="true"
                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                   styleClass="p-datatable-sm p-datatable-striped"
@@ -119,6 +119,9 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="col.field == 'aum'">
                               {{aumDtlsGrowth[col.field] ? (aumDtlsGrowth[col.field] | number:'1.2-2') : '0.00'}}
+                            </ng-container>
+                              <ng-container *ngSwitchCase="col.field == 'month'">
+                              {{aumDtlsGrowth[col.field] ? (this.aum_report_growth_filter_frm.value.finYear != 'Last 5 Year' ? (aumDtlsGrowth[col.field] | date:'MMM YYYY') : aumDtlsGrowth[col.field]) : 'N/A'}}
                             </ng-container>
                           <ng-container *ngSwitchDefault>
                             {{aumDtlsGrowth ? (aumDtlsGrowth[col.field] ? aumDtlsGrowth[col.field]: 'N/A') : 'N/A'}}

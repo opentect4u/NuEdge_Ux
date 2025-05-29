@@ -269,7 +269,13 @@ export class AumBranchComponent implements OnInit {
 
   calculateAUMByBranch = (res) =>{
               let originalDt = [];
-              const filteredByBranchId = res.filter(el => el.branch_id)
+              let filteredByBranchId = res.filter(el => el.branch_id);
+              console.log(this.aum_report_filter_frm.value);
+              if(this.aum_report_filter_frm.value?.brn_cd.length > 0){
+                    filteredByBranchId = filteredByBranchId.filter(el => this.aum_report_filter_frm.value.brn_cd.map(ele => ele.id).includes(el.branch_id))
+              }
+              if(filteredByBranchId.length > 0){
+
               const groupByBranch = this.groupBy(filteredByBranchId, 'branch_name');
               const totalInv = global.Total__Count(filteredByBranchId, (x:any) => x?.inv_cost ? Number(x.inv_cost) : 0);
               console.log(totalInv);
@@ -283,6 +289,7 @@ export class AumBranchComponent implements OnInit {
                           const totGainLoss = groupByBranch[key].map(el => Number(el.gain_loss)).reduce((totSum, a) => totSum + a, 0);
                           const totAbsRtn = (totGainLoss / totInvCost)*100;
                           const tot_branch_weightage = (totInvCost / totalInv) * 100;
+                          console.log(totInvCost);
                       /****** END */
           
                       /**** DISPLAY AMOUNT CATEGORY WISE */
@@ -314,6 +321,10 @@ export class AumBranchComponent implements OnInit {
               })
               this.md_aum_by_branch = originalDt;
               this.createParentFooter(originalDt)
+            }
+            else{
+              this.utility.showSnackbar('No data available for this branch',3)
+            }
   }
 
 
