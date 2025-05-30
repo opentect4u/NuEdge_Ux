@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CoreModule } from '../components/core.module';
 import { FieldsetModule } from 'primeng/fieldset';
 import { UppercaseDirective } from 'src/app/__Directives/uppercase.directive';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 const routes:Routes = [
   {
@@ -23,7 +24,8 @@ const routes:Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     CoreModule,
-    FieldsetModule
+    FieldsetModule,
+    SharedModule
   ]
 })
 export class NewClientModule { }

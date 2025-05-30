@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit {
   __menu = []
 
   ngOnInit(): void {
-    const dt = menus.filter(el => el.id == 20)[0]?.sub_menu.filter(el => el.menu_name == 'Client Onboarding');
+    const dt = menus.filter(el => el.id == 20)[0]?.sub_menu.filter(el => el.menu_name == 'Client OnBoarding');
     const  mainMenu:any = dt[0];
     this.__menu = mainMenu.sub_menu;
     console.log(this.__menu)

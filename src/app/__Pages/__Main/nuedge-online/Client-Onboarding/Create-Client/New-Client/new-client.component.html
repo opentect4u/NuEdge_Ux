@@ -47,19 +47,20 @@
                                                             Step {{step + 1}} of {{step_wizard.length}}
                                                         </p>
                                                         <div class="d-flex mx-2  justify-content-center align-items-center">
+                                                            <!-- [disabled]="step == 0"  -->
                                                             
                                                             <button
-                                                            [disabled]="step == 0" 
                                                             (click)="goPrev()"
                                                             title="Previous"
                                                             pButton type="button" icon="pi pi-angle-double-left" 
                                                             class="p-button-text p-button-sm p-button-rounded p-button-danger">
                                                             </button>   
+                                                            <!-- [disabled]="(step == (step_wizard.length -1)) || new_client_form.invalid"  -->
+
                                                             <button
 
                                                             title="Next"
                                                             (click)="goNext()"
-                                                            [disabled]="(step == (step_wizard.length -1)) || new_client_form.invalid" 
                                                             pButton type="button" icon="pi pi-angle-double-right" 
                                                             class="p-button-text p-button-sm p-button-rounded p-button-danger">
                                                             </button>   
@@ -174,8 +175,8 @@
                                                                             <option value="Mrs.">Mrs.</option>
                                                                             <option value="Ms.">Ms.</option>
                                                                             <option value="M/s">M/s</option>
-                                                                            <option value="J">JOINT</option>
-                                                                            <option value="S">SINGLE</option>
+                                                                            <!-- <option value="J">JOINT</option>
+                                                                            <option value="S">SINGLE</option> -->
                                                                         </select>
                                                                         <div class="invalid-feedback text-left"
                                                                             *ngIf="new_client_form.get('customer_dtls.title')?.invalid && (new_client_form.get('customer_dtls.title')?.dirty || new_client_form.get('customer_dtls.title')?.touched)">
@@ -607,8 +608,8 @@
                                                                                         <option value="Mrs.">Mrs.</option>
                                                                                         <option value="Ms.">Ms.</option>
                                                                                         <option value="M/s">M/s</option>
-                                                                                        <option value="J">JOINT</option>
-                                                                                        <option value="S">SINGLE</option>
+                                                                                        <!-- <option value="J">JOINT</option>
+                                                                                        <option value="S">SINGLE</option> -->
                                                                                     </select>
                                                                                     <div class="invalid-feedback text-left" *ngIf="item.get('title')?.invalid && (item.get('title')?.dirty || item.get('title')?.touched)">
                                                                                          <span class="invalid-feedback error_txt" *ngIf="item.get('title')?.errors?.['required']">**Please provide title**</span>
@@ -1498,12 +1499,16 @@
                                                                             >Pincode : </label>
                                                                     </div>
                                                                     <div class="col-sm-4">
-                                                                                <select id="pincode_id" name="pincode_id"
+                                                                                <ng-multiselect-dropdown  id="pincode_id" [placeholder]="'--Select Pincode--'"
+                                                                                    [settings]="settingsforBrnchDropdown" [data]="md_pincode"
+                                                                                    formControlName="pincode_id">
+                                                                                </ng-multiselect-dropdown>
+                                                                                <!-- <select id="pincode_id" name="pincode_id"
                                                                                 class="js-example-responsive select2  form-control"
                                                                                 formControlName="pincode_id">
                                                                                     <option value="">-- Choose Pincode --</option>
                                                                                     <option value="{{pincode.id}}" *ngFor="let pincode of md_pincode">{{pincode.pincode}}</option>
-                                                                                </select>
+                                                                                </select> -->
                                                                                 <div class="invalid-feedback text-left"
                                                                                     *ngIf="new_client_form.get('contact_dtls.pincode_id')?.invalid && (new_client_form.get('contact_dtls.pincode_id')?.dirty || new_client_form.get('contact_dtls.pincode_id')?.touched)">
                                                                                     <span class="invalid-feedback error_txt"
@@ -2017,10 +2022,200 @@
                                                                                  </div>
                                                                                  <!-- End -->
                                                                             </div>
+                                                                             <div class="row my-2">
+                                                                          
+                                                                                <!-- Nominee Mobile  -->
+                                                                                    <div  div class="col-sm-3 d-flex justify-content-between align-items-center">
+                                                                                        <label for="nominee_mobile_{{i}}"
+                                                                                        class="m-0 labelTitle  text-left"
+                                                                                        [ngClass]="{
+                                                                                            'colorLabel':hasRequiredValidatorForNominee('nominee_mobile',i)
+                                                                                        }"
+                                                                                        >Nominee {{i + 1}} Mobile: </label>
+                                                                                         <div>
+                                                                                        <input
+                                                                                        (change)="sameAsMobileApplicant($event,i)"
+                                                                                        type="checkbox" formControlName="nominee_same_as_mobile_applicant" class="form-check-input" id="nominee_same_as_mobile_applicant_{{i}}"/>
+                                                                                        <label class="form-check-label finalSubmit" for="nominee_same_as_mobile_applicant_{{i}}">
+                                                                                            Same As Applicant
+                                                                                        </label>
+                                                                                    </div>
+                                                                                     </div>
+                                                                                  
+                                                                                    <div class="col-sm-3 d-flex  align-items-center flex-row">
+                                                                                        <input placeholder="Enter Mobile"
+                                                                                        minlength="10"
+                                                                                        maxLength="10"
+                                                                                        type="text" id="nominee_mobile_{{i}}"
+                                                                                        name="nominee_mobile_{{i}}" class="form-control"
+                                                                                        formControlName="nominee_mobile" />
+                                                                                        <div class="invalid-feedback text-left"
+                                                                                        *ngIf="item?.get('nominee_mobile')?.invalid && (item?.get('nominee_mobile')?.dirty || item?.get('nominee_mobile')?.touched)">
+                                                                                            <span class="invalid-feedback error_txt"
+                                                                                            *ngIf="(item.get('nominee_mobile'))?.errors?.required">**Please provide mobile**</span>
+                                                                                            <span class="invalid-feedback error_txt"
+                                                                                            *ngIf="(item.get('nominee_mobile'))?.errors?.pattern">**Please provide valid mobile no.**</span>
+                                                                                            <span class="invalid-feedback error_txt"
+                                                                                            *ngIf="(item.get('nominee_mobile'))?.errors?.minlength || (item.get('nominee_mobile'))?.errors?.maxlength">**Mobile no must be 10 digits long**</span> 
+                                                                                        </div>
+                                                                                    </div>
+                                                                                <!-- END -->
+                                                                                 <!-- Nominee Email -->
+                                                                                  <div class="col-sm-3 d-flex justify-content-between align-items-center">
+                                                                                    <label for="nominee_email_{{i}}"
+                                                                                    class="m-0 labelTitle  text-left  colorLabel"
+                                                                                    [ngClass]="{
+                                                                                            'colorLabel':hasRequiredValidatorForNominee('nominee_email',i)
+                                                                                        }"
+                                                                                    >Nominee {{i + 1}} Email: </label>
+                                                                                    <div>
+                                                                                        <input type="checkbox"
+                                                                                        (change)="sameAsEmailApplicant($event,i)"
+                                                                                        formControlName="nominee_same_as_email_applicant" class="form-check-input" id="nominee_same_as_email_applicant_{{i}}"/>
+                                                                                        <label class="form-check-label finalSubmit" for="nominee_same_as_email_applicant_{{i}}">
+                                                                                            Same As Applicant
+                                                                                        </label>
+                                                                                    </div>
+                                                                                  </div>
+                                                                                 
+         
+                                                                                 <div  class="col-sm-3 d-flex flex-row align-items-center">
+                                                                                            <input type="text"
+                                                                                            id="nominee_email_{{i}}" name="nominee_email_{{i}}"
+                                                                                            class="form-control " placeholder="Enter Email"
+                                                                                            formControlName="nominee_email" />
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="item.get('nominee_email')?.invalid && (item.get('nominee_email')?.dirty || item.get('nominee_email')?.touched)">
+                                                                                                <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(item.get('nominee_email'))?.errors?.required">**Please
+                                                                                                    provide
+                                                                                                    email**</span>
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(item.get('nominee_email'))?.errors?.email">**Please
+                                                                                                    provide valid
+                                                                                                    email**</span>
+                                                                                            </div>
+                                                                              
+                                                                                 </div>
+                                                                                 <!-- End -->
+                                                                            </div>
+                                                                            <div class="row my-2">
+                                                                                    <!-- Nominee PAN  -->
+                                                                                        <label for="nominee_document_{{i}}"
+                                                                                        class="m-0 labelTitle col-sm-3  col-form-label text-left"
+                                                                                        [ngClass]="{
+                                                                                            'colorLabel':hasRequiredValidatorForNominee('nominee_document',i)
+                                                                                        }"
+                                                                                        >Nominee {{i + 1}} Document Type: </label>
+                                                                                        <div class="col-sm-3">
+                                                                                            <select id="nominee_document_{{i}}" name="nominee_document_{{i}}"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="nominee_document"
+                                                                                                (change)="onchangeNomineeDocumentType($event,i)"
+                                                                                                >
+                                                                                                <option value="">-- Choose Document Type --</option>       
+                                                                                                <option value="P">PAN</option>       
+                                                                                                <option value="A">Aadhar</option>       
+                                                                                                <option value="D">Driving License</option>
+                                                                                                <option value="PA">Passport</option>
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                            *ngIf="item?.get('nominee_document')?.invalid && (item?.get('nominee_document')?.dirty || item?.get('nominee_document')?.touched)">
+                                                                                                <span *ngIf="item?.get('nominee_document')?.errors?.['pattern']">**Please choose nominee document.**</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    <!-- END -->
+
+                                                                                    <ng-container *ngIf="item?.get('nominee_document')?.value == 'P'">
+                                                                                            <label for="nominee_pan_{{i}}"
+                                                                                                class="m-0 labelTitle col-sm-3  col-form-label text-left"
+                                                                                                [ngClass]="{
+                                                                                                    'colorLabel':hasRequiredValidatorForNominee('nominee_pan',i)
+                                                                                                }"
+                                                                                                >Nominee {{i + 1}} PAN: </label>
+                                                                                                <div class="col-sm-3">
+                                                                                                    <input placeholder="Enter PAN" type="text" id="nominee_pan_{{i}}" appUppercase
+                                                                                                    name="nominee_pan_{{i}}" class="form-control"
+                                                                                                    formControlName="nominee_pan" />
+                                                                                                    <div class="invalid-feedback text-left"
+                                                                                                    *ngIf="item?.get('nominee_pan')?.invalid && (item?.get('nominee_pan')?.dirty || item?.get('nominee_pan')?.touched)">
+                                                                                                        <span *ngIf="item?.get('nominee_pan')?.errors?.['pattern']">**Invalid PAN format. 4th character must be 'P'.**</span>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                    </ng-container>
+
+                                                                                    <ng-container *ngIf="item?.get('nominee_document')?.value == 'A'">
+                                                                                                <label for="nominee_aadhar_{{i}}"
+                                                                                                class="m-0 labelTitle col-sm-3  col-form-label text-left"
+                                                                                                [ngClass]="{
+                                                                                                    'colorLabel':hasRequiredValidatorForNominee('nominee_aadhar',i)
+                                                                                                }"
+                                                                                                >Nominee {{i + 1}} Aadhar: </label>
+                                                                                                <div class="col-sm-3">
+                                                                                                    <input placeholder="Last 4 digits of Aadhar" type="text" id="nominee_aadhar_{{i}}" appUppercase
+                                                                                                    name="nominee_aadhar_{{i}}" class="form-control"
+                                                                                                    formControlName="nominee_aadhar"   minlength="4"
+                                                                                                     maxLength="4" />
+                                                                                                    <div class="invalid-feedback text-left"
+                                                                                                    *ngIf="item?.get('nominee_aadhar')?.invalid && (item?.get('nominee_aadhar')?.dirty || item?.get('nominee_aadhar')?.touched)">
+                                                                                                        
+                                                                                                     <span class="invalid-feedback error_txt"
+                                                                                                        *ngIf="(item.get('nominee_aadhar'))?.errors?.required">**Please provide aadhar**</span>
+                                                                                                        <span class="invalid-feedback error_txt"
+                                                                                                        *ngIf="(item.get('nominee_aadhar'))?.errors?.pattern">**Please provide valid aadhar.**</span>
+                                                                                                        <span class="invalid-feedback error_txt"
+                                                                                                        *ngIf="(item.get('nominee_aadhar'))?.errors?.minlength || (item.get('nominee_aadhar'))?.errors?.maxlength">**Mobile no must be 4 digits long**</span> 
+
+
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                    </ng-container>
+
+                                                                                    <ng-container *ngIf="item?.get('nominee_document')?.value == 'D'">
+                                                                                                    <label for="nominee_driving_license_{{i}}"
+                                                                                                    class="m-0 labelTitle col-sm-3  col-form-label text-left"
+                                                                                                    [ngClass]="{
+                                                                                                        'colorLabel':hasRequiredValidatorForNominee('nominee_driving_license',i)
+                                                                                                    }"
+                                                                                                    >Nominee {{i + 1}} License No: </label>
+                                                                                                    <div class="col-sm-3">
+                                                                                                        <input placeholder="Enter License No" type="text" id="nominee_driving_license_{{i}}" appUppercase
+                                                                                                        name="nominee_driving_license_{{i}}" class="form-control"
+                                                                                                        formControlName="nominee_driving_license"   minlength="4"
+                                                                                                        maxLength="4" />
+                                                                                                        <div class="invalid-feedback text-left"
+                                                                                                        *ngIf="item?.get('nominee_driving_license')?.invalid && (item?.get('nominee_driving_license')?.dirty || item?.get('nominee_driving_license')?.touched)">
+                                                                                                            
+                                                                                                        <span class="invalid-feedback error_txt"
+                                                                                                            *ngIf="(item.get('nominee_driving_license'))?.errors?.required">**Please provide driving license no**</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                    </ng-container>
+
+                                                                                    <ng-container *ngIf="item?.get('nominee_document')?.value == 'PA'">
+                                                                                                    <label for="nominee_passport_{{i}}"
+                                                                                                    class="m-0 labelTitle col-sm-3  col-form-label text-left"
+                                                                                                    [ngClass]="{
+                                                                                                        'colorLabel':hasRequiredValidatorForNominee('nominee_passport',i)
+                                                                                                    }"
+                                                                                                    >Nominee {{i + 1}} Passport No: </label>
+                                                                                                    <div class="col-sm-3">
+                                                                                                        <input placeholder="Enter Passport No" type="text" id="nominee_passport_{{i}}" appUppercase
+                                                                                                        name="nominee_passport_{{i}}" class="form-control"
+                                                                                                        formControlName="nominee_passport"/>
+                                                                                                        <div class="invalid-feedback text-left"
+                                                                                                        *ngIf="item?.get('nominee_passport')?.invalid && (item?.get('nominee_passport')?.dirty || item?.get('nominee_passport')?.touched)">
+                                                                                                            
+                                                                                                        <span class="invalid-feedback error_txt"
+                                                                                                            *ngIf="(item.get('nominee_passport'))?.errors?.required">**Please provide passport**</span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                    </ng-container>
+                                                                            </div>
                                                                             <div class="row my-2">
                                                                           
                                                                                 <!-- Nominee PAN  -->
-                                                                                    <label for="nominee_pan_{{i}}"
+                                                                                    <!-- <label for="nominee_pan_{{i}}"
                                                                                     class="m-0 labelTitle col-sm-3  col-form-label text-left"
                                                                                     [ngClass]="{
                                                                                         'colorLabel':hasRequiredValidatorForNominee('nominee_pan',i)
@@ -2034,8 +2229,9 @@
                                                                                         *ngIf="item?.get('nominee_pan')?.invalid && (item?.get('nominee_pan')?.dirty || item?.get('nominee_pan')?.touched)">
                                                                                             <span *ngIf="item?.get('nominee_pan')?.errors?.['pattern']">**Invalid PAN format. 4th character must be 'P'.**</span>
                                                                                         </div>
-                                                                                    </div>
+                                                                                    </div> -->
                                                                                 <!-- END -->
+
                                                                                  <!-- Nominee DOB -->
                                                                                  <label for="nominee_dob_{{i}}"
                                                                                  class="m-0 labelTitle col-form-label col-sm-3 text-left  colorLabel"
@@ -2632,7 +2828,7 @@
                                                          <!-- End -->
                                                             <div class="row" formGroupName="final_submit" *ngIf="step_content_name == 'final_submit'">
                                                                 <div class="col-sm-2 d-flex justify-content-start align-items-center">
-                                                                        <label for="created_by" class="m-0 labelTitle col-form-label" [ngClass]="{'colorLabel':hasRequiredValidator('final_submit.created_by')}">Create By: </label>
+                                                                        <label for="created_by" class="m-0 labelTitle col-form-label" [ngClass]="{'colorLabel':hasRequiredValidator('final_submit.created_by')}">Account Open with: </label>
                                                                 </div>
                                                                 <div class="col-sm-3 d-flex justify-content-start align-items-center">
                                                                     <mat-radio-group aria-label="Select an option" formControlName="created_by">

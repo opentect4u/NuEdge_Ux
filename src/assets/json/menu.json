@@ -67,8 +67,8 @@
     "sub_menu": [
       {
         "id": 1,
-        "menu_name": "Client Onboarding",
-        "title":"Client Onboarding",
+        "menu_name": "Client OnBoarding",
+        "title":"Client OnBoarding",
         "has_submenu": "Y",
         "url": "/main/nuedge-online/client-onboarding",
         "icon": "",

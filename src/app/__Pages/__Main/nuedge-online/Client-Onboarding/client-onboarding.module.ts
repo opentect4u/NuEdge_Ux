@@ -7,7 +7,7 @@ const routes:Routes = [
   {
     path:'',
     component:ClientOnboardingComponent,
-    data:{title: "Nuedge Online - Client Onboarding", pageTitle: "Nuedge Online - Client Onboarding",breadcrumb:'Client Onboarding'},
+    data:{title: "Nuedge Online - Client OnBoarding", pageTitle: "Nuedge Online - Client OnBoarding",breadcrumb:'Client OnBoarding'},
     children:[
       {
         path:'',

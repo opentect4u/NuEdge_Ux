@@ -10,6 +10,15 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./new-client.component.css']
 })
 export class NewClientComponent implements OnInit {
+
+  settingsforBrnchDropdown = this.utility.settingsfroMultiselectDropdown(
+    'id',
+    'pincode',
+    'Search Branch',
+    1,
+    90,
+    true
+  );
   custEntry:any;
   step:number = 0;
   step_content_name = 'customer_dtls'
@@ -590,12 +599,21 @@ export class NewClientComponent implements OnInit {
     nominee_gaurdian_rel='',
     nominee_country='',
     nominee_district='',
+    nominee_email='',
+    nominee_mobile='',
+    nominee_same_as_email_applicant=false,
+    nominee_same_as_mobile_applicant=false,
+    nominee_document='',
+    nominee_aadhar='',
+    nominee_driving_license='',
+    nominee_passport=''
   ){
     return new FormGroup({
       nominee_type:new FormControl(nominee_type ? nominee_type : '',[Validators.required]),
       nominee_pan: new FormControl(nominee_pan ? nominee_pan : '',[Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]),
       nominee_name: new FormControl(nominee_name ? nominee_name : '',[Validators.required]),
-      nominee_dob: new FormControl(nominee_dob ? nominee_dob : '',[Validators.required,this.minAgeValidator(18)]),
+      // nominee_dob: new FormControl(nominee_dob ? nominee_dob : '',[Validators.required,this.minAgeValidator(18)]),
+      nominee_dob: new FormControl(nominee_dob ? nominee_dob : ''),
       nominee_address1: new FormControl(nominee_address1 ? nominee_address1 : ''),
       nominee_city: new FormControl(nominee_city ? nominee_city : ''),
       nominee_address2: new FormControl(nominee_address2 ? nominee_address2 : ''),
@@ -616,6 +634,19 @@ export class NewClientComponent implements OnInit {
       md_nominee_district:new FormControl([]),
       md_nominee_city:new FormControl([]),
       md_nominee_pincode:new FormControl([]),
+      nominee_email:new FormControl(nominee_email ? nominee_email : '',[Validators.required,Validators.email]),
+      nominee_mobile:new FormControl(nominee_mobile ? nominee_mobile : '',[
+           Validators.required,
+          Validators.pattern('^[0-9]*$'),
+          Validators.minLength(10),
+          Validators.maxLength(10)
+      ]),
+      nominee_same_as_email_applicant:new FormControl(nominee_same_as_email_applicant),
+      nominee_same_as_mobile_applicant:new FormControl(nominee_same_as_mobile_applicant),
+      nominee_document:new FormControl(nominee_document,[Validators.required]),
+      nominee_aadhar:new FormControl(nominee_aadhar ? nominee_aadhar : ''),
+      nominee_driving_license:new FormControl(nominee_driving_license ? nominee_driving_license : ''),
+      nominee_passport:new FormControl(nominee_passport ? nominee_passport : ''),
     })
   }
 
@@ -819,7 +850,7 @@ export class NewClientComponent implements OnInit {
       this.nominee.controls[index].get('nominee_gaurdian_name').setValue('');
       this.nominee.controls[index].get('nominee_gaurdian_pan').setValue('');
       this.nominee.controls[index].get('nominee_gaurdian_rel').setValue('');
-      // this.nominee.controls[index].get('nominee_dob').setValidators([Validators.required,this.minAgeValidator(18)])
+      this.nominee.controls[index].get('nominee_dob').setValidators([Validators.required])
       if(ev.target.value == 'Y'){
           this.nominee.controls[index].get('nominee_gaurdian_name').enable();
         this.nominee.controls[index].get('nominee_gaurdian_pan').enable();
@@ -833,9 +864,10 @@ export class NewClientComponent implements OnInit {
         this.nominee.controls[index].get('nominee_gaurdian_rel').disable();
         this.nominee.controls[index].get('nominee_gaurdian_name').clearValidators();
         // this.nominee.controls[index].get('nominee_dob').setValidators([this.minAgeValidator(18)]);
+        this.nominee.controls[index].get('nominee_dob').removeValidators([Validators.required])
       }
         this.nominee.controls[index].get('nominee_gaurdian_name').updateValueAndValidity({emitEvent:false});
-        // this.nominee.controls[index].get('nominee_dob').updateValueAndValidity({emitEvent:false});
+        this.nominee.controls[index].get('nominee_dob').updateValueAndValidity({emitEvent:false});
 
 
   }
@@ -1210,13 +1242,52 @@ export class NewClientComponent implements OnInit {
                           else if(key == 'nominee_pan' || key == 'nominee_gaurdian_pan'){
                               control.get(key).setValidators([Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
                           }
+                          else if(key == 'nominee_email'){
+                              control.get(key).setValidators([Validators.required,Validators.email]);
+                          }
+                          else if(key == 'nominee_mobile'){
+                              control.get(key).setValidators([
+                                Validators.required,
+                                Validators.pattern('^[0-9]*$'),
+                                Validators.minLength(10),
+                                Validators.maxLength(10)
+                              ]);
+                          }
                           else if(key == 'nominee_dob'){
-                            //  console.log('nominee_dob');
-                             control.get(key).setValidators([Validators.required,this.minAgeValidator(18)]);
-                            // if(control.get('nominee_type').value == 'Y'){}
-                            // else{
-                            //   control.get(key).setValidators([this.minAgeValidator(18)]);
-                            // }
+                            if(control.get('nominee_type').value == 'Y'){
+                              control.get(key).setValidators([Validators.required])
+                            }
+                            else{
+                              control.get(key).setValidators([this.minAgeValidator(18)]);
+                            }
+                          }
+                          else if(key == 'nominee_pan'){
+                              if(control.get('nominee_document').value == 'P'){
+                                control.get(key).setValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])
+                              }
+                          }
+                          else if(key == 'nominee_aadhar'){
+                              if(control.get('nominee_document').value == 'A'){
+                                control.get(key).setValidators([
+                                  Validators.required,
+                                  Validators.pattern('^[0-9]*$'),
+                                  Validators.minLength(4),
+                                  Validators.maxLength(4)
+                                ])
+                              }
+                          }
+                          else if(key == 'nominee_driving_license'){
+                              if(control.get('nominee_document').value == 'D'){
+                                control.get(key).setValidators([Validators.required])
+                              }
+                          }
+                          else if(key == 'nominee_passport'){
+                              if(control.get('nominee_document').value == 'PA'){
+                                control.get(key).setValidators([Validators.required])
+                              }
+                          }
+                          else if(key == 'nominee_document'){
+                                control.get(key).setValidators([Validators.required])
                           }
                           else{
                               if(control.get('nominee_type').value == 'Y'){
@@ -1365,6 +1436,8 @@ export class NewClientComponent implements OnInit {
   }
 
   createNewClient(){
+    console.log(this.new_client_form.value);
+     return;
     if(this.new_client_form.invalid){
       console.log('****** VALIDATION ERROR IN FORM **********');
       return;
@@ -1532,7 +1605,8 @@ export class NewClientComponent implements OnInit {
                                formdata.append(nestedkey,district ? JSON.stringify(district) : '')
                           }
                           else if(nestedkey == 'pincode_id'){
-                                const pincode = this.md_pincode.find(ele => ele.id == control.get(nestedkey)?.value);
+                                const pincode = control.get(nestedkey)?.value.length > 0 ?  this.md_pincode.find(ele => ele.id == control.get(nestedkey)?.value[0]?.id) : '';
+                              //  const pincode = control.get(nestedkey)?.value.length > 0 ?  this.md_pincode.find(ele => ele.id == control.get(nestedkey)?.value[0]?.id) : '';
                                formdata.append(nestedkey,pincode ? JSON.stringify(pincode) : '')
                           }
                           else{
@@ -1668,5 +1742,55 @@ export class NewClientComponent implements OnInit {
           })
     }
 
+    sameAsMobileApplicant = (ev,index) =>{
+      if(ev.target.checked){
+        const primary_holder_mobile = this.new_client_form.get('contact_dtls.mobile')?.value;
+        this.nominee.controls[index].get('nominee_mobile').setValue(primary_holder_mobile);
+      }
+      else{
+        this.nominee.controls[index].get('nominee_mobile').setValue('');
+      }
+    }
+
+    
+    sameAsEmailApplicant = (ev,index) =>{
+        if(ev.target.checked){
+          const primary_holder_email = this.new_client_form.get('contact_dtls.email')?.value;
+          this.nominee.controls[index].get('nominee_email').setValue(primary_holder_email);
+        }
+        else{
+          this.nominee.controls[index].get('nominee_email').setValue('');
+        }
+    }
+
+    onchangeNomineeDocumentType = (ev,index) =>{
+      this.nominee.controls[index].get('nominee_pan').clearValidators();   
+      this.nominee.controls[index].get('nominee_aadhar').clearValidators();   
+      this.nominee.controls[index].get('nominee_driving_license').clearValidators();   
+      this.nominee.controls[index].get('nominee_passport').clearValidators();
+      if(ev.target.value == 'P'){
+        this.nominee.controls[index].get('nominee_pan').setValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])
+      }
+      else if(ev.target.value == 'A'){
+        this.nominee.controls[index].get('nominee_aadhar').setValidators([
+            Validators.required,
+            Validators.pattern('^[0-9]*$'),
+            Validators.minLength(4),
+            Validators.maxLength(4)
+        ])
+      }
+      else if(ev.target.value == 'D'){
+        this.nominee.controls[index].get('nominee_driving_license').setValidators([Validators.required])
+      }
+      else if(ev.target.value == 'PA'){
+        this.nominee.controls[index].get('nominee_passport').setValidators([Validators.required])
+      }
+
+      this.nominee.controls[index].get('nominee_pan').updateValueAndValidity({emitEvent:false});   
+      this.nominee.controls[index].get('nominee_aadhar').updateValueAndValidity({emitEvent:false});   
+      this.nominee.controls[index].get('nominee_driving_license').updateValueAndValidity({emitEvent:false});   
+      this.nominee.controls[index].get('nominee_passport').updateValueAndValidity({emitEvent:false});
+
+    }
 
 }

@@ -235,3 +235,10 @@ fieldset
                 padding: 7px 7px !important;
                 text-transform: uppercase;
     }
+    :host ::ng-deep #pincode_id>.multiselect-dropdown .dropdown-btn .dropdown-multiselect__caret{
+                height: 29px !important;
+    }
+    :host ::ng-deep #pincode_id>.multiselect-dropdown>div>.dropdown-btn{
+        height: 29px !important;
+        line-height: 15px !important;
+    }
