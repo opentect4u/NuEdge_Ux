@@ -20,12 +20,28 @@ export class StpTypeComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  /*
+    * This function is used to handle the click event on the menu items.
+    * It checks the flag of the clicked item and opens the corresponding dialog.  
+    * @param {any} item - The clicked menu item.
+    * @return {void}
+    * @memberof StpTypeComponent
+    * */
   getItems(item){
     switch(item.flag){
       case 'M':this.openDialog(item);break;
       case 'R':this.openDialogForRPT(item);break;
     }
   }
+  
+  /** * This function is used to open a dialog for adding or updating STP Type.
+ * It creates a MatDialogConfig object, sets various properties for the dialog,
+ * and opens the ManualEntrComponent dialog with the provided configuration.
+ * @param {any} item - The clicked menu item.
+ * @return {void}
+ * @memberof StpTypeComponent
+ * @description
+ * */
   openDialog(item){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -59,6 +75,12 @@ export class StpTypeComponent implements OnInit {
       });
     }
   }
+  /**
+   * 
+   * @param item - The clicked menu item.
+   * @description
+   * This function is used to open a dialog for generating reports related to STP Type.
+   */
   openDialogForRPT(item){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

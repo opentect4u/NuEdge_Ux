@@ -25,6 +25,12 @@ export class HomeComponent implements OnInit {
       this.getItems(this.menu[0]);
     }
   }
+  /**
+   * 
+   * @param items - This function is used to handle the click event on the menu items.
+   * It checks the flag of the clicked item and opens the corresponding dialog.
+   * @returns {void}
+   */
   getItems(items){
     console.log(items);
     switch(items.flag){
@@ -40,6 +46,14 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  /**
+   * 
+   * @param isViewMode - This function is used to open a dialog for adding or updating an ISIN entry.
+   * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * @param title - The title of the dialog.
+   * @returns {void}
+   * @memberof HomeComponent
+   */
   opendialogForEntry(isViewMode,title){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -71,6 +85,17 @@ export class HomeComponent implements OnInit {
       });
     }
    }
+   /**
+    * * This function is used to open a dialog for generating ISIN reports.
+    * * It creates a MatDialogConfig object, sets various properties for the dialog,
+    * * and opens the IsinRptComponent dialog with the provided configuration.
+    * * @return {void}
+    * * @memberof HomeComponent
+    * * @description  
+    * This function is responsible for opening a dialog for generating ISIN reports.
+    * * It creates a MatDialogConfig object, sets various properties for the dialog,
+    * * and opens the IsinRptComponent dialog with the provided configuration.
+    */
   opendialogForRPT(){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

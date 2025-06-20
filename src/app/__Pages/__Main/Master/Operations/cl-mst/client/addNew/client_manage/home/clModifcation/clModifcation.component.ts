@@ -159,6 +159,7 @@ export class ClModifcationComponent implements OnInit {
 
   }
 
+  /** get partnet details */
   getPertnerDtls(pertner_details){
     if(this.data?.cl_type == 'P' || this.data?.cl_type == 'N' || this.data?.cl_type == 'E')
     {
@@ -173,11 +174,15 @@ export class ClModifcationComponent implements OnInit {
   }
 
   }
+  /** Get country Master details */
   getCountryMaster(){
     this.__dbIntr.api_call(0,'/country',null).pipe(pluck('data')).subscribe(res =>{
       this.countryMst = res;
     })
   }
+  /**
+   * * * This function is used to get the client type master.
+   */
   getClientType(cl_type:string | null = 'P'){
     console.log(cl_type)
     if(cl_type){
@@ -195,6 +200,10 @@ export class ClModifcationComponent implements OnInit {
     }
 
   }
+  /** * * get district details 
+   *  get city details
+   *  get state master details
+ */
   getDistrict_city(){
     if(this.data.id > 0 && this.data.client_type != 'E'){
       this.getDistrict(this.data.items.state);
@@ -206,7 +215,7 @@ export class ClModifcationComponent implements OnInit {
       }, 500);
     }
   }
-
+  
   setValidatorsDependOnType = (formControls:{formControlName:string,validators:ValidatorFn[],asyncValidators?:AsyncValidatorFn[]}[],type:string) =>{
         formControls.forEach(element => {
           if(type == 'P' || type == 'N' || type == 'M'){
@@ -371,18 +380,34 @@ export class ClModifcationComponent implements OnInit {
   reset(){
     this.__clientForm.reset();
   }
+  /** mnimize modal dialog box 
+   * * @memberof ClModifcationComponent
+   * * @description 
+   * * This function is responsible for minimizing the modal dialog box by updating its size and position.
+  */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /** maximize modal dialog box
+   * * @memberof ClModifcationComponent
+   * * @description 
+   * * This function is responsible for maximizing the modal dialog box by updating its size and toggling the visibility state.
+  */
   maximize(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
+  /** toggle full screen mode of modal dialog box
+   * * @memberof ClModifcationComponent
+   * * @description 
+   * * This function is responsible for toggling the full screen mode of the modal dialog box by updating its size and visibility state.
+  */
   fullScreen(){
     this.dialogRef.updateSize("100%");
     this.__isVisible = !this.__isVisible;
   }
+  /** used for submit this form */
   submit(){
     console.log(this.__clientForm);
     // return;
@@ -514,6 +539,9 @@ export class ClModifcationComponent implements OnInit {
       this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'Client updated successfully' : 'Client added successfully') : res.msg, res.suc);
     })
   }
+  /** * * This function is used to remove validators from the form controls.
+   * * @param {string[]} __ctrls - An array of control names from which validators will be removed.
+   */
   checkPanExistornot(_pan){
     if(_pan.target.value != ''){
       this.__dbIntr.api_call(0,'/client','pan='+_pan.target.value).subscribe((res: responseDT) =>{
@@ -521,9 +549,19 @@ export class ClModifcationComponent implements OnInit {
       })
     }
   }
+
+  /** * * prevent non numeric value.
+   * 
+   */
   preventNonumeric(__ev) {
     dates.numberOnly(__ev)
   }
+
+  /**
+   *  get district master details based on state id
+   *  get city master details based on district id
+   *  get pincode master details based on city id
+   */
   getDistrict(__state_id) {
     if(__state_id && Number(__state_id) > 0){
       this.__dbIntr.api_call(0, '/districts', 'state_id=' + __state_id).pipe(pluck("data")).subscribe(res => {
@@ -534,6 +572,9 @@ export class ClModifcationComponent implements OnInit {
       this.__district = [];
     }
   }
+  /** *  get city master details based on district id
+   *  get pincode master details based on city id
+   */
   getCity(__district_id) {
     if(__district_id && Number(__district_id) > 0){
       this.__dbIntr.api_call(0, '/city', 'district_id=' + __district_id).pipe(pluck("data")).subscribe(res => {
@@ -544,6 +585,12 @@ export class ClModifcationComponent implements OnInit {
       this.__city = [];
     }
   }
+  /** *  get pincode master details based on city id
+   *  @param {number} city_id - The ID of the city for which to retrieve the pin codes.
+   *  @memberof ClModifcationComponent
+   *  @description 
+   *  This function retrieves the pin codes associated with a specific city ID and updates the pincodeMst property.
+   * */
   getPinCode(city_id){
     if(city_id && Number(city_id) > 0){
       this.__dbIntr.api_call(0, '/pincode', 'city_id=' + city_id).pipe(pluck("data")).subscribe(res => {
@@ -554,6 +601,11 @@ export class ClModifcationComponent implements OnInit {
       this.pincodeMst = [];
     }
   }
+  /** * * This function is used to add a new document item to the form.
+   * * @memberof ClModifcationComponent
+   * * @description 
+   * * This function creates a new document item and adds it to the form array.
+   */
   addItem(): void {
     this.__docs.push(this.createItem());
     // if (this.__docs.length > 1) {
@@ -566,6 +618,12 @@ export class ClModifcationComponent implements OnInit {
     //   }, 50);
     // }
   }
+  /** * * This function creates a new FormGroup for a document item.
+   * * @returns {FormGroup} - A new FormGroup instance for a document item.
+   * * @memberof ClModifcationComponent
+   * * @description
+   *  This function initializes a new FormGroup with controls for document details such as id, doc_type_id, doc_name, file_preview, and file.
+   */
   createItem(): FormGroup {
     return new FormGroup({
       id: new FormControl(0),
@@ -575,12 +633,34 @@ export class ClModifcationComponent implements OnInit {
       file: new FormControl('')
     });
   }
+  /** * * This function is used to remove a document item from the form.
+   * * @param {number} __index - The index of the document item to be removed.
+   * * @memberof ClModifcationComponent
+   * * @description
+   * * This function removes a document item from the form array based on the provided index.
+   * */
   removeDocument(__index) {
     this.__docs.removeAt(__index);
   }
+  /** * * This function is used to get the document details from the form array.
+   * * @returns {FormArray} - The FormArray containing document details.
+   * * @memberof ClModifcationComponent
+   * * @description
+   * * This function retrieves the document details from the form array and returns it as a FormArray.
+   */
   get __docs(): FormArray {
     return this.__clientForm.get("doc_dtls") as FormArray;
   }
+  /** * * This function is used to set the item in the form array.
+   * * @param {number} id - The ID of the document item.
+   * * @param {number} type_id - The document type ID.
+   * * @param {string} doc - The document name. 
+   *  * @param {number} cl_id - The client ID.
+   * * @returns {FormGroup} - A new FormGroup instance for the document item.
+   * * @memberof ClModifcationComponent
+   * * @description
+   * * This function initializes a new FormGroup with controls for document details such as id, doc_type_id, doc_name, file_preview, and file.
+   */
   setItem(id, type_id, doc, cl_id) {
     console.log(doc);
     return new FormGroup({
@@ -591,6 +671,14 @@ export class ClModifcationComponent implements OnInit {
       file: new FormControl(doc ? `${environment.clientdocUrl}` + cl_id + '/' + doc : this.__noImg)
     });
   }
+  /** * * This function is used to get the files from the event and set the file preview and validators.
+   * * @param {Event} __ev - The event object containing the selected files.
+   * * @param {number} index - The index of the document item in the form array.
+   * * @param {number} __type_id - The document type ID.
+   * * @memberof ClModifcationComponent
+   * * @description
+   * * This function retrieves the selected file from the event, sets the validators for the document name control, updates its validity, and sets the file preview and file controls accordingly.
+   */
   getFiles(__ev, index, __type_id) {
     console.log(__ev.target.files[0]);
 
@@ -613,10 +701,21 @@ export class ClModifcationComponent implements OnInit {
       this.setFileValue(index)
     }
   }
+  /** * * This function is used to set the file value in the form controls.
+   * * @param {number} index - The index of the document item in the form array.
+   * * @memberof ClModifcationComponent
+   * * @description
+   * * This function resets the file_preview and file controls for the specified index in the form array.
+   */
   setFileValue(index) {
     this.__docs.controls[index].get('file_preview')?.reset();
     this.__docs.controls[index].get('file')?.reset();
   }
+  /**
+   *    
+   * * This function is used to set the form control validators based on the client type.
+   * * @memberof ClModifcationComponent
+   */
   setfrmCtrlValidatior() {
     switch (this.data?.cl_type) {
       case 'M': this.removeValidators(['pan']); break;
@@ -682,6 +781,12 @@ export class ClModifcationComponent implements OnInit {
       default: break;
     }
   }
+  /** * This function is used to set validators for the form controls.
+   * * @param {Array<{name: string, validators: ValidatorFn[]}>} __frmCtrl - An array of form control objects containing the name and validators.
+   * * @memberof ClModifcationComponent
+   * * @description
+   * * This function iterates through the provided form control objects and sets the specified validators for each control in the client form.
+   */
   setValidators(__frmCtrl) {
     __frmCtrl.forEach(element => {
       console.log(element);
@@ -692,12 +797,24 @@ export class ClModifcationComponent implements OnInit {
     console.log(this.__clientForm.status);
 
   }
+  /** * This function is used to remove validators from the specified form controls.
+   * * @param {string[]} __frmCtrl - An array of form control names from which validators will be removed.
+   * * @memberof ClModifcationComponent
+   *  * @description
+   * * This function iterates through the provided form control names and clears the validators for each control in the client form, updating their validity accordingly.
+   */
   removeValidators(__frmCtrl) {
     __frmCtrl.forEach(element => {
       this.__clientForm.get(element).clearValidators();
       this.__clientForm.get(element).updateValueAndValidity();
     });
   }
+  /** * This function is used to delete a partner from the form array.
+   * * @param {number} index - The index of the partner to be deleted.
+   * * @memberof ClModifcationComponent
+   * * @description
+   * * This function removes a partner from the form array at the specified index, effectively deleting it from the form.
+   */
   deletePertner(index){
     this.pertner_dtls.removeAt(index);
 

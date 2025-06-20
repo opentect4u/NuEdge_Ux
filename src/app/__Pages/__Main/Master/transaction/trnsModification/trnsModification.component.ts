@@ -42,6 +42,12 @@ export class TrnsModificationComponent implements OnInit {
   }
 
   ngOnInit() { }
+  /**
+   * * This function is responsible for submitting the transaction form data to the server.
+   * * It checks if the form is valid, creates a FormData object, appends the form values to it,
+   * * and makes an API call to submit the data.
+   * * @returns void
+   */
   submit() {
     if (this.__trnsForm.invalid) {
       return;
@@ -60,19 +66,41 @@ export class TrnsModificationComponent implements OnInit {
       // this.reset();
     })
   }
+  /**
+   * * This function is used to fetch the transaction type master data from the server.
+   * * It makes an API call to retrieve the data and assigns it to the __transTypeMaster variable.
+   * * @returns void
+   * * @memberof TrnsModificationComponent
+   */
   getTransactionTypeMaster() {
     this.__dbIntr.api_call(0, '/transctiontype', 'product_id='+this.data.product_id).pipe(map((x: any) => x.data)).subscribe(res => {
       this.__transTypeMaster = res;
     })
   }
+  /**
+   * * This function is used to toggle the visibility of the dialog.
+   * * It updates the size and position of the dialog based on the current visibility state.
+   * * @returns void
+   * * @memberof TrnsModificationComponent
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * This function is used to maximize the dialog.
+   * * It updates the size of the dialog to 40% and toggles the visibility state.
+   * * @returns void
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * This function is used to toggle the full screen mode of the dialog.
+   * * It updates the size of the dialog to 60% and toggles the visibility state.
+   * * @returns void
+   */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;

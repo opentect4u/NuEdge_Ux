@@ -25,12 +25,19 @@ export class MFTraxComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * * This function is used to handle the click event on the menu items.
+   */
   getItems = (ev) =>{
       switch(ev.flag){
         case 'M' :this.openDialogForCreateMFTrax(null,0);break;
         default:  this.openDialogForReports();break;
       }
   }
+  /**
+   * * This function is used to open a dialog for adding or updating MFTrax.
+   * * It creates a MatDialogConfig object, sets various properties for the dialog,
+   */
   openDialogForCreateMFTrax = (mfTrax: IMFTrax | null = null,id:number) =>{
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -65,6 +72,11 @@ export class MFTraxComponent implements OnInit {
     }
   }
 
+  /**
+   * * This function is used to open a dialog for viewing reports related to MFTrax.
+   * * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * * and opens the MfTraxReportComponent dialog with the provided configuration.
+   */
   openDialogForReports(id:string | null = ''){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

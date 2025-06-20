@@ -1,3 +1,8 @@
+/**
+ * AMC Layout screen , 
+ * all screens related to AMC will be rendered through it
+ */
+
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
@@ -57,6 +62,11 @@ export class AMCComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
   ngOnInit(): void {
+    /**
+     * Check if any query params AMC_ID and ID available in the URL or not
+     * if amc_id avalable then call api that get particular AMC by id
+     * 
+     */
     if (this.route.snapshot.queryParamMap.get('amc_id')) {
         this.getParticularAMCMaster();
     }
@@ -66,6 +76,9 @@ export class AMCComponent implements OnInit {
   }
 
 
+  /**
+   * Fetch Particular Amc by AMC ID
+   */
   getParticularAMCMaster() {
     this.__dbIntr
       .api_call(
@@ -81,6 +94,10 @@ export class AMCComponent implements OnInit {
       });
   }
 
+  /**
+   * For Navigating or AMC modal Visibility
+   * @param __items 
+   */
   navigate(__items) {
     switch (__items.flag) {
       case 'M':
@@ -101,6 +118,12 @@ export class AMCComponent implements OnInit {
         break;
     }
   }
+
+  /**
+   * Open Modal for amc addition or AMC Modification
+   * @param __amc 
+   * @param __amcId 
+   */
   openDialog(__amc: amc | null = null, __amcId: number) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -137,6 +160,12 @@ export class AMCComponent implements OnInit {
       });
     }
   }
+  
+  /**
+   * Open Modal for amc Reports
+   * @param __amc 
+   * @param __amcId 
+   */
   openDialogForReports(__rnt_id: string | null = null,amc_id: string | null = null){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

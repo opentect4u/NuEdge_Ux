@@ -17,6 +17,11 @@ constructor(
 ngOnInit(){
   console.log(this.__menu)
 }
+/**
+ * * * This function is used to navigate to a specific URL based on the provided items.
+ * * * It uses the utility service to perform the navigation.
+ * @param {any} __items - The items containing the URL to navigate to.
+ */
 getItems = (__items) => {
   // if(__items.flag == 'Y'){
   //   this.__utility.navigatewithqueryparams(__items.url,{queryParams:{id:btoa(__items.id)}})

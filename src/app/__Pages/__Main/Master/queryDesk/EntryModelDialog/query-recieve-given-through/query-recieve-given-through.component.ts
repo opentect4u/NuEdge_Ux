@@ -26,18 +26,39 @@ export class QueryRecieveGivenThroughComponent implements OnInit {
   ngOnInit(): void {
     // console.log(this.data)
   }
+  /**
+   * * * This function is used to toggle the visibility of the dialog.
+   * * * @returns void
+   * * * @memberof QueryRecieveGivenThroughComponent
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * * This function is used to maximize the dialog.
+   * * * @returns void
+   * * * @memberof QueryRecieveGivenThroughComponent
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to toggle the full screen mode of the dialog.
+   * * * @returns void
+   * * * @memberof QueryRecieveGivenThroughComponent  
+   */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to submit the query receive/given through form.
+   * * * It sends the form data to the server and closes the dialog with a success message.
+   * * * @returns void
+   * * * @memberof QueryRecieveGivenThroughComponent
+   */
   submitQueryGivenBy(){
     const payload = {
       ...this.queryGivenByForm.value,

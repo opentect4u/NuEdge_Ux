@@ -70,7 +70,10 @@ export class CatrptComponent implements OnInit {
     this.formValue = this.__catForm.value;
     this.getcatMst();
   }
-
+ 
+  /**
+   * Get category master data from backend API
+   */
   getcatMst() {
     const __catExport = new FormData();
     __catExport.append('cat_name', this.formValue?.cat_name);
@@ -93,6 +96,10 @@ export class CatrptComponent implements OnInit {
     this.primeTbl.filterGlobal(value,'contains')
   }
 
+  /**
+   * Export datatable data
+   * @param __catExport 
+   */
   tableExport(__catExport) {
     __catExport.delete('paginate');
     this.__dbIntr
@@ -102,7 +109,10 @@ export class CatrptComponent implements OnInit {
         this.__export = new MatTableDataSource(res);
       });
   }
-
+  /**
+   * Set category for showing in datatable
+   * @param __res 
+   */
   setPaginator(__res) {
     this.__selectCategory = new MatTableDataSource(__res);
   }
@@ -123,10 +133,19 @@ export class CatrptComponent implements OnInit {
         });
     }
   }
-
+  
+  /**
+   * open category modal dialog for adding / modifying category
+   * @param __items 
+   */
   populateDT(__items: category) {
     this.openDialog(__items, __items.id);
   }
+
+  /**
+   * navigating to sub-category screen with categry id and product id 
+   * @param __items 
+   */
   showCorrospondingSubCategory(__items) {
     this.dialogRef.close();
     this.__utility.navigatewithqueryparams(

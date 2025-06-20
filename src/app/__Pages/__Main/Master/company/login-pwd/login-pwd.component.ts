@@ -32,7 +32,10 @@ export class LoginPwdComponent implements OnInit {
   onTabChange(ev){
     this.tabindex = ev.index;
   }
-
+  /** * This function is used to set the company profile ID and fetch the product master data and login password locker master data.
+ * @param {number} cm_profile_id - The ID of the company profile to be set.
+ * @returns {void}
+ */
   setCompanyProfileId(cm_profile_id){
    this.cmp_profile_id = cm_profile_id;
    console.log(this.cmp_profile_id);
@@ -52,13 +55,25 @@ export class LoginPwdComponent implements OnInit {
   }
   /**End**/
 
+  /** This function is used to set the form data for a specific login password entry.
+ * @param {any} ev - The event containing the data for the login password entry.
+ * @returns {void}
+ */
   setFormDt(ev){
     this.onTabChange(ev);
     this.particularLoginPasswordDetails =ev.data;
   }
+  /** This function is used to reset the form data for the login password entry.
+ * @param {any} ev - The event containing the data to reset the form.
+ * @returns {void}
+ */
   reset(ev){
      this.particularLoginPasswordDetails = ev;
   }
+  /** This function is used to modify the login password master data.
+ * @param {any} ev - The event containing the modified login password data.
+ * @returns {void}
+ */
   ModifyLoginPasswordMst(ev){
     if(ev.id == 0){
         this.loginPasswordLockerMst.push(ev.data);
@@ -79,6 +94,11 @@ export class LoginPwdComponent implements OnInit {
       })
     }
   }
+  /** This function is called when the company tab is changed.
+ * It updates the company profile ID based on the selected tab and fetches the login password master data.
+ * @param {any} ev - The event containing the tab change information.
+ * @returns {void}
+ */
   onCompanyTabChange(ev){
     this.setCompanyProfileId(ev?.tabDtls?.id)
   }

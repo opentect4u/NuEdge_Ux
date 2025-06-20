@@ -63,27 +63,67 @@ export class ExchangeReportComponent implements OnInit {
     this.exchangeMstData = res;
    })
   }
+  /**
+   * * This function is used to toggle the visibility of the dialog.  
+   * * @returns void
+   * * @memberof ExchangeReportComponent
+   * * @description
+   */
   fullScreen() {
     this.dialogRef.updateSize("80%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to minimize the dialog.
+   * * * @returns void
+   * * * @memberof ExchangeReportComponent
+   */
   minimize() {
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * * This function is used to maximize the dialog.
+   * * * @returns void
+   * * * @memberof ExchangeReportComponent
+   * * * @description
+   * * * This function is responsible for maximizing the dialog by updating its size and toggling the visibility state.
+   */
   maximize() {
     this.fullScreen();
   }
-
+  
+  /**
+   * * This function is used to get the columns for the exchange report.
+   * * It returns an array of column objects with field, header, and width properties.
+   * * @returns {Array<{field: string, header: string, width: string}>} - An array of column objects. 
+   * * * @memberof ExchangeReportComponent
+   * * * @description
+   * * * This function retrieves the columns for the exchange report by calling the utility service's getColumns method.
+   */
   getColumns = () =>{
     return this.__utility.getColumns(this.column);
   }
 
+  /**
+   *  * This function is used to populate the data table with the exchange item.
+   *  * It opens the entry dialog with the provided exchange item and its ID.
+   *  * @memberof ExchangeReportComponent 
+   *  *  * @description
+   *  * This function is responsible for populating the data table with the exchange item.
+   *  * It opens the entry dialog with the provided exchange item and its ID.
+   * @param item 
+   */
   populateDT = (item:Iexchange) =>{
     console.log(item);
    this.openEntryDialog(item,item.id);
   }
 
+  /**
+   * * This function is used to open the entry dialog for adding or updating an exchange.
+   * * It takes an optional exchange object and an ID as parameters.
+   * * If the ID is 0, it indicates that a new exchange is being added; otherwise, it updates the existing exchange.
+   */
   openEntryDialog(exchange:Iexchange | null = null,id:number){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -122,17 +162,39 @@ export class ExchangeReportComponent implements OnInit {
     }
   };
 
+  /**
+   *  * This function is used to update the exchange item in the exchange master data.
+   *  * It maps through the exchange master data and replaces the item with the updated one based on the ID.
+   *  * @memberof ExchangeReportComponent
+   *  * @description
+   *  * This function is responsible for updating the exchange item in the exchange master data.
+   * @param item - The exchange item to be updated.
+   */
   updateRow = (item:Iexchange) =>{
         this.exchangeMstData = this.exchangeMstData.map(el =>
             el.id == item.id ? item : el
           );
   }
 
+  /**
+   *  * This function is used to handle the custom sort event triggered by the data table.
+   *  * It updates the sort property with the event data and retrieves the exchange report.
+   *  * @memberof ExchangeReportComponent
+   * @param ev - The sort event triggered by the data table.
+   */
   customSort = (ev:sort) =>{
     this.sort = ev;
     this.getExchangeReport();
   }
 
+  /**
+   * 
+   * @param exchange - The exchange item to be deleted.
+   * @description
+   * This function is used to delete an exchange item from the exchange master data.
+   * It opens a confirmation dialog and, upon confirmation, deletes the item from the data.
+   * @param index 
+   */
    delete = (exchange:Iexchange,index:number) =>{
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

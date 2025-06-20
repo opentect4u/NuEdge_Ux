@@ -41,6 +41,19 @@ constructor(
 }
 
 ngOnInit() { }
+/**
+ * 
+ * @returns void
+ * * @memberof SiptypemodificationComponent
+ * * @description
+ * * This function is responsible for submitting the SIP Type form data to the server.
+ * * It checks if the form is valid, creates a FormData object, appends the form values to it,
+ * * and makes an API call to submit the data.
+ * * @example
+ * * // Usage: Call this function when the user clicks the submit button on the SIP Type form.
+ * * * @returns {void}
+ * 
+ */
 submit() {
   if (this.__trns_type.invalid) {
     return;
@@ -63,14 +76,47 @@ submit() {
 //     this.__ProductMaster = res;
 //   })
 // }
+/**
+ * * This function is used to reset the form fields to their initial values.
+ * * It sets the form controls to their default values and resets the form state.
+ * * @memberof SiptypemodificationComponent
+ */
 minimize(){
   this.dialogRef.updateSize("30%",'47px');
   this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
 }
+/**
+ *  * This function is used to toggle the visibility of the dialog.
+ *  * It updates the size of the dialog to 40% and toggles the visibility state.
+ *  * @memberof SiptypemodificationComponent
+ *  *  * @description
+ *  * This function is responsible for toggling the visibility of the dialog.
+ *  * It updates the size of the dialog to 40% and toggles the visibility state.
+ */
 maximize(){
   this.dialogRef.updateSize("40%");
   this.__isVisible = !this.__isVisible;
 }
+/**
+ * * This function is used to toggle the full-screen mode of the dialog.
+ * * It updates the size of the dialog to 60% and toggles the visibility state.
+ * * @memberof SiptypemodificationComponent
+ *  
+ * * @description
+ * * This function is responsible for toggling the full-screen mode of the dialog.
+ * * It updates the size of the dialog to 60% and toggles the visibility state.
+ * * @example
+ *  
+ * * // Usage: Call this function to toggle the full-screen mode of the dialog.
+ * * @returns {void}
+ * * @memberof SiptypemodificationComponent
+ *  * * @description
+ * * This function is responsible for toggling the full-screen mode of the dialog.
+ * * It updates the size of the dialog to 60% and toggles the visibility state.
+ * * @example
+ * * // Usage: Call this function to toggle the full-screen mode of the dialog.
+ * * @returns {void}
+ */
 fullScreen(){
   this.dialogRef.updateSize("60%");
   this.__isVisible = !this.__isVisible;

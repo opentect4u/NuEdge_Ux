@@ -123,6 +123,10 @@ export class DocrptComponent implements OnInit {
     // this.tableExport();
     this.getDocumentMst();
   }
+  /* * This function is used to export the client data based on the provided column name and sort order.
+   * @param column_name - The name of the column to sort by (optional).
+   * @param sort_by - The sort order, either 'asc' or 'desc' (default is 'asc').
+   */
   tableExport(column_name:string | null = '',sort_by: string | null| ''='asc') {
     const __client = new FormData();
     __client.append('pan', this.__clientForm.value.pan);
@@ -143,16 +147,27 @@ export class DocrptComponent implements OnInit {
       });
   }
 
+  /** * Fetches the list of states, districts, and cities from the database.
+   * The data is stored in the respective class properties for later use.
+   */
   getState(){
     this.__dbIntr.api_call(0,'/states',null).pipe(pluck("data")).subscribe(res =>{
       this.__stateMst = res;
     })
   }
+  /* * Fetches the list of districts based on the selected state ID.
+   * @param __state_id - The ID of the selected state.
+   * The districts are stored in the __distMst property for later use.
+   */
   getdistrict(__state_id){
     this.__dbIntr.api_call(0,'/districts','state_id='+ __state_id).pipe(pluck("data")).subscribe(res =>{
       this.__distMst = res;
     })
   }
+  /* * Fetches the list of cities based on the selected district ID.
+   * @param __dist_id - The ID of the selected district.
+   * The cities are stored in the __cityMst property for later use.
+   */
   getcity(__dist_id){
     this.__dbIntr.api_call(0,'/city','district_id='+ __dist_id).pipe(pluck("data")).subscribe(res =>{
       this.__cityMst = res;
@@ -222,6 +237,10 @@ export class DocrptComponent implements OnInit {
     }
 })
   }
+  /** * Fetches paginated client data based on the provided pagination object.
+   * The function constructs a URL with query parameters and retrieves the data from the database.
+   * @param __paginate - The pagination object containing the URL and other parameters.
+   */
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -243,10 +262,17 @@ export class DocrptComponent implements OnInit {
         });
     }
   }
+  /** * Handles pagination by updating the page number and fetching client data.
+   * @param __paginate - The pagination object containing the page number.
+   */
   getval(__paginate) {
      this.__pageNumber.setValue(__paginate.toString());
     this.getClientMaster(this.__pageNumber.value);
   }
+  /** * Fetches client data based on the client type and pagination.
+   * The function constructs a URL with query parameters and retrieves the data from the database.
+   * @param __paginate - The pagination value (default is '10').
+   */
   getClientMaster(__paginate: string | null = '10') {
     this.__dbIntr
       .api_call(
@@ -262,15 +288,24 @@ export class DocrptComponent implements OnInit {
         this.__paginate = res.links;
       });
   }
+  /** * Sets the paginator for the client data table.
+   * @param __res - The response data containing the client information.
+   */
   setPaginator(__res) {
     this.__selectClient = new MatTableDataSource(__res);
   }
+  /** * Toggles the visibility of the dialog.
+   * If the dialog is visible, it will be minimized; if it is minimized, it will be maximized.
+   */
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
+  /** * Minimizes the dialog by removing the 'mat_dialog' and 'full_screen' classes,
+   * updating the size, and setting the position to the bottom right corner.
+   */
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
@@ -280,6 +315,10 @@ export class DocrptComponent implements OnInit {
       right: this.data.right + 'px',
     });
   }
+  /** * Maximizes the dialog by removing the 'full_screen' class,
+   * adding the 'mat_dialog' class, and updating the position to the top.
+   * It also toggles the visibility of the dialog.
+   */
   maximize() {
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
@@ -287,6 +326,9 @@ export class DocrptComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
 
+  /** * Exports the client data as a PDF report.
+   * The report is downloaded with the title 'Client'.
+   */
   exportPdf() {
     this.__Rpt.downloadReport(
       '#client',
@@ -297,6 +339,12 @@ export class DocrptComponent implements OnInit {
     );
   }
 
+  /** * Fetches the document master data based on the provided column name and sort order.
+   * @param column_name - The name of the column to sort by (optional).
+   * @param sort_by - The sort order, either 'asc' or 'desc' (default is 'asc').
+   * This function constructs a FormData object with the client form values and pagination,
+   * and then makes an API call to retrieve the document master data.
+   */
   getDocumentMst(column_name:string | null = '',sort_by:string | null | ''= 'asc'){
     const __client = new FormData();
     __client.append('pan', this.__clientForm.value.pan);
@@ -317,9 +365,15 @@ export class DocrptComponent implements OnInit {
       this.tableExport(column_name,sort_by);
     })
   }
+  /** * Submits the form and fetches the document master data based on the current sort order.
+   * This function is called when the user clicks the submit button.
+   */
   submit() {
      this.getDocumentMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
   }
+  /** * Refreshes or advances the filter by resetting the form values and submitting the form.
+   * This function is called when the user clicks the refresh or advance filter button.
+   */
   refreshOrAdvanceFlt() {
     this.__clientForm.patchValue({
       pan: '',
@@ -335,11 +389,20 @@ export class DocrptComponent implements OnInit {
     this.__sortAscOrDsc = {active:'',direction:'asc'};
     this.submit();
   }
+  /** * Populates the data table with the provided items and opens a dialog for document modification.
+   * @param __items - The items to be displayed in the data table.
+   */
   populateDT(__items) {
     console.log(__items);
 
     this.openDialog(__items.id, __items);
   }
+  /** * Opens a dialog for document modification with the provided ID and items.
+   * @param id - The ID of the client.
+   * @param items - The items to be displayed in the dialog (optional, default is null).
+   * This function configures the dialog with various options such as width, backdrop, and data.
+   * It also handles the dialog's afterClosed event to perform actions after the dialog is closed.
+   */
   openDialog(id: number, items: client | null = null) {
     console.log(items);
 
@@ -375,6 +438,11 @@ export class DocrptComponent implements OnInit {
       this.__utility.getmenuIconVisible({id:Number(dialogConfig.id),isVisible:false,flag:"DM"})
     }
   }
+  /** * Updates a row in the data table with the provided row object.
+   * @param row_obj - The object containing the updated client information.
+   * This function filters the existing data in both the __selectClient and __export data sources,
+   * updating the relevant fields with the values from the row_obj.
+   */
   updateRow(row_obj){
       this.__selectClient.data = this.__selectClient.data.filter((value: client, key) => {
         value.client_name = row_obj.client_name
@@ -433,6 +501,10 @@ export class DocrptComponent implements OnInit {
         value.dob_actual = row_obj.dob_actual
       })
   }
+  /** * Sorts the data based on the provided sort object.
+   * @param sort - The sort object containing the active column and direction (asc or desc).
+   * This function updates the __sortAscOrDsc property with the new sort order and submits the form.
+   */
   sortData(sort){
     this.__sortAscOrDsc = sort;
     this.submit();

@@ -1,3 +1,7 @@
+/**
+ * Subcategory modification screen , open in modal dialog box
+ */
+
 import { Component, OnInit ,Inject} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -34,11 +38,18 @@ export class SubcatModificationComponent implements OnInit {
   }
 
   ngOnInit() {this.getCategoryMaster()}
+  /**
+   * Get category master data from backend API
+   * This function is called on component initialization to populate the category dropdown in the form
+   */
   getCategoryMaster(){
     this.__dbIntr.api_call(0, '/category', null).pipe(map((x: responseDT) => x.data)).subscribe((res: category[]) => {
       this.__catMaster = res;
     })
   }
+  /**
+   * function for adding  / modifying subcategory
+   */
   submit() {
     console.log(this.dialogRef.id);
 
@@ -60,17 +71,29 @@ export class SubcatModificationComponent implements OnInit {
     })
 
   }
+  /**
+   * function for reset form
+  */
   reset(){
     this.__subcatForm.reset();
   }
+  /**
+   * minimize subcategory modal dialog box
+  */
   minimize(){
     this.dialogRef.updateSize("30%",'55px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * maximize subcategory modal dialog box
+  */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * open modal dialog box in full screen
+  */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;

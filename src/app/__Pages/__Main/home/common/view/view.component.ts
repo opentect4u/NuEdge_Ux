@@ -6,8 +6,11 @@ import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
   styleUrls: ['./view.component.css']
 })
 export class ViewComponent implements OnInit {
-   @Input() __listItems: any[];
-   @Input() __flag: string;
+  /**
+   *   Set menu items in tiles
+  **/
+  @Input() __listItems: any[];
+  @Input() __flag: string;
   constructor() { }
 
   ngOnInit() {}

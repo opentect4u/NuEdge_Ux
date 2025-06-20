@@ -36,6 +36,13 @@ export class TemporaryProfileComponent implements OnInit {
     this.temporaryForm.reset();
   }
 
+  /**
+   * * This function is used to submit the temporary profile form.
+   * * It collects the form data, appends it to a FormData object, and sends it to the server via an API call.
+   * * On success, it displays a success message and emits the updated temporary profile details.
+   * * @returns void
+   * @memberof TemporaryProfileComponent
+   */
   submit(){
     const temporaryProfile = new FormData();
     temporaryProfile.append('cm_profile_id',this.temporaryForm.value.cm_profile_id);
@@ -51,6 +58,11 @@ export class TemporaryProfileComponent implements OnInit {
     })
 
   }
+  /**
+   * * * This function is used to handle file selection for the temporary profile.
+   * * * It sets validators for file size and extension, reads the file, and updates the form controls accordingly.
+   * * * @param {Event} ev - The event object containing the selected file.
+   */
   getFile(ev){
     this.temporaryForm.get('upload_logo').setValidators(
       [fileValidators.fileSizeValidator(ev.target.files),
@@ -68,6 +80,13 @@ export class TemporaryProfileComponent implements OnInit {
       this.temporaryForm.get('file_preview')?.patchValue('');
     }
   }
+  /**
+   * * * This function is used to populate the temporary profile form with data.
+   * * * It checks if the data is valid and sets the form controls accordingly.
+   * * * @param {any} data - The data to populate the form with.
+   * * * @returns void
+   * @memberof TemporaryProfileComponent
+   */
   populateDT(data){
       this.temporaryForm.patchValue({
         cm_profile_id: global.getActualVal(data) ? data.cm_profile_id : '',

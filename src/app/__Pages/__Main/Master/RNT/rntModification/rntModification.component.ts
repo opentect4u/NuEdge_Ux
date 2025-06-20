@@ -1,3 +1,7 @@
+/**
+ * create and update screen for RNT
+ */
+
 import { Component, OnInit ,Inject, SimpleChanges, ElementRef, ViewChild} from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -139,12 +143,18 @@ export class RntModificationComponent implements OnInit {
       this.__rntForm.get(['level_3','email']).setValue(res ? this.__rntForm.get('local_contact_per_email').value : '');
     })
   }
+  /**
+   * For Minimizing Dialog box
+   */
   minimize(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.updateSize("30%",'45px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * For Maximizing Dialog box
+   */
   maximize(){
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
@@ -152,6 +162,9 @@ export class RntModificationComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
 
+  /**
+   * Create or Update RNT
+   */
   submit() {
     const rnt = new FormData();
     rnt.append("l1_name", global.getActualVal(this.__rntForm.get(['level_1','name']).value));
@@ -208,10 +221,19 @@ export class RntModificationComponent implements OnInit {
       this.dialogRef.close({ id: this.data.id, data: res.data })
     })
   }
+  /**
+   * Reset the form
+   */
   reset(){this.__rntForm.reset();}
+  /**
+   *  prevent any special character and characters
+   */
   preventNonumeric(__ev) {
     dates.numberOnly(__ev)
   }
+  /**
+   * open modal in full size
+   */
   fullScreen(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
@@ -221,6 +243,9 @@ export class RntModificationComponent implements OnInit {
   get sec_qusAns(): FormArray {
     return this.__rntForm.get("sec_qusAns") as FormArray;
   }
+  /**
+   * For adding security question answer in form array
+   */
   addSecurityQuesAns(secQusAns : {id:number,sec_qus:string | null,sec_ans:string | null}[] | undefined | null = []): void {
       if(secQusAns.length == 0){
         this.sec_qusAns.push(this.SecurityQuesAns());
@@ -238,6 +263,9 @@ export class RntModificationComponent implements OnInit {
     console.log('error' + err)
    }
   }
+   /**
+   * create formgroup  of question answer
+   */
   SecurityQuesAns(id: number | null = 0,
     sec_qus:string | null = '',
     sec_ans: string | null = '') : FormGroup{
@@ -248,9 +276,16 @@ export class RntModificationComponent implements OnInit {
       sec_ans: new FormControl(sec_ans)
     })
   }
+  /**
+   * delete question answer
+   */
   removeSecurityQuesAns(index){
     this.sec_qusAns.removeAt(index);
   }
+
+  /**
+   * for setting file inside a formcontrol and trigger validation
+   */
   getFile(event){
     this.__rntForm.controls['rnt_logo_upload'].setValidators([fileValidators.fileSizeValidator(event.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
     this.__rntForm.controls['rnt_logo_upload'].updateValueAndValidity();
@@ -266,6 +301,9 @@ export class RntModificationComponent implements OnInit {
       this.__rntForm.controls['rnt_logo_preview'].patchValue('');
     }
   }
+  /*
+    * for clearing image
+  */
   clearImage(){
     this.__rntForm.controls['rnt_logo_file'].setValue('');
     this.__rntForm.controls['rnt_logo_preview'].patchValue('');

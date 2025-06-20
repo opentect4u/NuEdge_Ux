@@ -6,8 +6,6 @@
                     'col-12':custEntry,
                     'col-9':!custEntry}"
                     >
-            
-               
                 <ng-container *ngIf="custEntry;else showcreateCLientENtryScreen">
                     <div class="card boxShadow">
                         <div class="card-body  p-3">
@@ -15,8 +13,7 @@
                                 <ul class="bootstrapWizard form-wizard clearfix">
                                         <!-- (click)="changeStep(item,i)" -->
 
-                                    <li 
-                                    
+                                    <li
                                     [ngClass]="{
                                         'active':i <= step,
                                         'removelast':i == (step_wizard.length-1)
@@ -1791,7 +1788,39 @@
                                                                                         <span class="invalid-feedback error_txt" *ngIf="item.get('bank_address')?.errors?.['required']">**Please provide bank address**</span>
                                                                                     </div>
                                                                                 </div>
+
                                                                                 <div class="col-sm-4">
+                                                                                        <!-- (change)="onChangeCountry($event,i)" -->
+                                                                                        <label for="bank_country_{{i}}"
+                                                                                        class="m-0 labelTitle col-form-label float-left"
+                                                                                        [ngClass]="{'colorLabel':hasRequiredValidatorForBankDtls('bank_country',i)}">Bank Country: </label>
+                                                                                        <select id="bank_country_{{i}}" name="bank_country_{{i}}"
+                                                                                        class="js-example-responsive  form-control"
+                                                                                        formControlName="bank_country"
+                                                                                        (change)="onChangeBankCountry($event,i)"    
+                                                                                        >
+                                                                                        <option value="">-- Choose Country --</option>       
+                                                                                        <option value="{{country.id}}" *ngFor="let country of md_country">{{country.name}}</option>                                                                    
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col-sm-4">
+                                                                                        <!-- (change)="onChangeCountry($event,i)" -->
+                                                                                        <label for="bank_state_{{i}}"
+                                                                                        class="m-0 labelTitle col-form-label float-left"
+                                                                                        [ngClass]="{'colorLabel':hasRequiredValidatorForBankDtls('bank_state',i)}">Bank State: </label>
+                                                                                        <select id="bank_state_{{i}}" name="bank_state_{{i}}"
+                                                                                        class="js-example-responsive  form-control"
+                                                                                        formControlName="bank_state"
+                                                                                        (change)="onChangeBankState($event,i)"
+                                                                                        >
+                                                                                        <option value="">-- Choose State --</option>       
+                                                                                        <option value="{{state.id}}" *ngFor="let state of item.get('md_bank_state')?.value">{{state.name}}</option>                                                                   -->
+                                                                                    </select>
+                                                                                </div>
+
+
+
+                                                                                <!-- <div class="col-sm-4">
                                                                                 <label for="bank_city_{{i}}" class="m-0 labelTitle col-form-label float-left"
                                                                                   [ngClass]="{
                                                                                             'colorLabel':hasRequiredValidatorForBankDtls('bank_city',i)
@@ -1816,13 +1845,51 @@
                                                                                      <div class="invalid-feedback text-left" *ngIf="item.get('bank_district')?.invalid && (item.get('bank_district')?.dirty || item.get('bank_district')?.touched)">
                                                                                         <span class="invalid-feedback error_txt" *ngIf="item.get('bank_district')?.errors?.['required']">**Please provide bank district**</span>
                                                                                     </div>
-                                                                                </div>
+                                                                                </div> -->
 
                                                                             </div>
                                                                         </div>  
                                                                         <div class="col-sm-12">
                                                                             <div class="form-group row m-0">
                                                                                 <div class="col-sm-4">
+                                                                                     <!-- (change)="onChangeDistrict($event,i)" -->
+                                                                                    <label for="bank_district_{{i}}"
+                                                                                    class="m-0 labelTitle col-form-label float-left"
+                                                                                    [ngClass]="{'colorLabel':hasRequiredValidatorForBankDtls('bank_district',i)}">Bank District: </label>
+                                                                                    <select id="bank_district_{{i}}" name="bank_district_{{i}}"
+                                                                                    class="js-example-responsive  form-control"
+                                                                                    formControlName="bank_district"
+                                                                                    (change)="onChangeBankDistrict($event,i)"
+                                                                                    >
+                                                                                    <option value="">-- Choose District --</option> 
+                                                                                    <option value="{{district.id}}" *ngFor="let district of item.get('md_bank_district')?.value">{{district.name}}</option>
+                                                                                </select>
+                                                                                </div>
+
+                                                                                <div class="col-sm-4">
+                                                                                     <!-- (change)="onChangeDistrict($event,i)" -->
+                                                                                    <label for="bank_city_{{i}}"
+                                                                                    class="m-0 labelTitle col-form-label float-left"
+                                                                                    [ngClass]="{'colorLabel':hasRequiredValidatorForBankDtls('bank_city',i)}">Bank City: </label>
+                                                                                    <select id="bank_city_{{i}}" name="bank_city_{{i}}"
+                                                                                    class="js-example-responsive  form-control"
+                                                                                    formControlName="bank_city"
+                                                                                    (change)="onChangeBankCity($event,i)"
+                                                                                    >
+                                                                                    <option value="">-- Choose City --</option> 
+                                                                                    <option value="{{city.id}}" *ngFor="let city of item.get('md_bank_city')?.value">{{city.name}}</option>
+                                                                                </select>
+                                                                                </div>
+                                                                                <div class="col-sm-4">
+                                                                                    <label for="bank_pincode"
+                                                                                    class="m-0 labelTitle col-form-label float-left"
+                                                                                    [ngClass]="{'colorLabel':hasRequiredValidatorForBankDtls('bank_pincode',i)}">Bank Pincode: </label>
+                                                                                    <ng-multiselect-dropdown  id="bank_pincode" [placeholder]="'--Select Pincode--'"
+                                                                                    [settings]="settingsforBrnchDropdown" [data]="item.get('md_bank_pincode')?.value"
+                                                                                    formControlName="bank_pincode">
+                                                                                </ng-multiselect-dropdown>
+                                                                                </div>
+                                                                                <!-- <div class="col-sm-4">
                                                                                     <label for="bank_state_{{i}}" class="m-0 labelTitle col-form-label float-left"
                                                                                       [ngClass]="{
                                                                                             'colorLabel':hasRequiredValidatorForBankDtls('bank_state',i)
@@ -1834,8 +1901,9 @@
                                                                                      <div class="invalid-feedback text-left" *ngIf="item.get('bank_state')?.invalid && (item.get('bank_state')?.dirty || item.get('bank_state')?.touched)">
                                                                                         <span class="invalid-feedback error_txt" *ngIf="item.get('bank_state')?.errors?.['required']">**Please provide bank state**</span>
                                                                                     </div>
-                                                                                </div>
-                                                                                <div class="col-sm-4">
+                                                                                </div> -->
+
+                                                                                <!-- <div class="col-sm-4">
                                                                                 <label for="bank_pincode_{{i}}" class="m-0 labelTitle col-form-label float-left "
                                                                                  [ngClass]="{
                                                                                             'colorLabel':hasRequiredValidatorForBankDtls('bank_pincode',i)
@@ -1847,8 +1915,11 @@
                                                                                 <div class="invalid-feedback text-left" *ngIf="item.get('bank_pincode')?.invalid && (item.get('bank_pincode')?.dirty || item.get('bank_pincode')?.touched)">
                                                                                         <span class="invalid-feedback error_txt" *ngIf="item.get('bank_pincode')?.errors?.['required']">**Please provide bank pincode**</span>
                                                                                     </div>
-                                                                                </div>
-                                                                                <div class="col-sm-4">
+                                                                                </div> -->
+                                                                            </div>
+                                                                        </div> 
+                                                                        <div class="col-sm-12">
+                                                                                 <div class="col-sm-4">
                                                                                     <label for="default_bank_flag_{{i}}" class="m-0 labelTitle col-form-label float-left"
                                                                                     [ngClass]="{
                                                                                             'colorLabel':hasRequiredValidatorForBankDtls('default_bank_flag',i)
@@ -1867,18 +1938,28 @@
                                                                                         <span class="invalid-feedback error_txt" *ngIf="item.get('default_bank_flag')?.errors?.['required']">**Please provide default bank flag**</span>
                                                                                     </div>
                                                                                 </div>
-
-                                                                            </div>
-                                                                        </div> 
+                                                                        </div>
                                                                     </div>
                                                                     </ng-container>
 
                                                                 </fieldset>
+                                                                <ng-container
+                                                                    *ngIf="custEntry?.tax_status != 2 
+                                                                    && custEntry?.tax_status != 11
+                                                                    && custEntry?.tax_status != 19
+                                                                    && custEntry?.tax_status != 20
+                                                                    && custEntry?.tax_status != 21
+                                                                    && custEntry?.tax_status != 22
+                                                                    "
+                                                                > 
                                                                 <div class="p-3 addMoreBank" *ngIf="this.bank.length < 5">
                                                                     <button class="btn btn-primary" (click)="addMoreBank()">
                                                                         <i class="pi pi-plus"></i>    ADD MORE BANK
                                                                     </button>
                                                                 </div>
+
+                                                                </ng-container>
+                                                               
                                                             </div>
                                                              <!-- <div class="col-sm-12 d-flex justify-content-end align-items-center">
                                                             <button class="btn btn-danger"
@@ -1915,7 +1996,7 @@
                                                                                             'colorLabel':hasRequiredValidator('nominee_dtls.nominee_number')
                                                                                         }"
                                                                                     >Select
-                                                                                    Nominee: </label>
+                                                                                    No. Of Nominee: </label>
                                                                                     <div class="col-sm-8">
                                                                                         <select id="nominee_number" name="nominee_number"
                                                                                         class="js-example-responsive select2  form-control"
@@ -2042,7 +2123,7 @@
                                                                                     </div>
                                                                                      </div>
                                                                                   
-                                                                                    <div class="col-sm-3 d-flex  align-items-center flex-row">
+                                                                                    <div class="col-sm-3 d-flex flex-column align-items-start">
                                                                                         <input placeholder="Enter Mobile"
                                                                                         minlength="10"
                                                                                         maxLength="10"
@@ -2079,7 +2160,7 @@
                                                                                   </div>
                                                                                  
          
-                                                                                 <div  class="col-sm-3 d-flex flex-row align-items-center">
+                                                                                 <div  class="col-sm-3 d-flex flex-column align-items-start">
                                                                                             <input type="text"
                                                                                             id="nominee_email_{{i}}" name="nominee_email_{{i}}"
                                                                                             class="form-control " placeholder="Enter Email"
@@ -2121,7 +2202,7 @@
                                                                                             </select>
                                                                                             <div class="invalid-feedback text-left"
                                                                                             *ngIf="item?.get('nominee_document')?.invalid && (item?.get('nominee_document')?.dirty || item?.get('nominee_document')?.touched)">
-                                                                                                <span *ngIf="item?.get('nominee_document')?.errors?.['pattern']">**Please choose nominee document.**</span>
+                                                                                                <span *ngIf="item?.get('nominee_document')?.errors?.required">**Please choose nominee document.**</span>
                                                                                             </div>
                                                                                         </div>
                                                                                     <!-- END -->
@@ -2426,12 +2507,16 @@
                                                                                     id="nominee_pincode_{{i}}" name="nominee_pincode_{{i}}"
                                                                                     class="form-control "
                                                                                     formControlName="nominee_pincode" /> -->
-                                                                                     <select id="nominee_pincode_{{i}}" name="nominee_pincode_{{i}}"
+                                                                                     <!-- <select id="nominee_pincode_{{i}}" name="nominee_pincode_{{i}}"
                                                                                     class="js-example-responsive  form-control"
                                                                                     formControlName="nominee_pincode">
                                                                                     <option value="">-- Choose Pincode --</option>      
                                                                                     <option value="{{pincode.id}}" *ngFor="let pincode of item.get('md_nominee_pincode')?.value">{{pincode.pincode}}</option>                                                                     
-                                                                                </select>
+                                                                                </select> -->
+                                                                                    <ng-multiselect-dropdown  id="pincode_id" [placeholder]="'--Select Pincode--'"
+                                                                                    [settings]="settingsforBrnchDropdown" [data]="item.get('md_nominee_pincode')?.value"
+                                                                                    formControlName="nominee_pincode">
+                                                                                    </ng-multiselect-dropdown>
                                                                                       <div class="invalid-feedback text-left"
                                                                                     *ngIf="item.get('nominee_pincode')?.invalid && (item.get('nominee_pincode')?.dirty || item.get('nominee_pincode')?.touched)">
                                                                                     <span class="invalid-feedback error_txt"
@@ -2824,6 +2909,532 @@
                                                                 </div>
                                                                 <!-- End -->
                                                                  </ng-container>
+
+                                                                 <div class="col-sm-12 container mx-auto">
+                                                                    <!-- KYC -->
+                                                                    <fieldset class="my-3">
+                                                                            <legend>KYC</legend>
+                                                                            <!--App Income Value-->
+                                                                            <div class="form-group row">
+                                                                                    <div class="col-sm-3">
+                                                                                        <label for="app_income_value" class="m-0 labelTitle col-form-label float-left" [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.app_income_value')}">App Income Value: </label> 
+                                                                                        <input placeholder="Enter App Income Value" type="text"
+                                                                                        id="app_income_value" name="app_income_value" 
+                                                                                        class="form-control"
+                                                                                        formControlName="app_income_value" />    
+                                                                                         <div class="invalid-feedback text-left"
+                                                                                        *ngIf="new_client_form.get('additional_dtls.app_income_value')?.invalid && (new_client_form.get('additional_dtls.app_income_value')?.dirty || new_client_form.get('additional_dtls.app_income_value')?.touched)">
+                                                                                        <span class="invalid-feedback error_txt"
+                                                                                            *ngIf="(new_client_form.get('additional_dtls.app_income_value'))?.errors?.required">**Please
+                                                                                            provide
+                                                                                            income value**</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-sm-3">
+                                                                                        <label for="pep" class="m-0 labelTitle col-form-label float-left" 
+                                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.pep')}">PEP: </label> 
+                                                                                        <input placeholder="Enter PEP" type="text"
+                                                                                        id="pep" name="pep" 
+                                                                                        class="form-control"
+                                                                                        formControlName="pep" />    
+                                                                                         <div class="invalid-feedback text-left"
+                                                                                        *ngIf="new_client_form.get('additional_dtls.pep')?.invalid && (new_client_form.get('additional_dtls.pep')?.dirty || new_client_form.get('additional_dtls.pep')?.touched)">
+                                                                                        <span class="invalid-feedback error_txt"
+                                                                                            *ngIf="(new_client_form.get('additional_dtls.pep'))?.errors?.required">**Please
+                                                                                            provide
+                                                                                            pep**</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-sm-3">
+                                                                                     <label for="additional_occupation"
+                                                                                        class="m-0 labelTitle col-form-label float-left"
+                                                                                         [ngClass]="{
+                                                                                            'colorLabel':hasRequiredValidator('additional_dtls.additional_occupation')
+                                                                                        }"
+                                                                                        >Occupation
+                                                                                        : </label>
+                                                                                    <select id="additional_occupation" name="additional_occupation"
+                                                                                        class="js-example-responsive select2  form-control"
+                                                                                        formControlName="additional_occupation">
+                                                                                        <option selected="selected" value="">- Choose Occupation -</option>
+                                                                                        <option value="{{occupation.id}}" *ngFor="let  occupation of md_occupation">{{occupation.name}}</option>
+                                                                                    </select>
+                                                                                      <div class="invalid-feedback text-left"
+                                                                                        *ngIf="new_client_form.get('additional_dtls.additional_occupation')?.invalid && (new_client_form.get('additional_dtls.additional_occupation')?.dirty || new_client_form.get('additional_dtls.additional_occupation')?.touched)">
+                                                                                        <span class="invalid-feedback error_txt"
+                                                                                            *ngIf="(new_client_form.get('additional_dtls.additional_occupation'))?.errors?.required">**Please provide occupation**</span>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                     <div class="col-sm-3">
+                                                                                        <label for="source_of_wealth" class="m-0 labelTitle col-form-label float-left" 
+                                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.source_of_wealth')}">Source Of Wealth: </label> 
+                                                                                        <input placeholder="Enter Source Of Wealth" type="text"
+                                                                                        id="source_of_wealth" name="source_of_wealth" 
+                                                                                        class="form-control"
+                                                                                        formControlName="source_of_wealth" />    
+                                                                                         <div class="invalid-feedback text-left"
+                                                                                        *ngIf="new_client_form.get('additional_dtls.source_of_wealth')?.invalid && (new_client_form.get('additional_dtls.source_of_wealth')?.dirty || new_client_form.get('additional_dtls.source_of_wealth')?.touched)">
+                                                                                        <span class="invalid-feedback error_txt"
+                                                                                            *ngIf="(new_client_form.get('additional_dtls.source_of_wealth'))?.errors?.required">**Please
+                                                                                            provide
+                                                                                            source of wealth**</span>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                            </div>
+                                                                        </fieldset>
+                                                                    <!-- End -->
+                                                                 </div>
+                                                                 <div  class="col-sm-12 container mx-auto">
+                                                                            <fieldset class="my-3">
+                                                                                <legend>FATCA</legend>
+                                                                                  <div class="form-group row">
+                                                                                        <div class="col-sm-3">
+                                                                                            <label for="fatca_dob"
+                                                                                                class="m-0 labelTitle col-form-label float-left" 
+                                                                                                [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.fatca_dob')}"
+                                                                                                >DOB: </label>
+                                                                                            <input type="date" id="fatca_dob" name="fatca_dob"
+                                                                                                class="form-control" formControlName="fatca_dob" />
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.fatca_dob')?.invalid && (new_client_form.get('additional_dtls.fatca_dob')?.dirty || new_client_form.get('additional_dtls.fatca_dob')?.touched)">
+                                                                                                <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.fatca_dob'))?.errors?.required">**Please
+                                                                                                    provide
+                                                                                                    dob**</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                             <label for="fatca_dob"
+                                                                                                class="m-0 labelTitle col-form-label float-left" 
+                                                                                                [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.address_type')}"
+                                                                                                >Address Type: </label>
+                                                                                            <select id="address_type" name="address_type"
+                                                                                                class="js-example-responsive select2  form-control"
+                                                                                                formControlName="address_type">
+                                                                                                <option value="">-- Select --</option>
+                                                                                                <option value="Y">address</option>
+                                                                                                <option value="N">NO</option>
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.address_type')?.invalid && (new_client_form.get('additional_dtls.address_type')?.dirty || new_client_form.get('additional_dtls.address_type')?.touched)">
+                                                                                                <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.address_type'))?.errors?.required">**Please provide address type**</span>
+                                                                                            </div>
+                                                                                        </div>   
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.additional_email" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.additional_email')}">Email: </label>
+                                                                                            <input placeholder="Enter email" type="text"
+                                                                                            id="additional_dtls.additional_email" name="additional_dtls.additional_email"
+                                                                                            class="form-control"
+                                                                                            formControlName="additional_email" />
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.additional_email')?.invalid && (new_client_form.get('additional_dtls.additional_email')?.dirty || new_client_form.get('additional_dtls.additional_email')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.additional_email'))?.errors?.required">**Please
+                                                                                                    provide
+                                                                                                    email**</span>
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.additional_email'))?.errors?.email">**Please
+                                                                                                    provide valid
+                                                                                                    email**</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.country_of_birth_or_incorporation" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.country_of_birth_or_incorporation')}">Country Of Birth / Incorporation: </label>
+                                                                                            <select id="country_of_birth_or_incorporation" name="country_of_birth_or_incorporation"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="country_of_birth_or_incorporation">
+                                                                                                <option value="">-- Choose Country --</option>       
+                                                                                                <option value="{{country.id}}" *ngFor="let country of md_country">{{country.name}}</option>                                                                    
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.country_of_birth_or_incorporation')?.invalid && (new_client_form.get('additional_dtls.country_of_birth_or_incorporation')?.dirty || new_client_form.get('additional_dtls.country_of_birth_or_incorporation')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.country_of_birth_or_incorporation'))?.errors?.required">**Please
+                                                                                                    choose
+                                                                                                    counrty of birth / incorporation**</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.place_of_birth" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.place_of_birth')}">Place Of Birth :</label>
+                                                                                            <input placeholder="Enter Place Of Birth" type="text"
+                                                                                            id="additional_dtls.place_of_birth" name="additional_dtls.place_of_birth"
+                                                                                            class="form-control"
+                                                                                            formControlName="place_of_birth" />
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.place_of_birth')?.invalid && (new_client_form.get('additional_dtls.place_of_birth')?.dirty || new_client_form.get('additional_dtls.place_of_birth')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.place_of_birth'))?.errors?.required">**Please
+                                                                                                    provide
+                                                                                                    place of birth**</span>
+                                                                                                    
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.tax_receidence_other_than_india" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.tax_receidence_other_than_india')}">Tax Residency Other Than India: </label>
+                                                                                            <select id="tax_receidence_other_than_india" name="tax_receidence_other_than_india"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="tax_receidence_other_than_india">
+                                                                                                <option value="">-- Choose Tax Residency Other Than India --</option>       
+                                                                                                <option value="Y">Yes</option>                                                                    
+                                                                                                <option value="N">No</option>                                                                    
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.tax_receidence_other_than_india')?.invalid && (new_client_form.get('additional_dtls.tax_receidence_other_than_india')?.dirty || new_client_form.get('additional_dtls.tax_receidence_other_than_india')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.tax_receidence_other_than_india'))?.errors?.required">**Please
+                                                                                                    choose
+                                                                                                    tax residency other than india**</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.country_of_tax_residency1" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.country_of_tax_residency1')}">Country of Tax Residency1: </label>
+                                                                                            <select id="country_of_tax_residency1" name="country_of_tax_residency1"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="country_of_tax_residency1">
+                                                                                                <option value="">-- Choose Country Of Tax Residency1 --</option>       
+                                                                                                <option value="{{country.id}}" *ngFor="let country of md_country">{{country.name}}</option>                                                                    
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.country_of_tax_residency1')?.invalid && (new_client_form.get('additional_dtls.country_of_tax_residency1')?.dirty || new_client_form.get('additional_dtls.country_of_tax_residency1')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.country_of_tax_residency1'))?.errors?.required">**Please
+                                                                                                    choose
+                                                                                                    country of tax residency**</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.tax_payer_identification_no1" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.tax_payer_identification_no1')}">Tax Payer Identification No1 :</label>
+                                                                                            <input placeholder="Enter Tax Payer Identification No1" type="text"
+                                                                                            id="additional_dtls.tax_payer_identification_no1" name="additional_dtls.tax_payer_identification_no1"
+                                                                                            class="form-control"
+                                                                                            formControlName="tax_payer_identification_no1" />
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.tax_payer_identification_no1')?.invalid && (new_client_form.get('additional_dtls.tax_payer_identification_no1')?.dirty || new_client_form.get('additional_dtls.tax_payer_identification_no1')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.tax_payer_identification_no1'))?.errors?.required">**Please
+                                                                                                    provide
+                                                                                                    tax payer identification no**</span>
+                                                                                                    
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.country_of_tax_residency2" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.country_of_tax_residency2')}">Country of Tax Residency1: </label>
+                                                                                            <select id="country_of_tax_residency2" name="country_of_tax_residency2"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="country_of_tax_residency2">
+                                                                                                <option value="">-- Choose Country Of Tax Residency1 --</option>       
+                                                                                                <option value="{{country.id}}" *ngFor="let country of md_country">{{country.name}}</option>                                                                    
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.country_of_tax_residency2')?.invalid && (new_client_form.get('additional_dtls.country_of_tax_residency2')?.dirty || new_client_form.get('additional_dtls.country_of_tax_residency2')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.country_of_tax_residency2'))?.errors?.required">**Please
+                                                                                                    choose
+                                                                                                    country of tax residency**</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.tax_payer_identification_no2" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.tax_payer_identification_no2')}">Tax Payer Identification No1 :</label>
+                                                                                            <input placeholder="Enter Tax Payer Identification No1" type="text"
+                                                                                            id="additional_dtls.tax_payer_identification_no2" name="additional_dtls.tax_payer_identification_no2"
+                                                                                            class="form-control"
+                                                                                            formControlName="tax_payer_identification_no2" />
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.tax_payer_identification_no2')?.invalid && (new_client_form.get('additional_dtls.tax_payer_identification_no2')?.dirty || new_client_form.get('additional_dtls.tax_payer_identification_no2')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.tax_payer_identification_no2'))?.errors?.required">**Please
+                                                                                                    provide
+                                                                                                    tax payer identification no**</span>
+                                                                                                    
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.identification_type2" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.identification_type2')}">Identification Type1: </label>
+                                                                                            <select id="identification_type2" name="identification_type2"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="identification_type2">
+                                                                                                <option value="">Select Identification Type1</option>
+                                                                                                <option value="C1">Company Identification Number</option>
+                                                                                                <option value="E">Driving License</option>
+                                                                                                <option value="B">Election ID Card</option>
+                                                                                                <option value="E1">Global Entity Identification Number</option>
+                                                                                                <option value="D">ID Card</option>
+                                                                                                <option value="H">NREGA Job Card</option>
+                                                                                                <option value="X">Not categorized</option>
+                                                                                                <option value="O">Others</option>
+                                                                                                <option selected="selected" value="C">PAN Card</option>
+                                                                                                <option value="A">Passport</option>
+                                                                                                <option value="T">TIN[Tax Payer Identification Number]</option>
+                                                                                                <option value="G">UIDAI / Aadhar letter</option>
+                                                                                                <option value="G1">US GIIN</option>
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.identification_type2')?.invalid && (new_client_form.get('additional_dtls.identification_type2')?.dirty || new_client_form.get('additional_dtls.identification_type2')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.identification_type2'))?.errors?.required">**Please
+                                                                                                    choose
+                                                                                                    identification type**</span>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                         <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.country_of_tax_residency3" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.country_of_tax_residency3')}">Country of Tax Residency2: </label>
+                                                                                            <select id="country_of_tax_residency3" name="country_of_tax_residency3"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="country_of_tax_residency3">
+                                                                                                <option value="">-- Choose Country Of Tax Residency1 --</option>       
+                                                                                                <option value="{{country.id}}" *ngFor="let country of md_country">{{country.name}}</option>                                                                    
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.country_of_tax_residency3')?.invalid && (new_client_form.get('additional_dtls.country_of_tax_residency3')?.dirty || new_client_form.get('additional_dtls.country_of_tax_residency3')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.country_of_tax_residency3'))?.errors?.required">**Please
+                                                                                                    choose
+                                                                                                    country of tax residency**</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.tax_payer_identification_no3" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.tax_payer_identification_no3')}">Tax Payer Identification No2 :</label>
+                                                                                            <input placeholder="Enter Tax Payer Identification No1" type="text"
+                                                                                            id="additional_dtls.tax_payer_identification_no3" name="additional_dtls.tax_payer_identification_no3"
+                                                                                            class="form-control"
+                                                                                            formControlName="tax_payer_identification_no3" />
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.tax_payer_identification_no3')?.invalid && (new_client_form.get('additional_dtls.tax_payer_identification_no3')?.dirty || new_client_form.get('additional_dtls.tax_payer_identification_no3')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.tax_payer_identification_no3'))?.errors?.required">**Please
+                                                                                                    provide
+                                                                                                    tax payer identification no**</span>
+                                                                                                    
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.identification_type3" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.identification_type3')}">Identification Type2: </label>
+                                                                                            <select id="identification_type3" name="identification_type3"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="identification_type3">
+                                                                                                <option value="">Select Identification Type1</option>
+                                                                                                <option value="C1">Company Identification Number</option>
+                                                                                                <option value="E">Driving License</option>
+                                                                                                <option value="B">Election ID Card</option>
+                                                                                                <option value="E1">Global Entity Identification Number</option>
+                                                                                                <option value="D">ID Card</option>
+                                                                                                <option value="H">NREGA Job Card</option>
+                                                                                                <option value="X">Not categorized</option>
+                                                                                                <option value="O">Others</option>
+                                                                                                <option selected="selected" value="C">PAN Card</option>
+                                                                                                <option value="A">Passport</option>
+                                                                                                <option value="T">TIN[Tax Payer Identification Number]</option>
+                                                                                                <option value="G">UIDAI / Aadhar letter</option>
+                                                                                                <option value="G1">US GIIN</option>
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.identification_type3')?.invalid && (new_client_form.get('additional_dtls.identification_type3')?.dirty || new_client_form.get('additional_dtls.identification_type3')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.identification_type3'))?.errors?.required">**Please
+                                                                                                    choose
+                                                                                                    identification type**</span>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.country_of_tax_residency4" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.country_of_tax_residency4')}">Country of Tax Residency3: </label>
+                                                                                            <select id="country_of_tax_residency4" name="country_of_tax_residency4"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="country_of_tax_residency4">
+                                                                                                <option value="">-- Choose Country Of Tax Residency1 --</option>       
+                                                                                                <option value="{{country.id}}" *ngFor="let country of md_country">{{country.name}}</option>                                                                    
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.country_of_tax_residency4')?.invalid && (new_client_form.get('additional_dtls.country_of_tax_residency4')?.dirty || new_client_form.get('additional_dtls.country_of_tax_residency4')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.country_of_tax_residency4'))?.errors?.required">**Please
+                                                                                                    choose
+                                                                                                    country of tax residency**</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.tax_payer_identification_no4" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.tax_payer_identification_no4')}">Tax Payer Identification No3:</label>
+                                                                                            <input placeholder="Enter Tax Payer Identification No1" type="text"
+                                                                                            id="additional_dtls.tax_payer_identification_no4" name="additional_dtls.tax_payer_identification_no4"
+                                                                                            class="form-control"
+                                                                                            formControlName="tax_payer_identification_no4" />
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.tax_payer_identification_no4')?.invalid && (new_client_form.get('additional_dtls.tax_payer_identification_no4')?.dirty || new_client_form.get('additional_dtls.tax_payer_identification_no4')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.tax_payer_identification_no4'))?.errors?.required">**Please
+                                                                                                    provide
+                                                                                                    tax payer identification no**</span>
+                                                                                                    
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.identification_type4" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.identification_type4')}">Identification Type3: </label>
+                                                                                            <select id="identification_type4" name="identification_type4"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="identification_type4">
+                                                                                                <option value="">Select Identification Type1</option>
+                                                                                                <option value="C1">Company Identification Number</option>
+                                                                                                <option value="E">Driving License</option>
+                                                                                                <option value="B">Election ID Card</option>
+                                                                                                <option value="E1">Global Entity Identification Number</option>
+                                                                                                <option value="D">ID Card</option>
+                                                                                                <option value="H">NREGA Job Card</option>
+                                                                                                <option value="X">Not categorized</option>
+                                                                                                <option value="O">Others</option>
+                                                                                                <option selected="selected" value="C">PAN Card</option>
+                                                                                                <option value="A">Passport</option>
+                                                                                                <option value="T">TIN[Tax Payer Identification Number]</option>
+                                                                                                <option value="G">UIDAI / Aadhar letter</option>
+                                                                                                <option value="G1">US GIIN</option>
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.identification_type4')?.invalid && (new_client_form.get('additional_dtls.identification_type4')?.dirty || new_client_form.get('additional_dtls.identification_type4')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.identification_type4'))?.errors?.required">**Please
+                                                                                                    choose
+                                                                                                    identification type**</span>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                         <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.country_of_tax_residency4" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.country_of_tax_residency4')}">Country of Tax Residency4: </label>
+                                                                                            <select id="country_of_tax_residency4" name="country_of_tax_residency4"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="country_of_tax_residency4">
+                                                                                                <option value="">-- Choose Country Of Tax Residency1 --</option>       
+                                                                                                <option value="{{country.id}}" *ngFor="let country of md_country">{{country.name}}</option>                                                                    
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.country_of_tax_residency4')?.invalid && (new_client_form.get('additional_dtls.country_of_tax_residency4')?.dirty || new_client_form.get('additional_dtls.country_of_tax_residency4')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.country_of_tax_residency4'))?.errors?.required">**Please
+                                                                                                    choose
+                                                                                                    country of tax residency**</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.tax_payer_identification_no4" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.tax_payer_identification_no4')}">Tax Payer Identification No4:</label>
+                                                                                            <input placeholder="Enter Tax Payer Identification No1" type="text"
+                                                                                            id="additional_dtls.tax_payer_identification_no4" name="additional_dtls.tax_payer_identification_no4"
+                                                                                            class="form-control"
+                                                                                            formControlName="tax_payer_identification_no4" />
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.tax_payer_identification_no4')?.invalid && (new_client_form.get('additional_dtls.tax_payer_identification_no4')?.dirty || new_client_form.get('additional_dtls.tax_payer_identification_no4')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.tax_payer_identification_no4'))?.errors?.required">**Please
+                                                                                                    provide
+                                                                                                    tax payer identification no**</span>
+                                                                                                    
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.identification_type4" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.identification_type4')}">Identification Type4: </label>
+                                                                                            <select id="identification_type4" name="identification_type4"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="identification_type4">
+                                                                                                <option value="">Select Identification Type1</option>
+                                                                                                <option value="C1">Company Identification Number</option>
+                                                                                                <option value="E">Driving License</option>
+                                                                                                <option value="B">Election ID Card</option>
+                                                                                                <option value="E1">Global Entity Identification Number</option>
+                                                                                                <option value="D">ID Card</option>
+                                                                                                <option value="H">NREGA Job Card</option>
+                                                                                                <option value="X">Not categorized</option>
+                                                                                                <option value="O">Others</option>
+                                                                                                <option selected="selected" value="C">PAN Card</option>
+                                                                                                <option value="A">Passport</option>
+                                                                                                <option value="T">TIN[Tax Payer Identification Number]</option>
+                                                                                                <option value="G">UIDAI / Aadhar letter</option>
+                                                                                                <option value="G1">US GIIN</option>
+                                                                                            </select>
+                                                                                            <div class="invalid-feedback text-left"
+                                                                                                *ngIf="new_client_form.get('additional_dtls.identification_type4')?.invalid && (new_client_form.get('additional_dtls.identification_type4')?.dirty || new_client_form.get('additional_dtls.identification_type4')?.touched)">
+                                                                                                    <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(new_client_form.get('additional_dtls.identification_type4'))?.errors?.required">**Please
+                                                                                                    choose
+                                                                                                    identification type**</span>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                         <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.ffi" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.ffi')}">FFI :</label>
+                                                                                            <input placeholder="Enter FFI" type="text"
+                                                                                            id="additional_dtls.ffi" name="additional_dtls.ffi"
+                                                                                            class="form-control"
+                                                                                            formControlName="ffi" />
+                                                                                        </div>
+                                                                                         <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.nffe_category" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.nffe_category')}">NFFE Category :</label>
+                                                                                            <input placeholder="Enter FFI" type="text"
+                                                                                            id="additional_dtls.nffe_category" name="additional_dtls.nffe_category"
+                                                                                            class="form-control"
+                                                                                            formControlName="nffe_category" />
+                                                                                        </div>
+                                                                                         <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.nature_of_bussiness" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.nature_of_bussiness')}">Nature of Business:</label>
+                                                                                            <input placeholder="Enter FFI" type="text"
+                                                                                            id="additional_dtls.nature_of_bussiness" name="additional_dtls.nature_of_bussiness"
+                                                                                            class="form-control"
+                                                                                            formControlName="nature_of_bussiness" />
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.active_nffe_sub_category" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.active_nffe_sub_category')}">Active NFFE Sub Category:</label>
+                                                                                            <input placeholder="Enter FFI" type="text"
+                                                                                            id="additional_dtls.active_nffe_sub_category" name="additional_dtls.active_nffe_sub_category"
+                                                                                            class="form-control"
+                                                                                            formControlName="active_nffe_sub_category" />
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.name_of_stock_exchange" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.name_of_stock_exchange')}">Active NFFE Sub Category:</label>
+                                                                                            <select id="name_of_stock_exchange" name="name_of_stock_exchange"
+                                                                                                class="js-example-responsive  form-control"
+                                                                                                formControlName="name_of_stock_exchange">
+                                                                                               <option  value="">Select Name of the Stock Ex-change</option>
+                                                                                                <option value="B">BSE</option>
+                                                                                                <option value="N">NSE</option>
+                                                                                                <option value="O">Others</option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div class="col-sm-3">
+                                                                                            <label   for="additional_dtls.name_of_listed_company" class="m-0 labelTitle col-form-label float-left" 
+                                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.name_of_listed_company')}">Name of the Listed Company:</label>
+                                                                                            <input placeholder="Enter FFI" type="text"
+                                                                                            id="additional_dtls.name_of_listed_company" name="additional_dtls.name_of_listed_company"
+                                                                                            class="form-control"
+                                                                                            formControlName="name_of_listed_company" />
+                                                                                        </div>
+                                                                                  </div>      
+                                                                            </fieldset>
+                                                                 </div>
+                                                                 
                                                          </div>
                                                          <!-- End -->
                                                             <div class="row" formGroupName="final_submit" *ngIf="step_content_name == 'final_submit'">

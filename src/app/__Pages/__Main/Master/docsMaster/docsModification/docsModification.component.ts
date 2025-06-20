@@ -31,6 +31,12 @@ export class DocsModificationComponent implements OnInit {
 
   ngOnInit() {
   }
+  /**
+   * * * This function is responsible for submitting the document type form data to the server.
+   * * * It checks if the form is valid, creates a FormData object, appends the form values to it,
+   * * * and makes an API call to submit the data.
+   * * * @returns void  
+   */
   submit() {
     if (this.__docsForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error',0);
@@ -48,18 +54,40 @@ export class DocsModificationComponent implements OnInit {
       this.__utility.showSnackbar(res.suc == 1 ? (this.data.id == 1 ? 'Document type updated successfully' : 'Document type added successfully') : 'Something went wrong! please try again later', res.suc);
     })
   }
+  /**
+   * * * This function is responsible for resetting the document type form data.
+   * * * It clears the form values and resets the form state.
+   * * * @returns void
+   */
   minimize(){
     this.dialogRef.updateSize("40%",'47px');
     this.dialogRef.updatePosition({bottom: '0px', right: '0px' });
   }
+  /**
+   * * * This function is used to maximize the dialog.
+   * * * @returns void
+   * * * @memberof DocsModificationComponent
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to toggle the full screen mode of the dialog.
+   * * * @returns void
+   * * * @memberof DocsModificationComponent
+   */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to reset the document type form fields to their initial values.
+   * * * It sets the form controls to their default values and resets the form state.
+   * * * @memberof DocsModificationComponent
+   * * * @description
+   * * * This function is responsible for resetting the document type form data.
+   */
   reset(){
     this.__docsForm.reset();
   }

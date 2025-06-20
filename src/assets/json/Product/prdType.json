@@ -11,7 +11,7 @@
     "id":2,
     "accessibility":[],
     "title":"Fixed Deposit",
-    "url":"/main/product/mf",
+    "url":"/main/product",
     "icon": "",
     "img":"fixedDeposit.png"
   },
@@ -19,7 +19,7 @@
     "id":3,
     "accessibility":[],
     "title":"Insurance",
-    "url":"/main/product/mf",
+    "url":"/main/product",
     "icon": "",
     "img":"insurance.png"
   }

@@ -76,6 +76,12 @@ export class UploadOptionComponent implements OnInit {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
     // this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
+  /**
+   * * This function is used to preview the latest option entries.
+   * * It makes an API call to fetch the latest option entries and updates the data source for the table.
+   * * @returns void
+   * * @memberof UploadOptionComponent
+   */
   previewlatestOptEntry() {
     this.__dbIntr
       .api_call(0, '/option', null)
@@ -85,6 +91,11 @@ export class UploadOptionComponent implements OnInit {
       });
   }
 
+  /**
+   *  * This function is used to handle the file upload for the option.
+   *  * It validates the file type and size, creates a FormData object, appends the file to it,
+   *  * and makes an API call to upload the file.
+   */
   populateDT(__items: option) {
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/option',
@@ -96,6 +107,12 @@ export class UploadOptionComponent implements OnInit {
       } }
     );
   }
+  /**
+   * * * This function is used to view all options.
+   * * * It redirects the user to the '/main/master/productwisemenu/option' route.
+   * * * @returns void
+   * * * @memberof UploadOptionComponent  
+   */
   viewAll(){
     this.__utility.navigate(
       '/main/master/productwisemenu/option'

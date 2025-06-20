@@ -38,6 +38,12 @@ export class UploadCsvComponent implements OnInit {
     this.previewlatestDocumnetType();
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
   }
+  /**
+   * * * This function is used to preview the latest document types.
+   * * * It makes an API call to fetch the latest document types and updates the data source for the table.
+   * * * @returns void
+   * * * @memberof UploadCsvComponent
+   */
   previewlatestDocumnetType() {
     this.__dbIntr
       .api_call(0, '/documenttype', null)
@@ -46,11 +52,25 @@ export class UploadCsvComponent implements OnInit {
         this.__selectRNT = new MatTableDataSource(res.slice(0, 5));
       });
   }
+  /**
+   * * * This function is used to navigate to the document type modification page with the selected item.
+   * * * It takes the selected document type item as a parameter and navigates to the 
+   * * document type modification page with the item's ID as a query parameter.
+   * * * @param __items - The selected document type item.
+   * * * @returns void
+   * * * @memberof UploadCsvComponent
+   */
   populateDT(__items: docType) {
     this.__utility.navigatewithqueryparams('/main/master/docType', {
       queryParams: { id: btoa(__items.id.toString()) },
     });
   }
+  /**
+   * * * This function is used to navigate to the document type view page.
+   * * * It redirects the user to the document type view page.
+   * * * @returns void
+   * * * @memberof UploadCsvComponent
+   */
   viewAll() {
     this.__utility.navigate('/main/master/docType');
   }

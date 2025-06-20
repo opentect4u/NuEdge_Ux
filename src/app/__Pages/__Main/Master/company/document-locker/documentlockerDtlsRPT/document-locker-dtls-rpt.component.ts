@@ -19,6 +19,11 @@ export class DocumentLockerDtlsRPTComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  /** * This function is used to populate the data table with the selected document details.
+ * It emits an event with the selected document details.
+ * @param {any} document - The document details to be populated in the data table.
+ * @returns {void}
+ */
   populateDT(document){
     console.log(document);
     this.selectIndex.emit(document);

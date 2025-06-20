@@ -27,18 +27,38 @@ export class QueryStatusComponent implements OnInit {
   ngOnInit(): void {
     // console.log(this.data)
   }
+  /**
+   * * * This function is used to toggle the visibility of the dialog.
+   * * * @returns void
+   * * * @memberof QueryStatusComponent
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * * This function is used to maximize the dialog.
+   * * * @returns void
+   * * * @memberof QueryStatusComponent
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to toggle the full screen mode of the dialog.
+   * * * @returns void
+   * * * @memberof QueryStatusComponent
+   */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to submit the query status form.
+   * * * It sends the form data to the server and closes the dialog with a success message.
+   * * * @returns void
+   */
   submitQueryStatus(){
     console.log(this.queryStatusForm.value)
     const payload = {

@@ -22,10 +22,20 @@ export class DocumentLockerComponent implements OnInit {
   ngOnInit(): void {
     this.onTabChange({index:0,tabDtls:this.TabMenu[0]});
   }
+  /** * * This function is used to handle the tab change event.
+ * * It updates the comp_id with the selected tab's id and retrieves the document details for that company profile.
+ * * @param {any} ev - The event containing the tab change information.
+ * * * @returns {void}
+ * */
   onTabChange(ev){
     this.comp_id = ev.tabDtls.id;
     this.getDocument( ev.tabDtls.id);
   }
+  /** * This function is used to retrieve the document details for a specific company profile.
+ * * It makes an API call to fetch the document details based on the provided company profile ID.
+ * * @param {number} cm_profile_id - The ID of the company profile for which the document details are to be retrieved.
+ * * @returns {void}
+ */
   getDocument(cm_profile_id){
    this.dbIntr
       .api_call(0, '/comp/documentLocker', 'cm_profile_id='+cm_profile_id)
@@ -36,11 +46,22 @@ export class DocumentLockerComponent implements OnInit {
       });
 
   }
+  /** * This function is used to retrieve the row data for a specific company profile.
+ * * It updates the comp_id and documentDtls properties with the provided row data.
+ * * @param {any} rowData - The row data containing the company profile information.
+ * * @returns {void}
+ */
   getRowData(rowData){
     this.comp_id = rowData.cm_profile_id;
     this.documentDtls = rowData;
   }
 
+  /** * This function is used to handle the document modification event.
+ * * It updates the document details based on the provided event data.
+ * * If the document already exists, it updates the existing entry; otherwise, it adds a new entry.
+ * * @param {any} ev - The event containing the modified document details.
+ * * @returns {void}
+ */
   documentModification(ev){
     ev.forEach(res =>{
           if(this.docDtls.findIndex((x) => x.id == res.id) != -1){

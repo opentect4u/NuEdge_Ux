@@ -30,6 +30,20 @@ export class DashboardComponent implements OnInit {
       case 'R':this.openDialogForRPT(item);break;
     }
   }
+  /***  
+   * * This function is used to open a dialog for adding or updating SWP Type.
+   * * * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * * * and opens the ManualEntryComponent dialog with the provided configuration.
+   * * * @param {any} item - The clicked menu item.
+   * * * @return {void}
+   * * * @memberof DashboardComponent
+   * * * @description
+   * * * This function is responsible for opening a dialog for adding or updating SWP Type.
+   * * * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * * * and opens the ManualEntryComponent dialog with the provided configuration.
+   * * @example
+   * * // Usage: Call this function when the user clicks the add or update button on the SWP Type menu.
+   */
   openDialog(item){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -63,6 +77,12 @@ export class DashboardComponent implements OnInit {
       });
     }
   }
+  /**
+   * 
+   * @param item - The clicked menu item.
+   * @description
+   * This function is used to open a dialog for generating reports related to SWP Type.
+   */
   openDialogForRPT(item){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

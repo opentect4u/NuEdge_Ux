@@ -1,3 +1,51 @@
+/**
+ * @file scmModification.component.ts
+ * This file contains the component logic for modifying scheme details in an Angular application.
+ * It includes form handling, validation, and interaction with a database service.
+ * It also manages the display of various scheme-related data such as AMC, category, subcategory, and frequency settings.
+ * It uses Angular Material for dialog management and form controls.
+ * It also integrates with utility services for encryption and decryption of data.
+ * It is part of a larger application that manages financial schemes.
+ * It is designed to be used in a dialog context, allowing users to modify scheme details interactively.
+ * @author [Your Name]
+ * @version 1.0
+ * @date [Date]
+ * @license [License]
+ * @description
+ * This component allows users to modify scheme details such as AMC, category, subcategory, and frequency settings.
+ * It provides a form interface for users to input and validate scheme data.
+ * It interacts with a database service to fetch and update scheme details.
+ * It also manages the display of various scheme-related data such as AMC, category, subcategory, and frequency settings.
+ * It uses Angular Material for dialog management and form controls.
+ * It integrates with utility services for encryption and decryption of data.
+ * It is part of a larger application that manages financial schemes.
+ * It is designed to be used in a dialog context, allowing users to modify scheme details interactively.
+ * @example
+ * ```typescript
+ * import { ScmModificationComponent } from './scmModification.component';
+ * // In your module
+ *  @NgModule({
+ *   declarations: [ScmModificationComponent],
+ *  imports: [
+ *    // other imports
+ *   MatDialogModule,
+ *   ReactiveFormsModule,
+ *  ],
+ * providers: [DbIntrService, UtiliService],
+ * })
+ * export class YourModule { }
+ * * // In your template
+ * * <button (click)="openDialog()">Modify Scheme</button>
+ * * * // In your component
+ * * openDialog() {
+ * *   const dialogRef = this.dialog.open(ScmModificationComponent, {
+ * *     width: '500px',
+ * *     data: { id: 0, items: {} } // Pass initial data if needed
+ * *   });
+ * *   dialogRef.afterClosed().subscribe(result => {
+ * *     console.log('The dialog was closed', result);
+ * *   });
+ */
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import {
@@ -344,8 +392,10 @@ export class ScmModificationComponent implements OnInit {
     });
   }
 
+
+  /** Get Asset Master by Product ID */
   ngOnInit() {
-    console.log(this.data.items);
+    console.log(this.data);
     this.__scmForm.controls['amc_id'].updateValueAndValidity({
       emitEvent: true,
     });
@@ -392,6 +442,7 @@ export class ScmModificationComponent implements OnInit {
     this.getAssetType();
   }
 
+  /*** Get Tax implication from backend API */
   getAssetType = () =>{
     this.__dbIntr.api_call(0,'/taxImplication',null)
     .pipe(pluck('data'))
@@ -399,13 +450,49 @@ export class ScmModificationComponent implements OnInit {
         this.md_asset_type = res;
     })
   }
-
+  
+  /** FormArray used in Scheme modification form
+   * This FormArray is used to manage the frequency of SIP, SWP, and STP in the scheme modification form.
+   * It allows dynamic addition and removal of frequency items.
+   * * @returns FormArray - The FormArray containing frequency items.
+   * * @example
+   * ```typescript
+   * // To get the frequency FormArray
+   * const frequencyArray = this.frequency;
+   * // To add a new frequency item
+   * this.addFrequency();
+   * // To remove a frequency item at index 0
+   * this.removeFrequency(0);
+   * * // To create a new frequency item
+   * this.createFrequency();
+   * * // To set a frequency item with specific values
+   *  this.setFrequency(1, 'Monthly', true);
+  */
   get others(): FormArray {
     return this.__scmForm.get('others') as FormArray;
   }
+  
+  /*** Get Frequency FormArray
+   * This FormArray is used to manage the frequency of SIP in the scheme modification form.
+   * It allows dynamic addition and removal of frequency items.
+   * * @returns FormArray - The FormArray containing frequency items.
+   * * @example
+   * ```typescript
+   * // To get the frequency FormArray
+   * const frequencyArray = this.frequency;
+   * // To add a new frequency item
+   * this.addFrequency();
+   * // To remove a frequency item at index 0
+   * this.removeFrequency(0);
+   * // To create a new frequency item
+   * this.createFrequency();
+   * * // To set a frequency item with specific values
+   * this.setFrequency(1, 'Monthly', true);
+   * */
   addItem(): void {
     this.others.push(this.createOthers());
   }
+  
   createOthers() {
     return new FormGroup({
       id: new FormControl(0),
@@ -432,9 +519,20 @@ export class ScmModificationComponent implements OnInit {
       ),
     });
   }
+
+  /**
+   * Remove document from the FormArray.
+   * @param __index - The index of the frequency item to be removed.
+   */
   removeDocument(__index) {
     this.others.removeAt(__index);
   }
+  /***
+   * Create a new frequency item for the FormArray.
+   * * @returns FormGroup - A new FormGroup representing a frequency item.
+   * * @example
+   * ```typescript
+  */
   setFrequencyAmt(freq_dtls) {
     this.__scmForm.get('is_selectall').setValue(
       freq_dtls.every((bool) => global.getType(bool.is_checked)),{emitEvent:false}
@@ -443,6 +541,10 @@ export class ScmModificationComponent implements OnInit {
       this.addFrequency(freqDtls);
     });
   }
+  /**
+   *  Set the frequency amount for the SIP, SWP, and STP in the scheme modification form.
+   * @param freq_dtls 
+   */
   setSwpfrequencyAmt(freq_dtls) {
     this.__scmForm.get('is_selectall_for_swp').setValue(
       freq_dtls.every((bool) => global.getType(bool.is_checked)),{emitEvent:false}
@@ -451,6 +553,10 @@ export class ScmModificationComponent implements OnInit {
       this.addSwpFrequency(freqDtls);
     });
   }
+   /**
+   *  Set the frequency amount for the SIP, SWP, and STP in the scheme modification form.
+   * @param freq_dtls 
+   */
   setStpFrequency(freq_dtls) {
     console.log(freq_dtls);
     this.__scmForm.get('is_selectall_for_stp').setValue(
@@ -461,6 +567,11 @@ export class ScmModificationComponent implements OnInit {
     });
   }
 
+  /**
+   *  setting validation on change of SIP, SWP, STP allowed 
+   * @param res - The response data containing frequency details.
+   * @param formControlName 
+   */
   setValidationOnChange_On_SIP_SWP_STP_allowed = (res:string,formControlName:{date:string,
     special:string,
     select_all:string,
@@ -485,6 +596,11 @@ export class ScmModificationComponent implements OnInit {
 
   }
 
+  /**
+   * disable or enable form control based on checkbox selection
+   * @param res 
+   * @param formControlName 
+   */
   disabled_special_sip_stp_swp_depend(res:boolean, formControlName:string){
       if(res){
         this.__scmForm.controls[formControlName].setValidators([Validators.required]);
@@ -758,6 +874,12 @@ export class ScmModificationComponent implements OnInit {
   //     this.__ProductMaster = res;
   //   })
   // }
+  
+
+  /**
+   *  minimize the dialog
+   * This method updates the size and position of the dialog to minimize it.
+   */
   minimize() {
     this.dialogRef.updateSize('30%', '47px');
     this.dialogRef.updatePosition({
@@ -765,14 +887,29 @@ export class ScmModificationComponent implements OnInit {
       right: this.data.right + 'px',
     });
   }
+  /**
+   *  maximize the dialog
+   * This method updates the size and position of the dialog to maximize it.
+   */
   maximize() {
     this.dialogRef.updateSize('60%');
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   *  toggle full screen mode
+   * This method updates the size of the dialog to full screen and toggles the visibility state.
+   */
   fullScreen() {
     this.dialogRef.updateSize('100%');
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   *  submit the form
+   * This method validates the form and submits the data if valid.  
+   * * @example
+   * ```typescript
+   * @returns   boolean - Returns true if the dialog is in full screen mode, false otherwise.
+   */
   submit() {
     // console.log(this.__scmForm.value);
     // return;
@@ -938,30 +1075,71 @@ export class ScmModificationComponent implements OnInit {
         );
       });
   }
+  /**
+   *  reset the form
+   * This method resets the form to its initial state.
+   */
   reset() {
     // this.__scmForm.reset();
   }
+  /**
+   *  get the form control
+   * This method returns the form control for the scheme modification form.
+   * @returns FormGroup - The FormGroup representing the scheme modification form.
+   */
   get frequency(): FormArray {
     return this.__scmForm.get('frequency') as FormArray;
   }
 
+  /*
+    *  get the form control for SWP frequency
+    * This method returns the form control for the SWP frequency in the scheme modification form.
+    * @returns FormArray - The FormArray representing the SWP frequency.
+    */
   get swp_frequency(): FormArray {
     return this.__scmForm.get('swp_frequency') as FormArray;
   }
+  /*
+    *  get the form control for STP frequency
+    * This method returns the form control for the STP frequency in the scheme modification form.
+    * @returns FormArray - The FormArray representing the STP frequency.
+    */
   get stp_frequency(): FormArray {
     return this.__scmForm.get('stp_frequency') as FormArray;
   }
 
+  /**
+   *  add a new frequency item to the FormArray
+   * This method adds a new frequency item to the frequency FormArray in the scheme modification form.
+   * @param _freDtls - The details of the frequency item to be added.
+   */
   addSwpFrequency(__freDtls) {
     this.swp_frequency.push(this.createFrequencyforSWP_STP(__freDtls));
   }
+  /**
+   *  add a new frequency item to the FormArray
+   * This method adds a new frequency item to the frequency FormArray in the scheme modification form.
+   * @param _freDtls - The details of the frequency item to be added.
+   */
   addStpFrequency(__freDtls) {
     this.stp_frequency.push(this.createFrequencyforSWP_STP(__freDtls));
   }
-
+  /**
+   *  add a new frequency item to the FormArray
+   * This method adds a new frequency item to the frequency FormArray in the scheme modification form.
+   * @param _freDtls - The details of the frequency item to be added.
+   */
   addFrequency(_freDtls) {
     this.frequency.push(this.createFrequcncy(_freDtls));
   }
+
+  /**
+   *  set a frequency item with specific values
+   * This method sets a frequency item in the frequency FormArray with specific values.
+   * @param i - The index of the frequency item to be set.
+   * @param freq_name - The name of the frequency.
+   * @param is_checked - Whether the frequency is checked or not.
+   */
   createFrequcncy(_freDtls): FormGroup {
     return new FormGroup({
       id: new FormControl(_freDtls.id),
@@ -976,6 +1154,12 @@ export class ScmModificationComponent implements OnInit {
     });
   }
 
+  /**
+   *  create a frequency item for SWP/STP
+   * This method creates a frequency item for SWP/STP in the scheme modification form.
+   * @param _freDtls - The details of the frequency item to be created.
+   * @returns FormGroup - A new FormGroup representing the SWP/STP frequency item.
+   */
   createFrequencyforSWP_STP(_freDtls): FormGroup {
     // console.log(global.getType(_freDtls.is_checked));
 
@@ -988,9 +1172,22 @@ export class ScmModificationComponent implements OnInit {
       ]),
     });
   }
+  /**
+   *  prevent non-numeric input
+   * This method prevents non-numeric input in the form fields.
+   * @param __ev - The event object containing the input value.
+   * @param index - The index of the frequency item.
+   */
   preventNonumeric(__ev, index) {
     dates.numberOnly(__ev);
   }
+  /**
+   *  get the value of the checkbox
+   * This method updates the form control based on the checkbox value.
+   * @param i - The index of the frequency item.
+   * @param checked - Whether the checkbox is checked or not.
+   * @param __id - The ID of the frequency type (1 for SIP, 2 for SWP, 3 for STP).
+   */
   getCheckboxVal(i, checked, __id) {
     switch (__id) {
       case '1':
@@ -1010,6 +1207,12 @@ export class ScmModificationComponent implements OnInit {
         break;
     }
   }
+  /**
+   *  set form control validators based on checkbox selection
+   * This method sets the validators for the form controls based on the checkbox selection.
+   * @param i - The index of the frequency item.
+   * @param __res - Whether the checkbox is checked or not.
+   */
   setFormControldependOnCheckbox(i, __res) {
     this.frequency.controls[i].get('sip_fresh_min_amt').setValidators(
         __res ? [Validators.required, Validators.pattern('^[0-9]*$')] : null
@@ -1022,6 +1225,12 @@ export class ScmModificationComponent implements OnInit {
 
 
   }
+  /**
+   *  set SWP form control validators based on checkbox selection
+   * This method sets the validators for the SWP form controls based on the checkbox selection.
+   * @param i - The index of the SWP frequency item.
+   * @param __res - Whether the checkbox is checked or not.
+   */
   setSwpFormControldependOnCheckbox(i, __res) {
     this.swp_frequency.controls[i].get('sip_add_min_amt').setValidators(
         __res ? [Validators.required, Validators.pattern('^[0-9]*$')] : null
@@ -1029,6 +1238,12 @@ export class ScmModificationComponent implements OnInit {
     this.swp_frequency.controls[i].get('sip_add_min_amt').updateValueAndValidity();
 
   }
+  /**
+   *  set STP form control validators based on checkbox selection
+   * This method sets the validators for the STP form controls based on the checkbox selection.
+   * @param i - The index of the STP frequency item.
+   * @param __res - Whether the checkbox is checked or not.
+   */
   setStpFormControldependOnCheckbox(i, __res) {
     this.stp_frequency.controls[i].get('sip_add_min_amt').setValidators(
         __res ? [Validators.required, Validators.pattern('^[0-9]*$')] : null
@@ -1036,6 +1251,12 @@ export class ScmModificationComponent implements OnInit {
     this.stp_frequency.controls[i].get('sip_add_min_amt').updateValueAndValidity();
   }
 
+  /**
+   *  get the file based on the event and mode
+   * This method updates the form controls based on the file input event and mode.
+   * @param __ev - The event object containing the file input.
+   * @param mode - The mode of the file input (e.g., 'O' for one-pager, 'K' for KIM key, etc.).
+   */
   getFile(__ev, mode) {
     switch (mode) {
       case 'O':
@@ -1199,6 +1420,13 @@ export class ScmModificationComponent implements OnInit {
     }
   }
 
+  /**
+   *  get other files based on the event and index
+   * This method updates the form controls for other files based on the file input event and index.
+   * @param __ev - The event object containing the file input.
+   * @param index - The index of the other file item.
+   * @param __type_id - The type ID of the other file.
+   */
   getOtherFiles(__ev, index, __type_id) {
     this.others.controls[index]
       .get('doc_name')
@@ -1224,6 +1452,17 @@ export class ScmModificationComponent implements OnInit {
     }
   }
 
+  
+  /**
+   *  get benchmark data based on category and subcategory IDs
+   * This method retrieves benchmark data based on the provided category and subcategory IDs.
+   * @param cat_id - The ID of the category.
+   * @param sub_cat_id - The ID of the subcategory.
+   * @return void
+   * @example
+   * ```typescript
+   * getbenchmark(1, 2); 
+   */
   getbenchmark = (cat_id:number,sub_cat_id:number) => {
     if(cat_id && sub_cat_id){
       this.__dbIntr.api_call(

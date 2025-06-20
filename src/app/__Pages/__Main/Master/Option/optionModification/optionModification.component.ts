@@ -31,21 +31,61 @@ export class OptionModificationComponent implements OnInit {
 
   ngOnInit() {
   }
+  /**
+   * * * This function is responsible for reseting the option form data to the server.
+   * * * It checks if the form is valid, creates a FormData object, appends the form values to it,
+   * * * and makes an API call to submit the data.
+   */
   reset(){
     this.__optForm.reset();
   }
+  /**
+   *  * * This function is used to toggle the visibility of the dialog.
+   *  * * @returns void 
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * * This function is used to maximize the dialog.
+   * * * @returns void
+   * * * @memberof OptionModificationComponent  
+   * * * @description
+   * * * This function is responsible for maximizing the dialog by updating its size and toggling the visibility state.
+   * * * @example
+   * * * // Usage: Call this function when the user clicks the maximize button on the dialog.
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to toggle the full screen mode of the dialog.
+   * * * @returns void
+   * * * @memberof OptionModificationComponent
+   * * * @description
+   * * * This function is responsible for toggling the full screen mode of the dialog.
+   * * * It updates the size of the dialog to 60% and toggles the visibility state.
+   * * * @example
+   * * * // Usage: Call this function when the user clicks the full screen button on the dialog.
+   */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * 
+   * @returns void
+   * @memberof OptionModificationComponent
+   * * @description
+   * * This function is used to submit the option form data.
+   *  * It checks if the form is valid, creates a FormData object with the form values,
+   * *  * and makes an API call to submit the data.
+   * *  * If the submission is successful, it resets the form and closes the dialog with the updated data.
+   * * @example
+   * * // Usage: Call this function when the user clicks the submit button on the option form.
+   */
   submit(){
     if (this.__optForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error', 0);

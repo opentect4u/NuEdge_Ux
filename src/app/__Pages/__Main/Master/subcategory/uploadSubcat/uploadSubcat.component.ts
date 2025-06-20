@@ -1,3 +1,7 @@
+/**
+ *   Upload sub category screen, from where sub categories can be uploaded in bulk
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
@@ -38,17 +42,32 @@ export class UploadSubcatComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.previewlatestCategoryEntry();
+    /**
+     * Check if there is any sub category id present in the query params
+     * If yes, then navigate to sub category modification screen with the id
+     * If no, then preview the latest 5 sub categories
+     * If no sub category id is present, then display the latest 5 sub categories
+     */
+    this.previewlatestSubCategoryEntry();
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
     // this.__utility.getBreadCrumb(this.__brdCrmbs);
     this.getCategory();
   }
+
+  /**
+   * Get All category list from backend API
+   */
   getCategory(){
     this.__dbIntr.api_call(0,'/category',null).pipe(pluck("data")).subscribe((res: category[]) =>{
      this.__catMst = res;
     })
   }
-  previewlatestCategoryEntry() {
+
+
+ /**
+ * Get latest 5 subcategory from backend API
+ */
+  previewlatestSubCategoryEntry() {
     this.__dbIntr
       .api_call(0, '/subcategory', null)
       .pipe(pluck('data'))
@@ -56,6 +75,10 @@ export class UploadSubcatComponent implements OnInit {
         this.__selectRNT = new MatTableDataSource(res.splice(0,5));
       });
   }
+
+  /**
+   * navigating to sub category screen with query params 
+   */
   populateDT(__items: subcat) {
     // this.__utility.navigate('/main/master/cateModify', btoa(__items.id.toString()));
     this.__utility.navigatewithqueryparams(
@@ -69,6 +92,9 @@ export class UploadSubcatComponent implements OnInit {
       } }
     );
   }
+  /**
+   * Function that will call when click on View All Button and redirect to sub category screen
+   */
   viewAll(){
     this.__utility.navigate(
       '/main/master/productwisemenu/subcategory'

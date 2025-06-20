@@ -30,6 +30,11 @@ export class OptionComponent implements OnInit {
     }
   }
 
+  /**
+   * * This function is used to fetch a particular option based on the ID provided in the query parameters.
+   * * It makes an API call to retrieve the option details and opens a dialog to display or modify the option.
+   * * @return {void}
+   */
   getParticularOption() {
     this.__dbIntr
       .api_call(
@@ -45,6 +50,11 @@ export class OptionComponent implements OnInit {
       });
   }
 
+  /**
+   * * This function is used to open a dialog for adding or updating an option.
+   * * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * * and opens the OptionModificationComponent dialog with the provided configuration.
+   */
   openDialog(__opt: option | null = null, __optId: number) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -78,6 +88,11 @@ export class OptionComponent implements OnInit {
     }
   }
 
+  /**
+   * * This function is used to handle the click event on the menu items.
+   * * It checks the flag of the clicked item and opens the corresponding dialog.
+   * * @param {any} __menu - The clicked menu item.
+   */
   getItems = (__menu) => {
     switch (__menu.flag) {
       case 'M':
@@ -93,6 +108,13 @@ export class OptionComponent implements OnInit {
         break;
     }
   }
+  /**
+   * * This function is used to open a dialog for reports related to options.
+   * * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * * and opens the OptrptComponent dialog with the provided configuration.
+   * * @param {string} __prdId - The product ID for which reports are to be generated.
+   * * @return {void}
+   */
   openDialogForReports(__prdId){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

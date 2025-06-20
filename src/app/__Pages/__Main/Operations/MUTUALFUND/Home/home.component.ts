@@ -15,6 +15,10 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.menu)
   }
+  /**
+   *  This function is used to navigate to the selected menu item
+   * @param event - The event object containing the URL and flag of the selected menu item
+   */
   getItems(event){
      this.utility.navigate(event.url);
   }

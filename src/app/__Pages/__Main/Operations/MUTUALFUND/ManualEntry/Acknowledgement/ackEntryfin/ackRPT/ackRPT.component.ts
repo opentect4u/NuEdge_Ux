@@ -135,11 +135,20 @@ export class AckrptComponent implements OnInit {
     this.getTransactionType();
 
     }
+    /**
+     * This function is used to get the transaction type
+     * and set the transaction id based on the query parameter.
+     */
     getLoggedinStatus(){
       loggedStatus.forEach(el =>{
       this.logged_status.push(this.addLoggedStatusForm(el));
       })
     }
+    /**
+     * This function is used to get the transaction type
+     * and set the transaction id based on the query parameter.
+     * It also sets the columns for the table based on the transaction id.
+     */
     getRntMst(){
       this.__dbIntr.api_call(0,'/rnt',null).pipe(pluck("data")).subscribe((res:rnt[]) =>{
         res.forEach(el =>{
@@ -147,6 +156,10 @@ export class AckrptComponent implements OnInit {
         })
       })
     }
+    /**
+     * This function is used to get the transaction type
+     * and set the transaction id based on the query parameter.
+     */
     addRntForm(rnt:rnt){
       return new FormGroup({
         id:new FormControl(rnt ? rnt?.id : 0),
@@ -154,6 +167,11 @@ export class AckrptComponent implements OnInit {
         isChecked: new FormControl(false)
       })
     }
+    /**
+     * This function is used to get the transaction type
+     * and set the transaction id based on the query parameter.
+     * It also sets the columns for the table based on the transaction id.
+     */
     addLoggedStatusForm(loggedStatus){
       return new FormGroup({
         id:new FormControl(loggedStatus ? loggedStatus?.id : 0),
@@ -162,11 +180,21 @@ export class AckrptComponent implements OnInit {
         isChecked:new FormControl(false),
       })
     }
+    /**
+     * This function is used to get the transaction type
+     * and set the transaction id based on the query parameter.
+     * It also sets the columns for the table based on the transaction id.
+     */
     getAMCMst(){
       this.__dbIntr.api_call(0,'/amc',null).pipe(pluck("data")).subscribe((res: amc[]) =>{
         this.amcMst = res;
       })
     }
+    /**
+     *  This function is used to get the transaction type
+     *  and set the transaction id based on the query parameter.
+     *  It also sets the columns for the table based on the transaction id.
+     */
     setColumns(trans_id,option){
       console.log(trans_id);
 
@@ -194,6 +222,13 @@ export class AckrptComponent implements OnInit {
      this.__exportedClmns = this.__columns.filter(x => !clmnToRmv.includes(x.field)).map(item => {return item['field']});
 
     }
+    /**
+     * This function is used to get the transaction type
+     * and set the transaction id based on the query parameter.
+     * It also sets the columns for the table based on the transaction id.
+     * @param column - The column data to be set
+     * @returns void
+     */
     getSelectedColumns(column){
       const clm = ['edit','app_frm_view'];
       this.__columns = column.map(({ field, header }) => ({field, header}))
@@ -445,6 +480,11 @@ export class AckrptComponent implements OnInit {
  })
   }
 
+  /**
+   *  This function is used to open the dialog for Acknowledgement Entry
+   *  @param id - The ID of the transaction to be modified, or 0 for a new transaction
+   *  @param items - Optional parameter containing client data to be passed to the dialog
+   */
   setEuinDropdown(sub_brk_cd,rm){
     // this.__euinMst.length = 0;
     console.log(sub_brk_cd);
@@ -466,6 +506,11 @@ export class AckrptComponent implements OnInit {
      this.__euinMst = this.__euinMst.filter(item => !this.__subbrkArnMst.map(item => {return item['euin_no']}).includes(item.euin_no))
    }
   }
+  /**
+   * This function is used to open the dialog for Acknowledgement Entry
+   * @param id - The ID of the transaction to be modified, or 0 for a new transaction
+   * @param items - Optional parameter containing client data to be passed to the dialog
+   */
   disabledSubBroker(bu_type_ids){
     if(bu_type_ids.findIndex(item => item.bu_code == 'B') != -1){
       this.__ackForm.controls['sub_brk_cd'].enable();
@@ -475,6 +520,12 @@ export class AckrptComponent implements OnInit {
     }
 
   }
+  /**
+   * This function is used to open the dialog for Acknowledgement Entry
+   * @param arr_euin_no - Array of EUIN numbers to be passed to the API
+   * It fetches the sub broker master data based on the provided EUIN numbers.
+   * If the array is empty, it resets the sub broker ARN master and the sub broker control in the form.
+   */
   getSubBrokerMst(arr_euin_no){
     if(arr_euin_no.length > 0){
     this.__dbIntr.api_call(0,'/subbroker',
@@ -495,6 +546,13 @@ export class AckrptComponent implements OnInit {
   }
 
   }
+  /**
+   * This function is used to open the dialog for Acknowledgement Entry
+   * @param id - The ID of the transaction to be modified, or 0 for a new transaction
+   * @param items - Optional parameter containing client data to be passed to the dialog
+   * It fetches the business type master data based on the provided branch codes.
+   * If the array is empty, it resets the business type control in the form and clears the business type master.
+   */
   getBusinessTypeMst(brn_cd){
     if(brn_cd.length > 0){
     this.__dbIntr
@@ -508,6 +566,13 @@ export class AckrptComponent implements OnInit {
     this.__bu_type.length = 0;
   }
   }
+  /**
+   * This function is used to open the dialog for Acknowledgement Entry
+   * @param id - The ID of the transaction to be modified, or 0 for a new transaction
+   * @param items - Optional parameter containing client data to be passed to the dialog
+   * It fetches the relationship manager master data based on the provided business type IDs and branch IDs.
+   * If either array is empty, it resets the relationship manager control in the form and clears the relationship manager master.
+   */
   getRelationShipManagerMst(bu_type_id,arr_branch_id){
     if(bu_type_id.length > 0 && arr_branch_id.length > 0){
     this.__dbIntr.api_call(0,'/employee',

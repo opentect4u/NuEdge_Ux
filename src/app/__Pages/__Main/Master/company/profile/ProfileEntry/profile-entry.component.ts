@@ -91,6 +91,13 @@ export class ProfileEntryComponent implements OnInit {
     })
   }
 
+  /**
+   * * This function is used to set the profile data in the form.
+   * * It takes a profile object as input, clears the existing form values, and sets the new values based on the profile data.
+   * * @param {any} profile - The profile object containing the data to be set in the form.
+   * * @returns void
+   * * @memberof ProfileEntryComponent
+   */
   setProfile(profile){
     this.state.length = 0;
   this.district.length = 0;
@@ -131,6 +138,11 @@ export class ProfileEntryComponent implements OnInit {
     }, 100);
   }
 
+  /**
+   * * This function is used to handle the selection of an item from a dropdown or list.
+   * * It takes an event object as input, which contains the selected item's ID and flag.
+   * * Based on the flag, it calls the appropriate function to fetch the corresponding data (state, district, city, or pincode).
+   */
   getselectedItem(ev){
     switch(ev.flag){
       case 'C' :
@@ -148,6 +160,11 @@ export class ProfileEntryComponent implements OnInit {
       default: break;
     }
   }
+  /**
+   * * This function is used to fetch the list of states based on the selected country ID.
+   * * It makes an API call to retrieve the states and updates the state array with the response data.
+   * * If no country ID is provided, it resets the state array and clears the state_id form control.
+   */
    getStateMst(country_id){
     if(country_id){
       this.dbIntr.api_call(0,'/states','country_id='+country_id).pipe(pluck("data")).subscribe(res =>{
@@ -160,6 +177,11 @@ export class ProfileEntryComponent implements OnInit {
     }
 
    }
+   /**
+    * * This function is used to fetch the list of districts based on the selected state ID.
+    * * It makes an API call to retrieve the districts and updates the district array with the response data.
+    * * If no state ID is provided, it resets the district array and clears the dist_id form control.
+    */
    getDistrictMst(state_id){
     if(state_id){
       this.dbIntr.api_call(0,'/districts','state_id='+state_id).pipe(pluck("data")).subscribe(res =>{
@@ -170,6 +192,11 @@ export class ProfileEntryComponent implements OnInit {
       this.profileFrm.get(['reg_address','dist_id']).reset('',{emitEvent:true});
     }
    }
+   /**
+    * * This function is used to fetch the list of cities based on the selected district ID.
+    * * It makes an API call to retrieve the cities and updates the city array with the response data.
+    * * If no district ID is provided, it resets the city array and clears the city_id form control.
+    */
    getCityMst(district_id){
     if(district_id){
       this.dbIntr.api_call(0,'/city','district_id='+district_id).pipe(pluck("data")).subscribe(res =>{
@@ -180,6 +207,11 @@ export class ProfileEntryComponent implements OnInit {
       this.profileFrm.get(['reg_address','city_id']).reset('',{emitEvent:true});
     }
    }
+   /**
+    * * This function is used to fetch the list of pincodes based on the selected city ID.
+    * * It makes an API call to retrieve the pincodes and updates the pincodeMst array with the response data.
+    * * If no city ID is provided, it resets the pincodeMst array and clears the pincode form control.  
+    */
    getPincodeMst(city_id){
     if(city_id){
       this.dbIntr.api_call(0,'/pincode','city_id='+city_id).pipe(pluck("data")).subscribe(res =>{
@@ -191,6 +223,11 @@ export class ProfileEntryComponent implements OnInit {
       this.profileFrm.get(['reg_address','pincode']).reset('',{emitEvent:false});
     }
    }
+   /**
+    * * This function is used to submit the profile form data.
+    * * It creates a FormData object, appends the form values to it, and makes an API call to submit the data.
+    * * If the submission is successful, it emits an event with the updated company data and resets the form.
+    */
    submitProfile(){
    const profileFrmData = new FormData();
    profileFrmData.append('type_of_comp',this.profileFrm.value.comp_type_id);
@@ -239,6 +276,9 @@ export class ProfileEntryComponent implements OnInit {
   })
    }
 
+   /**
+    * * This function is used to handle file selection for the profile form.
+    */
    getFile(ev){
     this.profileFrm.get('logo').setValidators([fileValidators.fileSizeValidator(ev.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
     this.profileFrm.get('logo').updateValueAndValidity();
@@ -254,6 +294,11 @@ export class ProfileEntryComponent implements OnInit {
       this.profileFrm.get('file_preview')?.patchValue('')
     }
    }
+   /** * * This function is used to reset the profile form fields to their initial values.
+ * * It clears the form controls and emits an event to notify that the form has been reset.
+ * * @returns void
+ * @memberof ProfileEntryComponent
+ */
    reset(){
     this.profileFrm.patchValue({
       comp_type_id:'',

@@ -15,6 +15,12 @@ export class ProductMappingReportComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  /** 
+   * * This function is used to populate the data table with the selected product mapping details.
+   * * It emits an event with the index and data of the selected product mapping details.
+   * * @param {any} ev - The event containing the product mapping details to be populated in the data table.
+   * * @returns {void}
+   */
   populateDT(ev){
     console.log(ev);
 

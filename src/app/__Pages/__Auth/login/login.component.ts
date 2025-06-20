@@ -1,3 +1,8 @@
+/**
+ * Sign in page where all the user will be authenticated in the system..
+ */
+
+
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { pluck } from 'rxjs/operators';
@@ -13,16 +18,26 @@ import { AU_TK, US_IN } from 'src/app/strings/localStorage_key';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  /**
+   * Sign in form
+   */
   loginForm: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
   });
+  /**
+   * For change visibility status of Password field
+  */
   __showPassword: boolean = false;
   constructor(
     private __utils: UtiliService,
     private dbIntr:DbIntrService) { }
 
   ngOnInit() {}
+  /**
+   * Function that authenticate user in the system by sending credentials in backend API
+   * @returns 
+   */
   signIn() {
      if(this.loginForm.invalid){
       return;
@@ -32,9 +47,12 @@ export class LoginComponent implements OnInit {
      .pipe(pluck('data')).subscribe(async (res:{token:string,user:IUser}) =>{
         if(res){
           try{
+            /**
+             * Set item (token,userDtls) encrypted in the localstorage
+             */
              storage.setItemInLocalStorage(AU_TK,this.__utils.encrypt_dtls(res.token));
              storage.setItemInLocalStorage(US_IN,this.__utils.encrypt_dtls(JSON.stringify(res.user)))
-            this.__utils.navigate('/main/home',null);
+             this.__utils.navigate('/main/home',null);
           }
           catch(ex){
             console.log(ex);

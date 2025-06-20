@@ -70,6 +70,10 @@ export class UploadSchemeBenchmarkComponent implements OnInit {
   //   })
   // }
 
+  /** Function to upload scheme benchmark data
+   * @param file_dtls - Object containing file details and count information
+   * @returns void
+   */
   uploadSchemeBenchmark = (
    file_dtls:IuploadFile
   ) =>{
@@ -85,6 +89,10 @@ export class UploadSchemeBenchmarkComponent implements OnInit {
 
 
 
+  /** Function to recursively upload scheme benchmark data
+   * @param dt - Object containing file details and count information
+   * @returns void
+   */
   reccursiveUpload = (dt: Partial<IuploadFile>) => {
     // if(dt.total_count == dt.end_count){
     this.dbIntr

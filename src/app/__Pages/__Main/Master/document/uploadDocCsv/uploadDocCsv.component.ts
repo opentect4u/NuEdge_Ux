@@ -49,19 +49,44 @@ export class UploadDocCsvComponent implements OnInit {
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
   }
+  /**
+   * * This function is used to preview the latest RNT entries.
+   * * It makes an API call to fetch the latest RNT entries and updates the data source for the table.
+   * * @returns void
+   * @memberof UploadDocCsvComponent
+   */
   previewlatestRntEntry() {
     this.__dbIntr.api_call(0, '/documentsearch', null).pipe(pluck('data')).subscribe((res: rnt[]) => {
       this.__selectdocs = new MatTableDataSource(res);
     })
   }
+  /**
+   * * This function is used to navigate to the document modification page with the selected item.
+   * * It takes the selected item as a parameter and navigates to the document modification page with the item's client_id and client_code as query parameters.
+   * * @param __items - The selected item containing client_id and client_code.
+   * * @returns void
+   * @memberof UploadDocCsvComponent
+   */
   populateDT(__items) {
     this.__utility.navigatewithqueryparams('/main/master/docsModify', {queryParams: {id:btoa(__items.client_id.toString()),client_code:btoa(__items.client_code.toString())}});
   }
+  /**
+   * * This function is used to handle file selection for uploading RNT files.
+   * * It sets the validators for the file input based on the selected file's size and extension.
+   * * @param __ev - The event object containing the selected files.
+   * * @returns void
+   * @memberof UploadDocCsvComponent
+   */
   getFiles(__ev) {  
       this.__uploadRnt.get('rntFile').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)]);
       this.__uploadRnt.get('file')?.patchValue(this.__uploadRnt.get('rntFile').status == 'VALID' ? __ev.files[0] : '');
       // this.onFileDropped(__ev);
   }
+  /**
+   * * This function is responsible for uploading the RNT file.
+   * * It checks if the form is valid, creates a FormData object, appends the file to it,
+   * * and makes an API call to upload the file.
+   */
   uploadRnt() {
 
     if(this.__uploadRnt.invalid){
@@ -77,6 +102,11 @@ export class UploadDocCsvComponent implements OnInit {
       }
     })
   }
+  /**
+   * * This function is used to handle file drop events for uploading RNT files.
+   * * It checks if the dropped files meet the required conditions (file size and extension),
+   * * and updates the form control values accordingly.
+   */
   onFileDropped(__ev){
     this.__uploadRnt.get('file').patchValue('');
     this.__uploadRnt.controls.rntFile.setErrors({
@@ -117,6 +147,12 @@ formatBytes(bytes:any, decimals: any = 2) {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
+/**
+ * * This function is used to reset the file input and its validators.
+ * * It clears the file input and sets the validators for the file input to require a valid file extension.
+ * * @returns void
+ * @memberof UploadDocCsvComponent
+ */
 deleteFiles(){
   this.__uploadRnt.reset();
   this.__uploadRnt

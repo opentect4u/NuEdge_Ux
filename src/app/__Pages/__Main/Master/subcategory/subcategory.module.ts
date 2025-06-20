@@ -19,7 +19,11 @@ import { MatSortModule } from '@angular/material/sort';
 
 const routes: Routes =[{path:'',component:SubcategoryComponent}]
 
-
+/**
+ * This module defines the routing for the SubcategoryComponent.
+ * It imports CommonModule for common directives and RouterModule for routing functionalities.
+ * The SubcategoryComponent is declared in this module, and the route is set to load this component when the path is empty.
+ */
 @NgModule({
   imports: [
     CommonModule,

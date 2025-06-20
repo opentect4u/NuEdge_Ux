@@ -20,6 +20,9 @@ export class HomeComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {}
+  /** * This function is used to handle the click event on the menu items
+ * @param event - The event object containing the URL and flag of the selected menu item
+   */
   getItems(event){
     //  this.utility.navigate(event.url)
     console.log(event.flag);
@@ -36,6 +39,11 @@ export class HomeComponent implements OnInit {
   }
 
   /******************************************ADDITION ***********************/
+  /** * This function is used to open the dialog for adding or updating a client
+ * @param __clDtls - The client details object
+ * @param __clid - The client ID
+ * @param __clType - The type of client (e.g., 'M' for minor, 'P' for pan holder, 'N' for non-pan holder)
+   */
   openDialog(__clDtls: client, __clid: number, __clType: string) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

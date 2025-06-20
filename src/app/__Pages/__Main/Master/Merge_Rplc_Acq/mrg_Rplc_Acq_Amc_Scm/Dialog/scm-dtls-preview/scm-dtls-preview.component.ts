@@ -72,17 +72,22 @@ export class ScmDtlsPreviewComponent implements OnInit {
   }
 
 
+  /** Getters for FormArray controls */
   get sip_freq_wise_amt(): FormArray {
     return this.scheme_form.get('sip_freq_wise_amt') as FormArray;
   }
 
+  /** Getters for FormArray controls */
   get swp_freq_wise_amt(): FormArray {
     return this.scheme_form.get('swp_freq_wise_amt') as FormArray;
   }
+  /** Getters for FormArray controls */
   get stp_freq_wise_amt(): FormArray {
     return this.scheme_form.get('stp_freq_wise_amt') as FormArray;
   }
 
+  /** Function to create a FormGroup for frequency details */
+  /** @param freq_dtls - The frequency details object containing frequency name and amounts */
  createFrequency = (freq_dtls) =>{
     return new FormGroup({
       freq_name: new FormControl(freq_dtls.freq_name),
@@ -92,18 +97,26 @@ export class ScmDtlsPreviewComponent implements OnInit {
     })
  }
 
+ /** Function to toggle the dialog in fullscreen */
   fullScreen(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({top:'0px'});
     this.__isVisible = !this.__isVisible;
   }
+  /** Function to minimize the dialog */
+  /** It removes the 'mat_dialog' class and adds 'full_screen' class to the dialog */
+  /** It updates the size and position of the dialog */
   minimize(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.updateSize("40%",'55px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /** Function to maximize the dialog */
+  /** It removes the 'full_screen' class and adds 'mat_dialog' class to the dialog */
+  /** It updates the position of the dialog to the top */
+  /** It toggles the visibility of the dialog */
   maximize(){
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');

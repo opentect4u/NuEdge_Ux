@@ -1,3 +1,7 @@
+/**
+ * Upload Bulk AMC instead of entered them manually in this screen
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
@@ -14,8 +18,11 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 })
 export class UploadAMCComponent implements OnInit {
 
+  /** Holding RNT Master Data */
   __rntMst: rnt[] = [];
+  /** For column of the excel sheet  */
   displayedColumns: Array<string> = [];
+  /** For column of the excel sheet  */
   tableColumns: Array<Column> = [
 
     {
@@ -291,6 +298,10 @@ export class UploadAMCComponent implements OnInit {
       cell: (element: Record<string, any>) => `${element['amc_code']}`,
     }
   ];
+
+  /**
+   * Exported demo data which resides in excel sheet 
+  **/
   tableData = new MatTableDataSource([
     {
 
@@ -366,7 +377,7 @@ export class UploadAMCComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.previewlatestRntEntry();
+    this.previewlatestAmcEntry();
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
     this.getRntMst();
   }
@@ -375,7 +386,11 @@ export class UploadAMCComponent implements OnInit {
      this.__rntMst = res;
     })
   }
-  previewlatestRntEntry() {
+  /**
+   * For Previewing amc details in right panel
+   *
+  **/
+  previewlatestAmcEntry() {
     this.__dbIntr
       .api_call(0, '/amc', null)
       .pipe(pluck('data'))
@@ -384,6 +399,10 @@ export class UploadAMCComponent implements OnInit {
       });
   }
 
+  /**
+   * Function for navigating amc page with query params
+   * @param __items 
+   */
   populateDT(__items: amc) {
     this.__utility.navigatewithqueryparams('main/master/productwisemenu/amc', {
       // queryParams: {
@@ -393,6 +412,9 @@ export class UploadAMCComponent implements OnInit {
     });
   }
 
+  /**
+   * Navigating to AMC screen
+   */
   viewAll(){
     this.__utility.navigate('main/master/productwisemenu/amc');
     // this.__utility.navigatewithqueryparams('main/master/productwisemenu/amc', {

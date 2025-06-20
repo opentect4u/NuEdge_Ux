@@ -20,6 +20,14 @@ export class TransactionComponent implements OnInit {
     ) { }
   ngOnInit(): void {}
 
+  /**
+   * * This function is used to open a dialog for adding or updating a transaction.
+   * * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * * * and opens the TrnsModificationComponent dialog with the provided configuration.
+   * * @param {number} id - The ID of the transaction to be added or updated.
+   * * @param {any} __items - Additional items to be passed to the dialog.
+   * * @return {void}
+   */
   openDialog(id, __items) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -51,6 +59,14 @@ export class TransactionComponent implements OnInit {
       });
     }
   }
+  /**
+   *  * This function is used to handle the click event on the menu items.
+   *  * It checks the flag of the clicked item and opens the corresponding dialog.  
+   * * @param {any} __menu - The clicked menu item.
+   * * @return {void}
+   * * @memberof TransactionComponent
+   * @param __menu - The clicked menu item.
+   */
   getItems = (__menu) => {
     switch (__menu.flag) {
       case 'M':
@@ -63,6 +79,12 @@ export class TransactionComponent implements OnInit {
         break;
     }
   }
+  /**
+   *  * This function is used to open a dialog for generating reports.
+   *  * It creates a MatDialogConfig object, sets various properties for the dialog,
+   *  * and opens the TrnsrptComponent dialog with the provided configuration.  
+   * @param __prdId 
+   */
   openDialogForReports(__prdId){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

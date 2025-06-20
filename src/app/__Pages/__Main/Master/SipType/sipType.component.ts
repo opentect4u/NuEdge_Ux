@@ -19,6 +19,19 @@ export class SiptypeComponent implements OnInit {
     ) { }
   ngOnInit(): void {
   }
+  /*
+    * This function is used to open a dialog for adding or updating SIP Type.
+    * It creates a MatDialogConfig object, sets various properties for the dialog,
+    * and opens the SiptypemodificationComponent dialog with the provided configuration.
+    * @param {number} id - The ID of the SIP Type to be added or updated.
+    * @param {any} __items - Additional items to be passed to the dialog.
+    * @return {void}
+    * @memberof SiptypeComponent
+    * @description
+    * This function is responsible for opening a dialog for adding or updating SIP Type.
+    * It creates a MatDialogConfig object, sets various properties for the dialog,
+    * and opens the SiptypemodificationComponent dialog with the provided configuration.
+    */
   openDialog(id, __items) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -53,6 +66,12 @@ export class SiptypeComponent implements OnInit {
       });
     }
   }
+  /**
+   * 
+   * @param __menu - The menu item that was clicked.
+   * @description
+   * This function is used to handle the click event on menu items.
+   */
   getItems = (__menu) => {
     switch (__menu.flag) {
       case 'M':
@@ -65,6 +84,18 @@ export class SiptypeComponent implements OnInit {
         break;
     }
   }
+  /*
+    * This function is used to open a dialog for generating reports related to SIP Type.
+    * It creates a MatDialogConfig object, sets various properties for the dialog,
+    * and opens the SiptyperptComponent dialog with the provided configuration.
+    * @param {string} __prdId - The product ID for which the report is to be generated.
+    * @return {void}  
+    * @memberof SiptypeComponent
+    * @description
+    * This function is responsible for opening a dialog for generating reports related to SIP Type.
+    * It creates a MatDialogConfig object, sets various properties for the dialog,
+    * and opens the SiptyperptComponent dialog with the provided configuration.
+    */
   openDialogForReports(__prdId){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

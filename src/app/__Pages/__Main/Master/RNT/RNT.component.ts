@@ -54,6 +54,9 @@ export class RNTComponent implements OnInit {
   ) {}
   ngOnInit() {
     console.log(this.__rtDt.snapshot.queryParamMap.get('id'));
+    /**
+     * Check if there is any id in query params, if any then this condition will be evaluate
+     */
     if (this.__rtDt.snapshot.queryParamMap.get('id')) {
       // this.getParticularRNt(atob(this.__rtDt.snapshot.queryParamMap.get('id')));
       this.getParticularRNt(this.__utility.decrypt_dtls(this.__rtDt.snapshot.queryParamMap.get('id')));

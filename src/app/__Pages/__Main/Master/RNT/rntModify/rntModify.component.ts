@@ -36,6 +36,42 @@ export class RntModifyComponent implements OnInit {
   preventNonumeric(__ev) {
     dates.numberOnly(__ev)
   }
+  /*
+    * This function is used to submit the RNT form data to the server.
+    * It creates a FormData object, appends the form values to it, and makes an API call to submit the data.
+    * @returns void
+    * @memberof RntModifyComponent
+    * @description
+    * This function is responsible for submitting the RNT form data to the server.
+    * It creates a FormData object, appends the form values to it, and makes an API call to submit the data.
+    * @example
+    *   // Usage: Call this function when the user clicks the submit button on the RNT form.
+    * @returns {void}
+    * @memberof RntModifyComponent
+    * @description
+    * This function is responsible for submitting the RNT form data to the server.
+    * It creates a FormData object, appends the form values to it, and makes an API call to submit the data.
+    * @example
+    * // Usage: Call this function when the user clicks the submit button on the RNT form.
+    * @param {void}
+    * @returns {void}
+    * @memberof RntModifyComponent
+    * @description
+    * This function is responsible for submitting the RNT form data to the server.
+    *   
+    * It creates a FormData object, appends the form values to it, and makes an API call to submit the data.
+    * @example
+    * // Usage: Call this function when the user clicks the submit button on the RNT form.
+    *   
+    * @param {void}
+    * @returns {void}
+    * @memberof RntModifyComponent
+    * @description
+    * This function is responsible for submitting the RNT form data to the server.
+    * It creates a FormData object, appends the form values to it, and makes an API call to submit the data.
+    * @example
+    * // Usage: Call this function when the user clicks the submit button on the RNT form.
+    */
   submit() {
     const fb = new FormData();
     fb.append("rnt_name", this.__rntForm.value.rnt_name);
@@ -84,6 +120,37 @@ export class RntModifyComponent implements OnInit {
       }
     );
   }
+  /**
+   * This function is used to preview the particular RNT details based on the id passed in the query parameters.
+   * It retrieves the RNT details from the database and populates the form with the retrieved data.
+   * If no id is provided, it will not perform any action.
+   * 
+   * @returns void  
+   * @memberof RntModifyComponent
+   * @description
+   * This function checks if the 'id' query parameter is present in the route snapshot.
+   *  If it is present, it makes an API call to fetch the RNT details using the provided id.
+   * It then maps the response to extract the data and populates the form with the first item in the response array.
+   *  
+   * @example
+   * // Usage: Call this function when the component initializes or when the id query parameter changes.
+   * @returns {void}
+   * @memberof RntModifyComponent
+   * @description
+   * This function is responsible for previewing the details of a specific RNT (Repair and Network Technician) based on the id provided in the query parameters.
+   * It retrieves the RNT details from the database and populates the form with the retrieved data.
+   * If no id is provided, it will not perform any action.
+   * @returns {void}
+   * @memberof RntModifyComponent
+   * @example
+   * // Usage: Call this function when the component initializes or when the id query parameter changes.
+   * @returns {void}
+   * @memberof RntModifyComponent
+   * @description
+   * This function checks if the 'id' query parameter is present in the route snapshot.
+   * If it is present, it makes an API call to fetch the RNT details using the provided id.
+   * It then maps the response to extract the data and populates the form with the first item in the response array.  
+   */
   previewParticularRNT() {
     if (this.__route.snapshot.queryParamMap.get('id') != null) {
       this.__dbIntr.api_call(0, '/rnt', 'id=' + atob(this.__route.snapshot.queryParamMap.get('id'))).pipe(map((x: any) => x.data)).subscribe(res => {
@@ -91,16 +158,42 @@ export class RntModifyComponent implements OnInit {
       })
     }
   }
+  /*
+    * This function is used to preview the latest RNT entry from the database.
+    * It makes an API call to fetch the latest RNT entries and populates the RNT master table with the retrieved data.
+    * @returns void
+    * @memberof RntModifyComponent
+    * @description
+    * This function retrieves the latest RNT entries from the database and populates the RNT master table with the retrieved data.
+    * @example
+    * // Usage: Call this function to fetch and display the latest RNT entries in the master table.
+    * @returns {void}
+    * @memberof RntModifyComponent
+    * @description
+    * This function retrieves the latest RNT entries from the database and populates the RNT master table with the retrieved data.
+    * @example
+    *   
+    * // Usage: Call this function to fetch and display the latest RNT entries in the master table.
+    * */
   previewlatestRntEntry() {
     this.__dbIntr.api_call(0, '/rnt', null).pipe((map((x: any) => x.data))).subscribe((res: rnt[]) => {
       this.poulateRNTMst(res);
     })
   }
+  /**
+   * 
+   * @param _Rnts - An array of RNT objects to populate the RNT master table.
+   * @returns void
+   * @memberof RntModifyComponent
+   */
   poulateRNTMst(_Rnts: rnt[]) {
     this.__selectRNT = new MatTableDataSource(_Rnts);
     this.__selectRNT._updateChangeSubscription();
     this.__selectRNT.paginator = this.paginator;
   }
+  /**
+   * This function is used to reset the RNT form and clear the selected RNT data.
+   */
   reset() {
     this.__rntForm.reset();
     this.__rntForm.patchValue({
@@ -108,6 +201,10 @@ export class RntModifyComponent implements OnInit {
     });
     this._rtId = 0;
   }
+  /*
+  * This function is used to update a row from the RNT master table.
+  * @param row_obj - The RNT object representing the row to be deleted.
+  */
   private updateRow(row_obj: rnt) {
     this.__selectRNT.data = this.__selectRNT.data.filter((value: rnt, key) => {
       if (value.id == row_obj.id) {

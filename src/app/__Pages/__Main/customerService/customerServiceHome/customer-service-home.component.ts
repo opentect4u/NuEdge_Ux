@@ -355,17 +355,26 @@ export class CustomerServiceHomeComponent implements OnInit {
       if(this.index == _index){
         if(this.customerServiceForm?.value.query_status_id != item.id)
         {
+          console.log('ASASDASD')
           this.customerServiceForm.patchValue({
             query_status_id:this.md_query_status.filter(el => el.id == item.id)[0]?.id,
           });
           this.queryDataSource = [];
-          this.productId = this.__utility.EncryptText(data.product_id.toString());
           this.customerServiceForm.get('date_periods').setValue('')
+
+          this.productId = this.__utility.EncryptText(data.product_id.toString());
           this.fetchQuery(data.short_name);
           this.setColumns(data.product_id)
         }
       }
       else{
+          console.log('ASASDASD')
+          this.customerServiceForm.patchValue({
+            query_status_id:this.md_query_status.filter(el => el.id == item.id)[0]?.id,
+          });
+          this.queryDataSource = [];
+          this.customerServiceForm.get('date_periods').setValue('')
+
         this.status_id = this.md_query_status.filter(el => el.id == item.id)[0]?.id;
         this.index = _index
       }

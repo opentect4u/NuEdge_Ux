@@ -78,6 +78,11 @@ export class ShareHolderEntryComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * * This function is used to set the form data based on the selected type of share holder.
+   * * It checks the type of share holder and resets the form if necessary.
+   * * @param {string} res - The type of share holder selected.
+   */
   setFormDTAgainstTypeChange(res){
    if(res == 'E'){}
    else{
@@ -118,6 +123,13 @@ export class ShareHolderEntryComponent implements OnInit {
 
   })
   }
+  /**
+   * 
+   * @param dt - The data object containing the shared holder details.
+   * * This function is used to set the shared form data based on the provided data object.
+   * * It populates the form fields with the values from the data object and resets other fields as necessary.
+   * * @returns void
+   */
   setSharedFormData(dt){
     console.log(dt.transfer_id);
 
@@ -167,6 +179,12 @@ export class ShareHolderEntryComponent implements OnInit {
 
   }
 
+  /**
+   * * * This function is used to get the selected item based on the event flag.
+   * * * It checks the flag and calls the corresponding function to get the data for state, district, city, or pincode.
+   * * * @param {any} ev - The event object containing the selected item details.
+   * * @returns void
+   */
   getselectedItem(ev){
     switch(ev.flag){
       case 'C' :
@@ -184,6 +202,10 @@ export class ShareHolderEntryComponent implements OnInit {
       default: break;
     }
   }
+  /**
+   * * * This function is used to get the state, district, city, and pincode data based on the selected country, state, and district.
+   * * * It calls the respective API endpoints to fetch the data and updates the form controls
+   */
    getStateMst(country_id){
     if(country_id){
       this.dbIntr.api_call(0,'/states','country_id='+country_id).pipe(pluck("data")).subscribe(res =>{
@@ -196,6 +218,12 @@ export class ShareHolderEntryComponent implements OnInit {
     }
 
    }
+   /**
+    * * * This function is used to get the district data based on the selected state.
+    * * * It calls the API endpoint to fetch the district data and updates the form control accordingly.
+    * * * @param {number} state_id - The ID of the selected state.
+    * * * @returns void
+    */
    getDistrictMst(state_id){
     if(state_id){
       this.dbIntr.api_call(0,'/districts','state_id='+state_id).pipe(pluck("data")).subscribe(res =>{
@@ -206,6 +234,12 @@ export class ShareHolderEntryComponent implements OnInit {
       this.sharedFrm.get(['address','dist_id']).reset('',{emitEvent:true});
     }
    }
+   /**
+    * * * This function is used to get the city data based on the selected district.
+    * * * It calls the API endpoint to fetch the city data and updates the form control accordingly.
+    * * * @param {number} district_id - The ID of the selected district.
+    * * * @returns void
+    */
    getCityMst(district_id){
     if(district_id){
       this.dbIntr.api_call(0,'/city','district_id='+district_id).pipe(pluck("data")).subscribe(res =>{
@@ -216,6 +250,12 @@ export class ShareHolderEntryComponent implements OnInit {
       this.sharedFrm.get(['address','city_id']).reset('',{emitEvent:true});
     }
    }
+   /**
+    * * * This function is used to get the pincode data based on the selected city.
+    * * * It calls the API endpoint to fetch the pincode data and updates the form control accordingly.
+    * * * @param {number} city_id - The ID of the selected city.
+    * * * @returns void
+    */
    getPincodeMst(city_id){
     if(city_id){
       this.dbIntr.api_call(0,'/pincode','city_id='+city_id).pipe(pluck("data")).subscribe(res =>{
@@ -227,6 +267,12 @@ export class ShareHolderEntryComponent implements OnInit {
       this.sharedFrm.get(['address','pincode']).reset('',{emitEvent:false});
     }
    }
+   /**
+    * * * This function is used to submit the shared holder form data.
+    * * * It creates a FormData object, appends the form values to it, and makes an API call to save the data.
+    * * * If the form is valid, it emits an event with the saved shared holder details and resets the form.
+    * * @returns void
+    */
    submitSharedHolders(){
     const shareholders = new FormData();
     shareholders.append('type',this.sharedFrm.value.shareholders_type);
@@ -263,6 +309,13 @@ export class ShareHolderEntryComponent implements OnInit {
       this.reset();
     })
    }
+   /**
+    * * * This function is used to handle file selection for the share transfer.
+    * * * It sets validators for file size and extension, updates the form control, and patches the file and preview values.
+    * * * If the file is valid, it updates the form controls with the selected file and its preview URL.
+    * * * @param {Event} ev - The event object containing the selected file.
+    * * @returns void
+    */
    getFile(ev){
     console.log(ev);
     this.sharedFrm.get(['share_transfer','upload_scan']).setValidators([fileValidators.fileSizeValidator(ev.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
@@ -276,6 +329,12 @@ export class ShareHolderEntryComponent implements OnInit {
       this.sharedFrm.get(['share_transfer','file_preview'])?.patchValue('')
     }
    }
+   /**
+    * * * This function is used to reset the shared holder form to its initial state.
+    * * * It clears the form values, resets the shared holder type to 'E', and emits a reset event.
+    * * * @returns void
+    * * @memberof ShareHolderEntryComponent
+    */
    reset(){
     this.__no_of_shared_remaining =0;
     this.sharedFrm.patchValue({
@@ -316,6 +375,9 @@ export class ShareHolderEntryComponent implements OnInit {
     // this.sharedFrm.get('id').reset(0,{emitEvent:false});
     this.setReset.emit('');
    }
+   /**
+    * * * This function is used to check if the number of shares exceeds the allowed limit. 
+    */
    checkShareHolderExceed(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return this.checkIfShareHolderExceed(control.value).pipe(
@@ -328,6 +390,12 @@ export class ShareHolderEntryComponent implements OnInit {
       );
     };
     }
+    /**
+     * * * This function checks if the number of shares exceeds the allowed limit.
+     * * * It compares the number of shares entered with the remaining shares and returns an observable indicating whether the limit is exceeded.
+     * * @param {number} share_no - The number of shares to check against the remaining shares.
+     * * @returns {Observable<boolean>} - An observable that emits true if the limit is not exceeded, false otherwise.
+     */
     checkIfShareHolderExceed(share_no):Observable<boolean>{
        return of(this.__no_of_shared_remaining >= share_no);
 

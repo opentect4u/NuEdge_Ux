@@ -33,6 +33,11 @@ export class ModificationComponent implements OnInit {
     console.log(this.data.id);
 
   }
+  /**
+   * * This function is used to toggle the visibility of the dialog.
+   * * @returns void
+   * * @memberof ModificationComponent
+   */
   minimize() {
     this.dialogRef.updateSize('30%', '55px');
     this.dialogRef.updatePosition({
@@ -40,14 +45,28 @@ export class ModificationComponent implements OnInit {
       right: this.data.right + 'px',
     });
   }
+  /**
+   * * This function is used to maximize the dialog.
+   * * @returns void
+   */
   maximize() {
     this.dialogRef.updateSize('40%');
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   *  * This function is used to toggle the full screen mode of the dialog.
+   *  * @returns void
+   *  * @memberof ModificationComponent
+   */
   fullScreen() {
     this.dialogRef.updateSize('60%');
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * This function is responsible for submitting the email template form data to the server.
+   * * It checks if the form is valid, creates a FormData object, appends the form values to it,
+   * * and makes an API call to submit the data.
+   */
   submitEmailTemplate() {
     console.log(this.__emailTemplate.value);
     const fb = new FormData();

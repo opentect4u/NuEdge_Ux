@@ -58,10 +58,16 @@ export class QueryDeskReportComponent implements OnInit {
     this.TabMenu = this.__menu.map(({ id, menu_name, flag, img }) => ({ tab_name: menu_name, img_src: ('../../../../../assets/images/' + img), id, flag }));
   }
 
+  /**
+   *  * This function is used to get the columns for the table.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }
 
+  /**
+   *    * This function is used to handle the change of tabs in the Query Desk Report.
+   */
   changeTabDtls(ev,mode){
     this.dataSource = [];
       this.flag = ev.tabDtls?.flag
@@ -69,6 +75,13 @@ export class QueryDeskReportComponent implements OnInit {
       this.populateDataSource(ev.tabDtls?.flag);
   }
 
+  /**
+   * * This function is used to populate the data source based on the selected flag.
+   * * It makes an API call to fetch the data and assigns it to the dataSource variable.
+   * * @param {string} flag - The flag indicating which data to fetch.
+   * * @returns void
+   * * @memberof QueryDeskReportComponent
+   */
   populateDataSource = (flag) =>{
       this.dbIntr.api_call(0,API[flag],null)
       .pipe(pluck('data'))
@@ -78,6 +91,10 @@ export class QueryDeskReportComponent implements OnInit {
       })
   }
 
+  /**
+   * * This function is used to handle the click event on the table items.
+   * * It checks the flag of the clicked item and opens the corresponding dialog for adding or
+   */
   getItems(item){
     console.log(item);
     let compName;
@@ -105,6 +122,18 @@ export class QueryDeskReportComponent implements OnInit {
     this.openDialog(null,this.flag,compName,item)
   }
 
+  /**
+   * 
+   * @param el - The element that was clicked, if any.
+   * @description
+   * This function is used to open a dialog for adding or updating Query Desk entries.
+   * @param flag - The flag indicating the type of entry (e.g., Product, Query Type, etc.).
+   * * @param compName - The component to be opened in the dialog.
+   * * @param item - The item to be edited or added, if any.
+   * * @returns void
+   * @param compName 
+   * @param item 
+   */
   openDialog(el:any | undefined = null,flag,compName,item){
     if(flag != 'R'){
     const dialogConfig = new MatDialogConfig();

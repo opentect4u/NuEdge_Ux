@@ -1,3 +1,7 @@
+/**
+ * Report screen for RNT where all RNT that are added or modified will be shown here
+ */
+
 import { Overlay } from '@angular/cdk/overlay';
 import {
   Component,
@@ -85,6 +89,10 @@ export class RntrptComponent implements OnInit {
     this.getRntMst();
   }
 
+  /**
+   * setting columns for RNT for export table
+   * @param res 
+   */
   setColumnsforRNT(res){
          const clmsToRemove = ['edit','delete','logo'];
          const columns = res == '2' ? rntClmns.SUMMARY : rntClmns.DETAILS;
@@ -93,6 +101,9 @@ export class RntrptComponent implements OnInit {
          this.__exportedClmns = columns.map(({field,header}) =>field).filter(x => !clmsToRemove.includes(x));
   }
 
+  /**
+   * get RNT Master data for dropdown
+   */
   getRntMstForDrpDown(){
     this.__dbIntr.api_call(0,'/rnt',null).pipe(pluck("data")).subscribe((res: rnt[]) =>{
       this.__rntMstForDrpDown = res;
@@ -103,15 +114,27 @@ export class RntrptComponent implements OnInit {
       this.setColumnsforRNT(res);
     });
   }
+
+   /**
+   * get RNT Master data for dropdown
+   */
   setColumns(res){
     const clm = ['edit', 'delete','logo'];
     this.__columns = res;
     this.__exportedClmns = res.filter((item) => !clm.includes(item));
   }
 
+  /**
+   * set value for RNT datatable 
+   * @param __res 
+   */
   private setPaginator(__res) {
     this.__selectRNT = new MatTableDataSource(__res);
   }
+
+  /**
+   * Minimize modal
+   */
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
@@ -122,28 +145,50 @@ export class RntrptComponent implements OnInit {
     });
   }
 
+  /**
+   * For Table Search
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
   }
+
+  /**
+   * get all columns for search functionality
+   */
   getColumns = () =>{
     return this.__utility.getColumns(this.__columns);
   }
+
+  
+  /**
+   * Maximize modal
+   */
   maximize() {
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * For open modal in full screen
+   */
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
+
+  /** * Function to handle selection of RNT from dropdown
+   * @param ev 
+   */
   onselectItem(ev){
     this.getRntMst();
   }
+  /** * Get pagination data for RNT
+   * @param __paginate 
+   */
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -162,6 +207,11 @@ export class RntrptComponent implements OnInit {
         });
     }
   }
+
+  /**
+   * Update RNT if any RNT is modifed
+   * @param row_obj 
+   */
   private updateRow(row_obj: rnt) {
     this.__selectRNT.data = this.__selectRNT.data.filter((value: rnt, key) => {
       if (value.id == row_obj.id) {
@@ -258,10 +308,17 @@ export class RntrptComponent implements OnInit {
       return true;
     });
   }
+  /**
+   * Search RNT for view in datatable
+   */
   submit() {
     this.formValue = this.__rntSearchForm.value;
     this.getRntMst();
   }
+
+   /**
+   * get RNT from backend api with following payload
+   */
   getRntMst() {
     const __rntSearch = new FormData();
     __rntSearch.append(
@@ -283,6 +340,9 @@ export class RntrptComponent implements OnInit {
       });
   }
 
+  /**
+   * Export RNT Table 
+  */
   tableExport(__rntExport: FormData) {
     __rntExport.delete('paginate');
     this.__dbIntr
@@ -292,6 +352,10 @@ export class RntrptComponent implements OnInit {
         this.__export = new MatTableDataSource(res);
       });
   }
+
+  /**
+   * Export As PDF
+  */
   exportPdf() {
     this.__Rpt.downloadReport(
       '#rnt_rpt',
@@ -308,6 +372,12 @@ export class RntrptComponent implements OnInit {
     this.openDialog(__items, __items.id);
   }
 
+
+  /**
+   * Open Dialog for add or modified RNT
+   * @param __rnt 
+   * @param __rntId 
+   */
   openDialog(__rnt: rnt | null = null, __rntId: number) {
     console.log(__rnt);
 
@@ -357,6 +427,10 @@ export class RntrptComponent implements OnInit {
     this.__export.data.unshift(row_obj);
     this.__export._updateChangeSubscription();
   }
+
+  /**
+   * Reset Form and call api for search RNT
+  */
   reset() {
     this.__rntSearchForm.patchValue({
       options: '2',
@@ -366,8 +440,11 @@ export class RntrptComponent implements OnInit {
     this.sort = new sort();
     this.submit();
     // this.getRntMst();
-
   }
+
+  /**
+  * Open modal for delete RNT
+  */
   delete(__el,index){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
@@ -392,6 +469,9 @@ export class RntrptComponent implements OnInit {
 
     })
   }
+  /**
+   * Navigate to AMC Screen after click on RNT 
+  */
   openAmc(__rnt){
     this.dialogRef.close();
     this.__utility.navigatewithqueryparams('/main/master/productwisemenu/amc',{queryParams:{product_id:btoa(this.data.product_id),id:btoa(__rnt.id)}});
@@ -408,6 +488,11 @@ export class RntrptComponent implements OnInit {
      this.getRntMst();
   }
 }
+
+/**
+ * Open External URL in another TAB
+ * @param url 
+ */
   openURL(url){
     window.open('//' + url,'__blank');
   }

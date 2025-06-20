@@ -38,20 +38,40 @@ export class EntryComponent implements OnInit,IDialogsize {
   ngOnInit(): void {
     console.log(this.data);
   }
+  /**
+   * * This function is used to toggle the visibility of the dialog.
+   * * @returns void
+   * * @memberof EntryComponent
+   */
   minimize = () => {
     this.__isVisible = !this.__isVisible;
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * This function is used to maximize the dialog.
+   * * @returns void
+   * * @memberof EntryComponent
+   */
   maximize = () => {
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /***
+   * * * This function is used to toggle the full screen mode of the dialog.
+   * * * @returns void
+   * * * @memberof EntryComponent
+   */
   fullScreen = () => {
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
 
+  /**
+   * * * This function is used to save the exchange data into the database.
+   * * * @returns void
+   * * * @memberof EntryComponent
+   */
   save_Exchange = () =>{
     this.__dbIntr.api_call(1,'/exchangeAddEdit',this.__utility.convertFormData(this.exchangeFrm.value))
     .subscribe((res:any) =>{

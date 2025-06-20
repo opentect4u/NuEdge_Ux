@@ -1,3 +1,7 @@
+/**
+ * Category Modification Screen open in dialog box 
+ */
+
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -36,6 +40,11 @@ export class CategoryModificationComponent implements OnInit {
   }
 
   ngOnInit() { }
+
+  /**
+   * Add or update category function
+   * @returns 
+   */
   submit() {
     if (this.__categoryForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error',0);
@@ -54,22 +63,41 @@ export class CategoryModificationComponent implements OnInit {
       this.__utility.showSnackbar(res.suc == 1 ? (this.data.id == 1 ? 'Category updated successfully' : 'Category added successfully') : 'Something went wrong! please try again later', res.suc);
     })
   }
+
+  /**
+   * Function for calling api for get product form database
+   */
   getProductMaster() {
     this.__dbIntr.api_call(0, '/product', null).pipe(map((x: responseDT) => x.data)).subscribe((res: product[]) => {
       this.__ProductMaster = res;
     })
   }
+
+  /**
+   * reset category form
+   */
   reset(){
     this.__categoryForm.reset();
   }
+
+  /**
+   * Minimize modal
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+   /**
+   * Maximize modal
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+
+  /**
+   * Open Modal dialog in full screen
+  */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;

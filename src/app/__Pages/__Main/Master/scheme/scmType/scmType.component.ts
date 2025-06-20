@@ -14,6 +14,8 @@ constructor(private utility: UtiliService) { }
 
 ngOnInit() {
 }
+
+// Define the breadcrumb navigation
 navigate(type){
 // this.utility.navigate(items.url);
 this.utility.navigatewithqueryparams('/main/master/scmModify',{queryParams:{flag:btoa(type)}})

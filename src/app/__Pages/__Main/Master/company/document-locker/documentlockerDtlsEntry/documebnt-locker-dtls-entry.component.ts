@@ -41,6 +41,7 @@ export class DocumebntLockerDtlsEntryComponent implements OnInit {
     return this.documentFrm.get('document') as FormArray;
   }
 
+  /**** Start Document Locker Form Array Functions */
   addDocument(document : any | undefined = null){
     if(document){
       this.document.clear();
@@ -48,6 +49,11 @@ export class DocumebntLockerDtlsEntryComponent implements OnInit {
     this.document.push(this.setDocument(document));
   }
 
+  /** * * This function is used to set the document form group with the provided document data.
+ * * If no document data is provided, it initializes the form controls with default values.
+ * * @param {any} [document] - Optional parameter containing the document data to be used for initialization.
+ * * @returns {FormGroup} - The FormGroup instance representing the document form.
+ */
   setDocument(document){
     return new FormGroup({
         id: new FormControl(document ? document.id : 0),
@@ -62,6 +68,7 @@ export class DocumebntLockerDtlsEntryComponent implements OnInit {
         file: new FormControl(document ? `${environment.company_logo_url + '/document/' + document?.upload_file}` : '')
     })
   }
+  /**** End Document Locker Form Array Functions */
   getFile(ev,index){
     this.document.controls[index].get('doc').setValidators([Validators.required, fileValidators.fileSizeValidator(ev.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
     this.document.controls[index].get('file').setValue(ev.target.files[0]);
@@ -70,6 +77,11 @@ export class DocumebntLockerDtlsEntryComponent implements OnInit {
       );
 
   }
+  /** * This function is used to submit the document form data.
+  * * It creates a FormData object, appends the document details and files to it,
+  * * and makes an API call to submit the data.
+  * * @returns {void}
+  */
   submitDocument(){
     console.log(this.document.value);
 
@@ -97,13 +109,29 @@ export class DocumebntLockerDtlsEntryComponent implements OnInit {
         this.reset();
       })
   }
+  /** 
+   * * This function is used to add a new document entry to the document form array.
+   * * It calls the addDocument function to create a new document form group and adds it to the form array.
+   * * @returns {void}
+   */
   addItems(){
     this.addDocument();
   }
+  /**
+   * * This function is used to remove a document entry from the document form array.
+   * * It removes the document form group at the specified index from the form array.
+   * * @param {number} index - The index of the document entry to be removed.
+   * * @returns {void}
+   */
   removeAt(index){
     this.document.removeAt(index);
   }
   /**** End */
+  /**
+   * * This function is used to reset the document form array.
+   * * It clears the document form array and adds a new document form group to it.
+   * * @returns {void}
+   */
   reset(){
     this.document.clear();
     this.addDocument();

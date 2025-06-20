@@ -33,20 +33,36 @@ export class MftraxModificationComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  /**
+   * * This function is used to toggle the visibility of the dialog.
+   */
   minimize = () => {
     this.__isVisible = !this.__isVisible;
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * This function is used to maximize the dialog.
+   * * @returns void
+   * * @memberof MftraxModificationComponent
+   */
   maximize = () => {
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to toggle the full screen mode of the dialog.
+   */
   fullScreen = () => {
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
 
+  /**
+   * * * This function is used to save the MFTrax form data.
+   * * * @returns void
+   * * * @memberof MftraxModificationComponent
+   */
   saveMFTrax = () =>{
       console.log(this.mfTraxFrm.value);
       this.__dialog.closeAll();

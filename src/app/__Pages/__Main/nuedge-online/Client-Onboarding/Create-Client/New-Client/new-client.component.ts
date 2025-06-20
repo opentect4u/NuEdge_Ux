@@ -14,7 +14,7 @@ export class NewClientComponent implements OnInit {
   settingsforBrnchDropdown = this.utility.settingsfroMultiselectDropdown(
     'id',
     'pincode',
-    'Search Branch',
+    'Search Pincode',
     1,
     90,
     true
@@ -174,7 +174,37 @@ export class NewClientComponent implements OnInit {
         cmbp_id:new FormControl(''),
         nsdldp_id:new FormControl(''),
         nsdlclt_id:new FormControl(''),
-        div_pay_mode:new FormControl('')
+        div_pay_mode:new FormControl(''),
+        
+        app_income_value:new FormControl(''),
+        pep:new FormControl(''),
+        additional_occupation:new FormControl(''),
+        source_of_wealth:new FormControl(''),
+        fatca_dob:new FormControl(''),
+        address_type:new FormControl(''),
+        data_source:new FormControl(''),
+        additional_email:new FormControl(''),
+        country_of_birth_or_incorporation:new FormControl(''),
+        place_of_birth:new FormControl(''),
+        tax_receidence_other_than_india:new FormControl(''),
+        country_of_tax_residency1:new FormControl(''),
+        tax_payer_identification_no1:new FormControl(''),
+        identification_type1:new FormControl(''),
+        country_of_tax_residency2:new FormControl(''),
+        tax_payer_identification_no2:new FormControl(''),
+        identification_type2:new FormControl(''),
+        country_of_tax_residency3:new FormControl(''),
+        tax_payer_identification_no3:new FormControl(''),
+        identification_type3:new FormControl(''),
+        country_of_tax_residency4:new FormControl(''),
+        tax_payer_identification_no4:new FormControl(''),
+        identification_type4:new FormControl(''),
+        ffi:new FormControl(''),
+        nffe_category:new FormControl(''),
+        nature_of_bussiness:new FormControl(''),
+        active_nffe_sub_category:new FormControl(''),
+        name_of_stock_exchange:new FormControl(''),
+        name_of_listed_company:new FormControl(''),
       }),
       final_submit:new FormGroup({
         final_submit_acknowledgemnt:new FormControl(false),
@@ -387,8 +417,7 @@ export class NewClientComponent implements OnInit {
     this.new_client_form.get('nominee_dtls.nominee_number')
     .valueChanges.subscribe(res => {
           console.log("************* NOMINEE CHANGE ******************")
-          // console.log(res);
-          // this.nominee.controls[index].get('nominee_dob').setValidators([Validators.required,this.minAgeValidator(18)])
+          this.getCountry();
           if(res){
             this.addNominee(res);
           }
@@ -661,8 +690,13 @@ export class NewClientComponent implements OnInit {
     bank_city:string='',
     bank_district:string='',
     bank_state:string='',
-    bank_pincode:string='',
+    bank_pincode:string = '',
     default_bank_flag:string='',
+    bank_country:string='',
+    md_bank_state:any[]=[],
+    md_bank_district:any[]=[],
+    md_bank_city:any[]=[],
+    md_bank_pincode:any[]=[],
   ){
     return new FormGroup({
       ifsc_code:new FormControl(ifsc_code ? ifsc_code : '',[Validators.required,
@@ -680,11 +714,16 @@ export class NewClientComponent implements OnInit {
       bank_name: new FormControl(bank_name ? bank_name : ''),
       bank_branch: new FormControl(bank_branch ? bank_branch : ''),
       bank_address: new FormControl(bank_address ? bank_address : ''),
-      bank_city: new FormControl(bank_city ? bank_city : ''),
-      bank_district: new FormControl(bank_district ? bank_district : ''),
-      bank_state: new FormControl(bank_state ? bank_state : ''),
+      bank_city: new FormControl(bank_city ? bank_city : '',{updateOn:'blur'}),
+      bank_district: new FormControl(bank_district ? bank_district : '',{updateOn:'blur'}),
+      bank_state: new FormControl(bank_state ? bank_state : '',{updateOn:'blur'}),
       bank_pincode:new FormControl(bank_pincode ? bank_pincode : ''),
+      bank_country:new FormControl(bank_country ? bank_country : '',{updateOn:'blur'}),
       default_bank_flag:new FormControl(default_bank_flag ? default_bank_flag : '',[Validators.required]),
+      md_bank_state:new FormControl(md_bank_state && md_bank_state.length > 0 ? md_bank_state : []),
+      md_bank_district:new FormControl(md_bank_district && md_bank_district.length > 0 ? md_bank_district : []),
+      md_bank_city:new FormControl(md_bank_city && md_bank_city.length > 0 ? md_bank_city : []),
+      md_bank_pincode:new FormControl(md_bank_pincode && md_bank_pincode.length > 0 ? md_bank_pincode : [])
     })
   }
 
@@ -719,6 +758,7 @@ export class NewClientComponent implements OnInit {
             this.bank.clear();
             this.bank.push(this.setBankDetails())
           }
+          this.getCountry();
           this.fetchAccountType();
         }
         else if(item.id == 4){
@@ -1109,6 +1149,21 @@ export class NewClientComponent implements OnInit {
                             ]);
                           }
                       }
+                      else if(key == 'identification_type2' 
+                        || key =='tax_payer_identification_no2' 
+                        || key == 'country_of_tax_residency2'
+                        || key == 'identification_type3' 
+                        || key =='tax_payer_identification_no3' 
+                        || key == 'country_of_tax_residency3'
+                        || key == 'identification_type4' 
+                        || key =='tax_payer_identification_no4' 
+                        || key == 'country_of_tax_residency4'
+                        || key == 'ffi'
+                        || key == 'nffe_category'
+                        || key == 'nature_of_bussiness'
+                        || key == 'active_nffe_sub_category'
+                        || key == 'name_of_stock_exchange'
+                      ){}
                       else{
                         console.log(key)
                          control.get(key).setValidators([Validators.required]);
@@ -1192,6 +1247,11 @@ export class NewClientComponent implements OnInit {
                         || key == 'bank_district'
                         || key == 'bank_state'
                         || key == 'bank_pincode'
+                        || key == 'bank_country'
+                        || key == 'md_bank_state'
+                        || key == 'md_bank_district'
+                        || key == 'md_bank_city'
+                        || key == 'md_bank_pincode'
                       ){}
                       else if(key == 'acc_no'){
                          control.get(key).setValidators([Validators.required,Validators.minLength(6),
@@ -1202,9 +1262,7 @@ export class NewClientComponent implements OnInit {
                            Validators.required,
                           Validators.minLength(11),
                           Validators.maxLength(11),
-                         ])
-
-                         
+                         ]) 
                       }
                       else{
                          control.get(key).setValidators([Validators.required])
@@ -1528,10 +1586,54 @@ export class NewClientComponent implements OnInit {
                                               formdata.append(`${obj}${index + 1}`,district ? JSON.stringify(district) : '')
                                           }
                                           else if(obj == 'nominee_pincode'){
-                                              const pincode = this.nominee.controls[index].get('md_nominee_pincode')?.value.find(ele => ele.id == el.value[obj]);
-                                              formdata.append(`${obj}${index + 1}`,pincode ? JSON.stringify(pincode) : '')
+                                              let nominee_pincode = '';
+                                              if(el.value[obj] && el.value[obj].length > 0){
+                                                      nominee_pincode = el.value[obj].length > 0 ?  this.nominee.controls[index].get('md_nominee_pincode')?.value?.find(ele => ele.id == el.value[obj][0]?.id) : '';
+                                              }
+                                              formdata.append(`${obj}${index + 1}`,nominee_pincode ? JSON.stringify(nominee_pincode) : '')
                                           }
-                                         else if(obj == 'md_nominee_state' || obj == 'md_nominee_city' || obj == 'md_nominee_district' || obj == 'md_nominee_pincode'){}
+                                         else if(obj == 'md_nominee_state' 
+                                          || obj == 'md_nominee_city' || obj == 'md_nominee_district' 
+                                          || obj == 'md_nominee_pincode'
+                                          || obj == 'md_bank_state' 
+                                          || obj == 'md_bank_city' || obj == 'md_bank_district' 
+                                          || obj == 'md_bank_pincode' 
+                                        ){}
+                                         else if(obj == 'bank_country'){
+                                                let bank_country = '';
+                                                if(el.value[obj]){
+                                                    bank_country = this.md_country.find(ele => ele.id == Number(el.value[obj]));
+                                                }
+                                                formdata.append(`${obj}${index + 1}`,bank_country ? JSON.stringify(bank_country) : '')
+                                         }
+                                         else if(obj == 'bank_state'){
+                                                let bank_state = '';
+                                                if(el.value[obj]){
+                                                    bank_state =  this.bank.controls[index].get('md_bank_state')?.value.find(ele => ele.id == Number(el.value[obj]));
+                                                }
+                                                formdata.append(`${obj}${index + 1}`,bank_state ? JSON.stringify(bank_state) : '')
+                                         }
+                                        else if(obj == 'bank_district'){
+                                                let bank_district = '';
+                                                if(el.value[obj]){
+                                                    bank_district =  this.bank.controls[index].get('md_bank_district')?.value.find(ele => ele.id == Number(el.value[obj]));
+                                                }
+                                                formdata.append(`${obj}${index + 1}`,bank_district ? JSON.stringify(bank_district) : '')
+                                         }
+                                         else if(obj == 'bank_city'){
+                                                let bank_city = '';
+                                                if(el.value[obj]){
+                                                    bank_city =  this.bank.controls[index].get('md_bank_city')?.value.find(ele => ele.id == Number(el.value[obj]));
+                                                }
+                                                formdata.append(`${obj}${index + 1}`,bank_city ? JSON.stringify(bank_city) : '')
+                                         }
+                                         else if(obj == 'bank_pincode'){
+                                            let bank_pincode = '';
+                                            if(el.value[obj] && el.value[obj].length > 0){
+                                                    bank_pincode = el.value[obj].length > 0 ?  this.bank.controls[index].get('md_bank_pincode')?.value?.find(ele => ele.id == el.value[obj][0]?.id) : '';
+                                            }
+                                            formdata.append(`${obj}${index + 1}`,bank_pincode ? JSON.stringify(bank_pincode) : '')
+                                         }
                                          else{
                                            formdata.append(`${obj}${index + 1}`,el.value[obj] ? el.value[obj] : '')
                                          }
@@ -1685,6 +1787,27 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  onChangeBankCountry = (ev,index) =>{
+      this.bank.controls[index].get('bank_state').setValue('');
+      this.bank.controls[index].get('bank_district').setValue('');
+      this.bank.controls[index].get('bank_city').setValue('');
+      this.bank.controls[index].get('bank_pincode').setValue('');
+      this.bank.controls[index].get('md_bank_state').setValue([]);
+      this.bank.controls[index].get('md_bank_district').setValue([]);
+      this.bank.controls[index].get('md_bank_city').setValue([]);
+      this.bank.controls[index].get('md_bank_pincode').setValue([]);
+      if(ev.target?.value){
+        this.fetchBankStateByCountry(ev.target?.value,index)
+      }
+  }
+
+  fetchBankStateByCountry = (countryId,index) =>{
+     this.dbIntr.api_call(0,`/states?country_id=${countryId}`,null)
+      .pipe(pluck('data')).subscribe((res:any) =>{
+          this.bank.controls[index].get('md_bank_state').setValue(res);
+      })
+  }
+
   fetchNomineeStateByCountry = (countryId,index) =>{
       this.dbIntr.api_call(0,`/states?country_id=${countryId}`,null)
         .pipe(pluck('data')).subscribe((res:any) =>{
@@ -1704,6 +1827,24 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  onChangeBankState = (ev,index) =>{
+      this.bank.controls[index].get('bank_district').setValue('');
+      this.bank.controls[index].get('bank_city').setValue('');
+      this.bank.controls[index].get('bank_pincode').setValue('');
+      this.bank.controls[index].get('md_bank_district').setValue([]);
+      this.bank.controls[index].get('md_bank_city').setValue([]);
+      this.bank.controls[index].get('md_bank_pincode').setValue([]);
+       if(ev.target?.value){
+        this.fetchBankDistrictByState(ev.target?.value,index)
+      }
+  }
+  fetchBankDistrictByState  = (stateId,index) =>{
+      this.dbIntr.api_call(0,`/districts?state_id=${stateId}`,null)
+      .pipe(pluck('data')).subscribe((res:any) =>{
+          this.bank.controls[index].get('md_bank_district').setValue(res);
+      })
+  }
+
   fetchNomineeDistrictByState = (stateId,index) =>{
       this.dbIntr.api_call(0,`/districts?state_id=${stateId}`,null)
         .pipe(pluck('data')).subscribe((res:any) =>{
@@ -1721,6 +1862,22 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  onChangeBankDistrict = (ev,index) =>{
+      this.bank.controls[index].get('bank_city').setValue('');
+      this.bank.controls[index].get('md_bank_city').setValue([]);
+      this.bank.controls[index].get('bank_pincode').setValue('');
+      this.bank.controls[index].get('md_bank_pincode').setValue([]);
+      if(ev.target?.value){
+        this.fetchBankCityByDistrict(ev.target?.value,index)
+      }
+  }
+  fetchBankCityByDistrict = (districtId,index) =>{
+        this.dbIntr.api_call(0,`/city?district_id=${districtId}`,null)
+        .pipe(pluck('data')).subscribe((res:any) =>{
+            this.bank.controls[index].get('md_bank_city').setValue(res);
+        })
+  }
+
   fetchNomineeCityByDistrict = (districtId,index) =>{
         this.dbIntr.api_call(0,`/city?district_id=${districtId}`,null)
         .pipe(pluck('data')).subscribe((res:any) =>{
@@ -1735,6 +1892,22 @@ export class NewClientComponent implements OnInit {
         this.fetchNomineePincodeByCity(ev.target?.value,index)
       }
   }
+
+  onChangeBankCity = (ev,index) =>{
+      this.bank.controls[index].get('bank_pincode').setValue('');
+      this.bank.controls[index].get('md_bank_pincode').setValue([]);
+      if(ev.target?.value){
+        this.fetchBankPincodeByCity(ev.target?.value,index)
+      }
+  }
+
+  fetchBankPincodeByCity = (cityId,index) =>{
+          this.dbIntr.api_call(0,`/pincode?city_id=${cityId}`,null)
+          .pipe(pluck('data')).subscribe((res:any) =>{
+              this.bank.controls[index].get('md_bank_pincode').setValue(res);
+          })
+  }
+
   fetchNomineePincodeByCity = (cityId,index) =>{
           this.dbIntr.api_call(0,`/pincode?city_id=${cityId}`,null)
           .pipe(pluck('data')).subscribe((res:any) =>{

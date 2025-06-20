@@ -15,6 +15,15 @@ export class DocsDashboardComponent implements OnInit {
 
   ngOnInit() {
   }
+  /**
+   * * This function is used to navigate to a specific URL based on the provided items.
+   * * @param items - The items containing the URL to navigate to.
+   * * * @return {void}
+   * * @memberof DocsDashboardComponent
+   * * @description
+   * * This function is responsible for navigating to a specific URL when called.
+   * * It utilizes the utility service to perform the navigation action.
+   */
   navigate(items){
        this.utility.navigate(items.url);
   }

@@ -16,6 +16,11 @@ export class DirectorDtlsRptComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {}
+  /** * * This function is used to populate the data table with the selected director details.
+ * * It emits an event with the index and data of the selected director.
+ * * @param {any} director - The director details to be populated in the data table.
+ * * @returns {void}
+ */
   populateDT(director){
    this.selectIndex.emit({tabIndex:0,data:director});
   }

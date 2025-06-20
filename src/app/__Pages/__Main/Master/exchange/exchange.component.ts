@@ -28,6 +28,12 @@ export class ExchangeComponent implements OnInit,IDialog {
   ngOnInit(): void {}
 
 
+  /**
+   * * This function is used to open a dialog for adding or updating an exchange.
+   * * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * * * and opens the EntryComponent dialog with the provided configuration.
+   * * @param {Iexchange | null} exchange - The exchange object to be added 
+   */
   openEntryDialog(exchange:Iexchange | null = null,id:number){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -81,6 +87,11 @@ export class ExchangeComponent implements OnInit,IDialog {
     }
   };
 
+  /**
+   *  * This function is used to open a dialog for generating reports.
+   *  * It creates a MatDialogConfig object, sets various properties for the dialog,
+   *  * and opens the ExchangeReportComponent dialog with the provided configuration. 
+   */
   openDialogForReports(id:string | null = ''){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

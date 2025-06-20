@@ -124,11 +124,25 @@ export class IsinRptComponent implements OnInit {
     });
   }
 
+  /**
+   * * This function is used to fetch the AMC master data from the server.
+   * * @returns void
+   * * @memberof IsinRptComponent
+   * * @description
+   * * This function makes an API call to retrieve the AMC master data and assigns it to the AmcMst variable.
+   * * It is called during the initialization of the component to populate the AMC dropdown.
+   */
   getAMCMst(){
     this.__dbIntr.api_call(0,'/amc',null).pipe(pluck("data")).subscribe((res:amc[]) =>{
          this.AmcMst = res;
     })
   }
+  /**
+   *  * This function is used to get the category against the selected AMC IDs.
+   *  * It makes an API call to fetch the category data based on the provided AMC IDs.
+   *  * @param arr_amc_ids - An array of AMC IDs for which the categories need to be fetched.
+   *  * @returns void
+   */
   getcategoryAgainstAmc(arr_amc_ids){
     if(arr_amc_ids.length > 0){
       this.__dbIntr.api_call(0,'/category','arr_amc_id='+JSON.stringify(arr_amc_ids.map(item => item.id)))
@@ -141,6 +155,14 @@ export class IsinRptComponent implements OnInit {
            this.__isinFrm.controls['cat_id'].reset([],{emitEvent:true});
       }
   }
+  /**
+   *  * This function is used to get the subcategory against the selected category and AMC IDs.
+   *  * It makes an API call to fetch the subcategory data based on the provided category and AMC IDs.
+   *  * @returns void
+   *  * @memberof IsinRptComponent
+   * @param arr_cat_ids 
+   * @param arr_amc_ids 
+   */
   getSubcategoryAgainstCategory(arr_cat_ids,arr_amc_ids){
     if(arr_cat_ids.length > 0 && arr_amc_ids.length > 0){
       this.__dbIntr.api_call(0,'/subcategory',
@@ -156,6 +178,15 @@ export class IsinRptComponent implements OnInit {
         this.__isinFrm.controls['sub_cat_id'].reset([],{emitEvent:true});
       }
   }
+  /**
+   *  
+   * * This function is used to get the scheme against the selected subcategory, category, and AMC IDs.
+   * * It makes an API call to fetch the scheme data based on the provided subcategory, category, and AMC IDs.
+   * * @returns void
+   * @param arr_subcat_ids 
+   * @param arr_cat_ids 
+   * @param arr_amc_ids 
+   */
   getSchemeAgainstSubCategory(arr_subcat_ids,arr_cat_ids,arr_amc_ids){
     if(arr_subcat_ids.length > 0 && arr_cat_ids.length > 0 && arr_amc_ids.length > 0){
       this.__dbIntr.api_call(0,'/scheme',
@@ -172,24 +203,47 @@ export class IsinRptComponent implements OnInit {
         this.__isinFrm.controls['scheme_id'].reset([]);
       }
   }
+  /**
+   * * This function is used to toggle the full screen mode of the dialog.
+   * * It updates the dialog's panel class and position to achieve full screen display.
+   * * @returns void
+   */
   fullScreen(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({top:'0px'});
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to minimize the dialog.
+   * * * It updates the dialog's size and position to display it at the bottom right corner.
+   * * * @returns void
+   * * * @memberof IsinRptComponent
+   */
   minimize(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.updateSize("40%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * * This function is used to maximize the dialog.
+   * * * It updates the dialog's panel class and position to display it in a larger view.
+   * * * @returns void
+   * * * @memberof IsinRptComponent
+   */
   maximize(){
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
     this.dialogRef.updatePosition({top:'0px'});
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   *  
+   * @param ev - This parameter represents the event triggered when an item is clicked.
+   * * This function is called when an item is clicked in the select button dropdown.
+   * * It checks the value of the clicked item and performs actions accordingly.
+   */
   onItemClick(ev){
     if(ev.option.value == 'A'){
       this.getOptionMst();
@@ -200,6 +254,13 @@ export class IsinRptComponent implements OnInit {
        this.reset();
     }
   }
+  /**
+   * * * This function is used to reset the form fields and pagination to their initial values.
+   * * * It clears the selected AMC, category, subcategory, and scheme, and resets the pagination to '10'.
+   * * * It also sets the button type to 'R' for reset.
+   * * * @returns void
+   * * @memberof IsinRptComponent
+   */
   reset(){
     this.__isinFrm.controls['amc_id'].setValue([],{emitEVent:true});
     this.__isinFrm.controls['alt_scheme_id'].setValue('');
@@ -210,19 +271,44 @@ export class IsinRptComponent implements OnInit {
     this.submitISIN();
 
   }
+  /**
+   * * This function is used to fetch the option master data from the server.
+   * * It makes an API call to retrieve the option data and assigns it to the optionMst variable.
+   * * @returns void
+   */
   getOptionMst(){
     this.__dbIntr.api_call(0,'/option',null).pipe(pluck("data")).subscribe((res:option[]) =>{
     this.optionMst = res;
     })
   }
+  /**
+   * * * This function is used to fetch the plan master data from the server.
+   * * * It makes an API call to retrieve the plan data and assigns it to the planMst variable.
+   * * * @returns void
+   * * @memberof IsinRptComponent
+   */
   getPlanMst(){
     this.__dbIntr.api_call(0,'/plan',null).pipe(pluck("data")).subscribe((res:plan[]) =>{
     this.planMst = res;
     })
   }
+  /**
+   * 
+   * @param display_mode - This parameter represents the display mode for the scheme visibility.
+   * * This function is used to set the visibility of the scheme based on the provided display mode.
+   * * It updates the displayMode_forScheme variable with the given display mode.
+   * * @returns void
+   * @memberof IsinRptComponent
+   */
   searchSchemeVisibility(display_mode){
     this.displayMode_forScheme = display_mode
   }
+  /**
+   * 
+   * @param ev - This parameter represents the event triggered when an item is selected from the parent component.
+   * * This function is used to get the selected items from the parent component.
+   * * It sets the value of the alt_scheme_id control in the form and resets the alt_scheme_name control with the selected item's scheme name.
+   */
   getSelectedItemsFromParent(ev){
     console.log(ev);
 
@@ -230,11 +316,26 @@ export class IsinRptComponent implements OnInit {
     this.__isinFrm.controls['alt_scheme_name'].reset(ev.item.scheme_name,{emitEvent:false});
     this.searchSchemeVisibility('none');
   }
+  /**
+   * 
+   * @param ev - This parameter represents the event triggered when a custom sort is applied.
+   * * This function is used to handle custom sorting of the ISIN master data.
+   * * It updates the sort order and field based on the event parameters and calls the getISINMst() function to fetch the sorted data.
+   * * @returns void
+   * @memberof IsinRptComponent
+   */
   customSort(ev){
     this.sort.order= ev.sortOrder;
     this.sort.field= ev.sortField;
     this.getISINMst();
   }
+  /**
+   * * This function is used to fetch the ISIN master data based on the form values and pagination.
+   * * It creates a FormData object, appends the necessary parameters, and makes an API call to retrieve the data.
+   * * The retrieved data is then assigned to the __isinMst variable and the pagination links are updated.
+   * * @returns void
+   * @memberof IsinRptComponent
+   */
   getISINMst(){
     const __fd = new FormData();
     __fd.append('paginate',this.pageNumber);
@@ -261,14 +362,35 @@ export class IsinRptComponent implements OnInit {
   //       // assign Export value to a variable
   //   })
   // }
+  /**
+   * * * This function is used to submit the ISIN form data and fetch the ISIN master data.
+   * * * It retrieves the form values, calls the getISINMst() function to fetch the data, and updates the __isinMst variable.
+   * * * @returns void
+   * * @memberof IsinRptComponent
+   */
   submitISIN(){
     this.formValue = this.__isinFrm.value;
     this.getISINMst();
   }
+  /**
+   * 
+   * @param itemPerpage - This parameter represents the number of items per page selected by the user.
+   * * This function is used to handle the selection of items per page in the pagination.
+   * * It updates the pageNumber variable with the selected item count and calls the getISINMst() function to fetch the data accordingly.
+   * * @returns void
+   * @memberof IsinRptComponent
+   */
   onSelectItem(itemPerpage){
      this.pageNumber = itemPerpage;
      this.getISINMst()
   }
+  /**
+   * 
+   * * This function is used to fetch paginated data based on the provided pagination object.
+   * * It constructs the URL with the necessary parameters and makes an API call to retrieve the data.
+   * * The retrieved data is then assigned to the __isinMst variable and the __paginate object is updated.
+   * @param __paginate - This parameter represents the pagination object containing the URL for fetching paginated data.
+   */
   getPaginate(__paginate){
     if (__paginate.url) {
       this.__dbIntr
@@ -300,6 +422,12 @@ export class IsinRptComponent implements OnInit {
     }
 
   }
+  /**
+   * 
+   * @param isin - This parameter represents the ISIN object that needs to be populated in the dialog.
+   * * This function is used to open a dialog for manual entry of ISIN details.
+   * * It configures the dialog with necessary options such as width, height, and data to be passed.
+   */
   populateDT(isin){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -336,6 +464,12 @@ export class IsinRptComponent implements OnInit {
       });
     }
   }
+  /**
+   * 
+   * @param row_obj - This parameter represents an array of ISIN objects that need to be updated in the master list.
+   * * This function is used to update the ISIN master list with the provided row objects.
+   * * It checks if each row object already exists in the master list and updates it accordingly.
+   */
   updateRow(row_obj){
      row_obj.forEach(el =>{
         if(this.__isinMst.findIndex(item => item.id == el.id) != -1){
@@ -363,6 +497,17 @@ export class IsinRptComponent implements OnInit {
 
      })
   }
+  /**
+   * 
+   * @param el - This parameter represents the ISIN object that needs to be deleted.
+   * * This function is used to delete an ISIN from the master list.
+   * * It opens a confirmation dialog and upon confirmation, it makes an API call to delete the ISIN.
+   * * If the deletion is successful, it removes the ISIN from the master list.
+   * @returns void
+   * @param index - This parameter represents the index of the ISIN object in the master list.
+   * @memberof IsinRptComponent
+   * @description
+   */
   deleteISIN(el,index){
       const dialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = false;

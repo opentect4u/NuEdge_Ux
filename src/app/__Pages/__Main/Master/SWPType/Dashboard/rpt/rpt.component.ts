@@ -50,12 +50,30 @@ export class RptComponent implements OnInit {
     this.formValue = this.__SwpType.value;
     this.getSWPTypeMst();
   }
+  /**
+   * * This function is used to toggle the full screen mode of the dialog.
+   * * @returns void
+   * * @memberof RptComponent
+   *  
+   * * @description
+   * * This function is responsible for toggling the full screen mode of the dialog.
+   * * It updates the panel classes and position of the dialog based on the current visibility state.
+   * * @example
+   * * // Usage: Call this function when the user clicks the full screen button on the dialog.
+   */
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * This function is used to minimize the dialog.
+   * * * @returns void
+   * * * @memberof RptComponent
+   *    * * @description
+   * * * This function is responsible for minimizing the dialog by updating its size and position.
+   */
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
@@ -65,12 +83,41 @@ export class RptComponent implements OnInit {
       right: this.data.right + 'px',
     });
   }
+  /**
+   * * * This function is used to maximize the dialog.
+   * * * @returns void
+   * * * @memberof RptComponent
+   * * * @description
+   * * * This function is responsible for maximizing the dialog by updating its panel classes and position.
+   * * * @example
+   * * * // Usage: Call this function when the user clicks the maximize button on the dialog.
+   *  
+   * * * @returns {void}
+   * * * @memberof RptComponent
+   *  
+   * * * @description
+   * * * This function is responsible for maximizing the dialog by updating its panel classes and position.
+   */
   maximize() {
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to submit the SWP Type form data.
+   * * * @returns void
+   * * * @memberof RptComponent
+   * * * @description
+   *  
+   * * * This function is responsible for submitting the SWP Type form data and fetching the SWP Type master data.
+   * * * It retrieves the form values, calls the getSWPTypeMst function with the specified sorting parameters,
+   * * * and updates the displayed SWP Type data accordingly.
+   * * * @example
+   *  * * // Usage: Call this function when the user clicks the submit button on the SWP Type form.
+   * * * @returns {void}
+   * * * @memberof RptComponent
+   */
   submit(){
     this.formValue = this.__SwpType.value;
      this.getSWPTypeMst(
@@ -79,13 +126,28 @@ export class RptComponent implements OnInit {
      )
   }
 
+  /**
+   * 
+   * @param $event - The event triggered by the global filter input.
+   * @description
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
   }
+  /**
+   * 
+   * @returns {column[]} - Returns the columns for the SWP Type table.
+   * @description
+   */
   getColumns = () =>{
     return this.__utility.getColumns(this.__columns);
   }
+  /**
+   * 
+   * @param column_name - The name of the column to sort by.
+   * @param sort_by 
+   */
   getSWPTypeMst(column_name: string | null = '',sort_by: string | null | '' = 'asc') {
     const __SWPTypeSearch = new FormData();
     __SWPTypeSearch.append('swp_type_name',this.formValue?.swp_type_name);
@@ -101,6 +163,17 @@ export class RptComponent implements OnInit {
       });
   }
 
+  /**
+   * 
+   * @param __SWPTypeExport - The FormData object containing the SWP Type export data.
+   * * @description
+   * * This function is responsible for exporting the SWP Type data to a file.
+   * * It removes the 'paginate' field from the FormData object and makes an API call to the '/swpTypeExport' endpoint.
+   * * * The response data is then assigned to the __export MatTableDataSource object for display.
+   * * @example
+   * * // Usage: Call this function when the user clicks the export button on the SWP Type page.
+   * * @returns {void}
+   */
   tableExport(__SWPTypeExport: FormData){
     __SWPTypeExport.delete('paginate');
     this.__dbIntr
@@ -110,10 +183,21 @@ export class RptComponent implements OnInit {
         this.__export = new MatTableDataSource(res);
       });
   }
+  /**
+   * 
+   * @param res - The response data from the SWP Type search API call.
+   * * @description
+   * * This function is responsible for setting the paginator data for the SWP Type table.
+   */
   setPaginator(res){
      this.__selecSwpType = new MatTableDataSource(res);
     //  this.__paginate = res.links;
   }
+  /**
+   * 
+   * @param __paginate - The pagination object containing the URL for fetching paginated data.
+   * * @description
+   */
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -130,6 +214,10 @@ export class RptComponent implements OnInit {
         });
     }
   }
+  /**
+   * 
+   * @param row_obj - The object containing the updated SWP Type data.
+   */
   updateRow(row_obj){
 
     this.__selecSwpType.data = this.__selecSwpType.data.filter((value , key) => {
@@ -145,6 +233,14 @@ export class RptComponent implements OnInit {
       return true;
     });
 }
+/**
+ * 
+ * @param el - The object containing the SWP Type data to be populated in the dialog.
+ * * @description
+ * * This function is responsible for opening a dialog to populate the SWP Type data.
+ * * It creates a MatDialogConfig object, sets various properties for the dialog,
+ * * and opens the ManualEntryComponent dialog with the provided configuration.
+ */
 populateDT(el){
   const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -183,6 +279,13 @@ populateDT(el){
       });
     }
 }
+/**
+ * 
+ * @param ev - The event triggered by the custom sort action.
+ * * @description
+ * * This function is responsible for handling the custom sort action on the SWP Type table.
+ * * It updates the sort field and order based on the event parameters and calls the getSWPTypeMst function to fetch the sorted data.
+ */
 customSort(ev){
   if(ev.sortField != 'edit' && ev.sortField!='delete'){
   this.sort.field = ev.sortField;
@@ -190,9 +293,31 @@ customSort(ev){
   this.getSWPTypeMst();
 }
 }
+/**
+ * 
+ * @param ev - The event triggered by the selection of an item in the SWP Type table.
+ * * @description
+ * * This function is responsible for handling the selection of an item in the SWP Type table.
+ * * It calls the getSWPTypeMst function to fetch the updated SWP Type data based on the selected item.
+ * * * @example
+ * * * // Usage: Call this function when the user selects an item in the SWP Type table.
+ * * * @returns {void}
+ * * * @memberof RptComponent
+ * */
 onselectItem(ev){
   this.getSWPTypeMst();
 }
+/**
+ * * * This function is used to export the SWP Type data as a PDF file.
+ * * * @returns void
+ * * * @memberof RptComponent
+ * * * @description
+ *  
+ * * * This function is responsible for downloading the SWP Type report as a PDF file.
+ * * * It calls the downloadReport method of the RPTService with the specified parameters.
+ * * * @example
+ * * * // Usage: Call this function when the user clicks the export button on the SWP Type page.
+ */
 exportPdf(){
   this.__Rpt.downloadReport(
     '#swpType',

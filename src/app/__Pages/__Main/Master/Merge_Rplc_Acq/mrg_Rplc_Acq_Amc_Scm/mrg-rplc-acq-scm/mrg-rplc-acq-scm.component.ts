@@ -412,17 +412,21 @@ export class MrgRplcAcqScmComponent implements OnInit {
 
   }
 
+  /** getter for accessing formcontrol */
   get sip_freq_wise_amt(): FormArray {
     return this.scheme_frm.get('sip_freq_wise_amt') as FormArray;
   }
 
+  /** getter for accessing formcontrol */
   get swp_freq_wise_amt(): FormArray {
     return this.scheme_frm.get('swp_freq_wise_amt') as FormArray;
   }
+  /** getter for accessing formcontrol */
   get stp_freq_wise_amt(): FormArray {
     return this.scheme_frm.get('stp_freq_wise_amt') as FormArray;
   }
 
+  /** set Frequesyncy Amount */
   setFrequencyAmt(freq_dtls) {
     this.scheme_frm.get('is_selectall').setValue(
       freq_dtls.every((bool) => global.getType(bool.is_checked)),{emitEvent:false}
@@ -432,6 +436,7 @@ export class MrgRplcAcqScmComponent implements OnInit {
     });
   }
 
+  /** set SWP Frequency Amount */
   setSwpfrequencyAmt(freq_dtls) {
     this.scheme_frm.get('is_selectall_for_swp').setValue(
       freq_dtls.every((bool) => global.getType(bool.is_checked)),{emitEvent:false}
@@ -440,6 +445,7 @@ export class MrgRplcAcqScmComponent implements OnInit {
       this.addSwpFrequency(freqDtls);
     });
   }
+  /** set STP Frequency Amount */
   setStpFrequency(freq_dtls) {
     console.log(freq_dtls);
     this.scheme_frm.get('is_selectall_for_stp').setValue(
@@ -450,18 +456,22 @@ export class MrgRplcAcqScmComponent implements OnInit {
     });
   }
 
+  /** push item into formarray */
   addFrequency(_freDtls) {
     this.sip_freq_wise_amt.push(this.createFrequcncy(_freDtls));
   }
 
+  /** push item into formarray */
   addStpFrequency(__freDtls) {
     this.swp_freq_wise_amt.push(this.createFrequencyforSWP_STP(__freDtls));
   }
 
+  /** push item into formarray */
   addSwpFrequency(_freDtls) {
     this.stp_freq_wise_amt.push(this.createFrequcncy(_freDtls));
   }
 
+    /** set FormControl depend on checkbox */
     createFrequencyforSWP_STP(_freDtls): FormGroup {
     return new FormGroup({
       id: new FormControl(_freDtls.id),
@@ -473,6 +483,7 @@ export class MrgRplcAcqScmComponent implements OnInit {
     });
   }
 
+  /** set FormControl depend on checkbox */
   createFrequcncy(_freDtls): FormGroup {
     return new FormGroup({
       id: new FormControl(_freDtls.id),
@@ -490,12 +501,13 @@ export class MrgRplcAcqScmComponent implements OnInit {
 
 
 
-
+  /** set FormControl depend on checkbox */
   setFinalPreviewList = (ev) =>{
     this.setSelected_scheme(ev);
     this.checkValid_data_selection(ev);
   }
 
+  /** set FormControl depend on checkbox */
   checkValid_data_selection = (ev) =>{
     if(this.parent_id == '46'){
       if(ev){
@@ -514,25 +526,35 @@ export class MrgRplcAcqScmComponent implements OnInit {
     this.utility.showSnackbar(`Plese select ${this.parent_id == '46' ? 'atleast two' : ''} scheme`,2)
   }
 
+  /** set FormControl depend on checkbox */
   setFinalPreviewList_step2 = (ev) =>{
     this.setSelected_scheme_step2(ev);
     this.checkValid_data_selection(ev);
   }
 
+  /** set FormControl depend on checkbox */
   setFinalSelectedScheme = (ev) =>{
     this.setSelected_scheme(ev);
   }
 
+  /** set FormControl depend on checkbox */
   setFinalSelectedScheme_step2 = (ev) =>{
     this.setSelected_scheme_step2(ev);
   }
 
+  /** set FormControl depend on checkbox */
   setSelected_scheme_step2 = (scheme) =>{
     this.selected_scheme_step2 = [];
     if(scheme){
       this.selected_scheme_step2.push(scheme);
     }
   }
+  /*
+    set value inside array of selected scheme
+    @param scheme - scheme object to be set
+    This function sets the selected scheme based on the parent_id.
+    If parent_id is '46', it allows multiple schemes, otherwise it allows only one.  
+  */
   setSelected_scheme = (scheme) =>{
     switch(this.parent_id){
       case '46':
@@ -546,6 +568,11 @@ export class MrgRplcAcqScmComponent implements OnInit {
     }
   }
 
+  /** setScheme__formControl
+    @param scheme - scheme object to be set in the form control
+    This function sets the values of the scheme form control based on the provided scheme object.
+    If no scheme is provided, it initializes the form control with default values.
+  */
   setScheme__formControl(scheme:scheme | undefined = undefined): void{
     console.log(scheme);
     this.scheme_frm.patchValue({
@@ -587,6 +614,11 @@ export class MrgRplcAcqScmComponent implements OnInit {
     }
   }
 
+  /** 
+    @param scheme - scheme object to be set in the form control
+    This function sets the values of the scheme form control based on the provided scheme object.
+    If no scheme is provided, it initializes the form control with default values.
+  */
   setSIPFrequency = (sip_freq_wise_amt) =>{
     this.scheme_frm.get('is_selectall').setValue(
       JSON.parse(sip_freq_wise_amt).every((bool) => global.getType(bool.is_checked)),{emitEvent:false}
@@ -600,6 +632,11 @@ export class MrgRplcAcqScmComponent implements OnInit {
     });
   }
 
+  /** 
+    @param scheme - scheme object to be set in the form control
+    This function sets the values of the scheme form control based on the provided scheme object.
+    If no scheme is provided, it initializes the form control with default values.
+  */
    setSTPFrequency = (stp_freq_wise_amt) =>{
     this.scheme_frm.get('is_selectall_for_stp').setValue(
       JSON.parse(stp_freq_wise_amt).every((bool) => global.getType(bool.is_checked)),{emitEvent:false}
@@ -612,6 +649,11 @@ export class MrgRplcAcqScmComponent implements OnInit {
     });
   }
 
+  /** 
+    @param scheme - scheme object to be set in the form control
+    This function sets the values of the scheme form control based on the provided scheme object.
+    If no scheme is provided, it initializes the form control with default values.
+  */
   setSWPFrequency = (swp_freq_wise_amt) =>{
     this.scheme_frm.get('is_selectall_for_swp').setValue(
       JSON.parse(swp_freq_wise_amt).every((bool) => global.getType(bool.is_checked)),{emitEvent:false}
@@ -624,6 +666,7 @@ export class MrgRplcAcqScmComponent implements OnInit {
     });
   }
 
+  /** get Category Master by Product ID */
   schemePropulate = () =>{
     this.dbIntr.api_call(0,'/scheme',
     'arr_subcat_id=' +
@@ -648,6 +691,7 @@ export class MrgRplcAcqScmComponent implements OnInit {
     })
   }
 
+  /** get Category Master by Product ID */
   getCategoryAgainstAMC = (amc_ids: amc[]) =>{
     if(this.stepper_index == 0){
     if(amc_ids.length > 0){
@@ -664,6 +708,12 @@ export class MrgRplcAcqScmComponent implements OnInit {
   }
   }
 
+  /*
+  * This function retrieves the category master data based on the selected AMC IDs.
+  * It is called when the stepper index is 1, indicating that it is used in the second step of the process.
+  * If there are selected AMC IDs, it makes an API call to fetch the category data and updates the `category_mst_step2` property.
+  * If no AMC IDs are selected, it clears the `category_mst_step2` and resets the category control in the form.
+  */
   getCategoryAgainstAMC_step2 = (amc_ids: amc[]) =>{
     if(this.stepper_index == 1){
     if(amc_ids.length > 0){
@@ -680,6 +730,12 @@ export class MrgRplcAcqScmComponent implements OnInit {
     }
   }
 
+  /*
+  * This function retrieves the subcategory master data based on the selected AMC and category IDs.
+  * It is called when the stepper index is 0, indicating that it is used in the first step of the process.
+  * If there are selected AMC and category IDs, it makes an API call to fetch the subcategory data and updates the `subcategory_mst` property.
+  * If no AMC or category IDs are selected, it clears the `subcategory_mst` and resets the subcategory control in the form.
+  */
  getSubcategoryAgainstCategoryAMC = (amc_ids:amc[],cat_ids:category[]) =>{
 
   if(this.stepper_index == 0){
@@ -704,6 +760,12 @@ export class MrgRplcAcqScmComponent implements OnInit {
   }
  }
 
+ /*
+  * This function retrieves the subcategory master data based on the selected AMC and category IDs.
+  * It is called when the stepper index is 1, indicating that it is used in the second step of the process.
+  * If there are selected AMC and category IDs, it makes an API call to fetch the subcategory data and updates the `subcategory_mst_step2` property.
+  * If no AMC or category IDs are selected, it clears the `subcategory_mst_step2` and resets the subcategory control in the form.
+  */
  getSubcategoryAgainstCategoryAMC_step2 = (amc_ids:amc[],cat_ids:category[]) =>{
   if(this.stepper_index == 1){
     if(amc_ids.length > 0 && cat_ids.length > 0){
@@ -730,6 +792,7 @@ export class MrgRplcAcqScmComponent implements OnInit {
 
  }
 
+
   onAmcDeSelect = (ev) =>{
     this.search_scm.get('amc_id').setValue(this.search_scm.value.amc_id.filter(item => item.id != ev.id));
   }
@@ -743,6 +806,13 @@ export class MrgRplcAcqScmComponent implements OnInit {
     this.search_scm_for_acq.get('cat_id').setValue(this.search_scm_for_acq.value.cat_id.filter(item => item.id != ev.id));
   }
 
+  /** onStepChange
+    @param ev - event object containing the selected index of the stepper
+    This function is triggered when the stepper changes steps.
+    It updates the stepper index and sets validators for the effective date field based on the selected index.
+    If the parent_id is '47', it sets the scheme form control with the first selected scheme when the stepper index is 1.
+    It also enables or disables date inputs and checkboxes based on the stepper index.
+  */
   onStepChange = (ev) =>{
     this.stepper_index = ev.selectedIndex;
     if(this.parent_id == '47'){
@@ -763,10 +833,20 @@ export class MrgRplcAcqScmComponent implements OnInit {
 }
 
 
-
+/** ViewDetails
+    @param ev - scheme object containing the details of the scheme to be viewed
+    This function opens a dialog to view the details of the selected scheme.
+    It configures the dialog with various settings such as width, height, and data to be passed to the dialog component.
+*/
 ViewDetails = (ev:scheme):void =>{
   this.openDialog(ev,ev.id)
 }
+/** openDialog
+ * @param scheme - scheme object containing the details of the scheme to be viewed
+ * @param scheme_id - ID of the scheme to be viewed
+ * This function opens a dialog to view the details of the selected scheme.
+ * It configures the dialog with various settings such as width, height, and data to be passed to the dialog component.
+ */
 openDialog(scheme: scheme,scheme_id){
   const dialogConfig = new MatDialogConfig();
   dialogConfig.autoFocus = false;
@@ -806,6 +886,11 @@ openDialog(scheme: scheme,scheme_id){
   }
 }
 
+/** createFrequency
+ * @_freDtls - frequency details object containing the details of the frequency to be created
+ * This function creates a FormGroup for the frequency details with various controls such as id, freq_name, is_checked, sip_add_min_amt.
+ * It uses the global.getType function to determine the type of the is_checked field.
+ */
 createFrequency(_freDtls): FormGroup {
   return new FormGroup({
     id: new FormControl(_freDtls.id),
@@ -816,11 +901,24 @@ createFrequency(_freDtls): FormGroup {
     ]),
   });
 }
+/** preventNonumeric
+ * @param __ev - event object containing the key event
+ * @param index - index of the frequency control
+ * This function prevents non-numeric input in the frequency control.
+ * It uses the dates.numberOnly function to restrict input to numeric values only.
+ */
 preventNonumeric(__ev, index) {
   dates.numberOnly(__ev);
 }
 
-
+/** getCheckboxVal
+ * @param i - index of the frequency control
+ * @param checked - boolean value indicating whether the checkbox is checked or not
+ * @param __id - ID of the checkbox
+ * This function is triggered when the checkbox value changes.
+ * It calls the appropriate function to set the form control based on the checkbox ID.
+ * It handles three cases: '1' for SIP, '2' for SWP, and default for STP.
+ */
 getCheckboxVal(i, checked, __id) {
   switch (__id) {
     case '1':
@@ -834,6 +932,14 @@ getCheckboxVal(i, checked, __id) {
       break;
   }
 }
+/** setFormControldependOnCheckbox
+ * @i - index of the frequency control
+ * @__res - boolean value indicating whether the checkbox is checked or not
+ * This function sets the validators for the sip_fresh_min_amt and sip_add_min_amt controls based on the checkbox value.
+ * If the checkbox is checked, it sets the validators to required and a numeric pattern.
+ * If the checkbox is unchecked, it removes the validators.
+ * It also updates the validity of the controls after setting the validators.
+ */
 setFormControldependOnCheckbox(i, __res) {
   this.sip_freq_wise_amt.controls[i]
     .get('sip_fresh_min_amt')
@@ -850,6 +956,14 @@ setFormControldependOnCheckbox(i, __res) {
     .updateValueAndValidity();
   this.sip_freq_wise_amt.controls[i].get('sip_add_min_amt').updateValueAndValidity();
 }
+/** setSwpFormControldependOnCheckbox
+ * @i - index of the frequency control
+ * @__res - boolean value indicating whether the checkbox is checked or not
+ * This function sets the validators for the sip_add_min_amt control based on the checkbox value.
+ * If the checkbox is checked, it sets the validators to required and a numeric pattern.
+ * If the checkbox is unchecked, it removes the validators.
+ * It also updates the validity of the control after setting the validators.
+ */
 setSwpFormControldependOnCheckbox(i, __res) {
   // this.swp_frequency.controls[i].get('sip_fresh_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
   this.swp_freq_wise_amt.controls[i]
@@ -862,6 +976,14 @@ setSwpFormControldependOnCheckbox(i, __res) {
     .get('sip_add_min_amt')
     .updateValueAndValidity();
 }
+/** setStpFormControldependOnCheckbox
+ * @i - index of the frequency control
+ * @__res - boolean value indicating whether the checkbox is checked or not
+ * This function sets the validators for the sip_add_min_amt control based on the checkbox value.
+ * If the checkbox is checked, it sets the validators to required and a numeric pattern.
+ * If the checkbox is unchecked, it removes the validators.
+ * It also updates the validity of the control after setting the validators.
+ */
 setStpFormControldependOnCheckbox(i, __res) {
   // this.stp_frequency.controls[i].get('sip_fresh_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
   this.stp_freq_wise_amt.controls[i]
@@ -875,8 +997,15 @@ setStpFormControldependOnCheckbox(i, __res) {
     .updateValueAndValidity();
 }
 
-
 /********* */
+
+/***
+ *  getDatesAgainstAmc
+ * @amc_id - AMC ID to fetch the scheme details
+ * This function retrieves the scheme details based on the provided AMC ID.
+ * It makes an API call to fetch the schemes associated with the given AMC ID and updates the __scmDtls property.
+ * If no AMC ID is provided, it clears the __scmDtls array.
+ * ****** */
 getDatesAgainstAmc(amc_id) {
   if (amc_id) {
     this.dbIntr
@@ -889,7 +1018,13 @@ getDatesAgainstAmc(amc_id) {
     this.__scmDtls.length = 0;
   }
 }
-
+/*
+* getamcMasterbyproductId
+* @product_id - Product ID to fetch the AMC master data
+* This function retrieves the AMC master data based on the provided product ID.
+* It makes an API call to fetch the AMC data associated with the given product ID and updates the __amcMaster property.
+* ******
+*/
 private getamcMasterbyproductId(product_id) {
   this.dbIntr
     .api_call(0, '/amcUsingPro', 'product_id=' + product_id)
@@ -898,6 +1033,11 @@ private getamcMasterbyproductId(product_id) {
       this.__amcMaster = res;
     });
 }
+/*
+* getcatMasterbyproductId
+* @product_id - Product ID to fetch the category master data
+* This function retrieves the category master data based on the provided product ID.
+*/
 private getcatMasterbyproductId(product_id) {
   this.dbIntr
     .api_call(0, '/catUsingPro', 'product_id=' + product_id)
@@ -906,6 +1046,12 @@ private getcatMasterbyproductId(product_id) {
       this.categoryMst = res;
     });
 }
+/**
+ * getsubcatMasterbyproductId
+ * @cat_id - Category ID to fetch the subcategory master data
+ * This function retrieves the subcategory master data based on the provided category ID.
+ * It makes an API call to fetch the subcategory data associated with the given category ID and updates the subcategoryMst property.
+ */
 private getsubcatMasterbyproductId(cat_id) {
   this.dbIntr
     .api_call(0, '/subcatUsingPro', 'category_id=' + cat_id)
@@ -915,7 +1061,14 @@ private getsubcatMasterbyproductId(cat_id) {
     });
 }
 
-
+/**
+ * getbenchmark
+ * @cat_id - Category ID to fetch the benchmark data
+ * @sub_cat_id - Subcategory ID to fetch the benchmark data
+ * This function retrieves the benchmark data based on the provided category and subcategory IDs.
+ * It makes an API call to fetch the benchmark data associated with the given category and subcategory IDs and updates the __benchmark property.
+ * If no category or subcategory IDs are provided, it clears the __benchmark array.
+ */
 getbenchmark = (cat_id:number,sub_cat_id:number) => {
   if(cat_id && sub_cat_id){
     this.dbIntr.api_call(
@@ -934,7 +1087,13 @@ getbenchmark = (cat_id:number,sub_cat_id:number) => {
 }
 
 /********* */
-
+/**
+ * SubmitEffectiveDate
+ * This function submits the effective date for the selected schemes.
+ * It constructs a form_data object based on the selected schemes and the scheme_frm values.
+ * If the parent_id is '48', it sets the acquisition_to_id to the selected_scheme_step2 IDs.
+ * It then makes an API call to submit the data and displays a success or error message based on the response.
+ */
 SubmitEffectiveDate = () =>{
   let form_data
 
@@ -990,6 +1149,14 @@ SubmitEffectiveDate = () =>{
       })
 }
 
+/**
+ * 
+ * This function populates the scheme master data for step 2 based on the selected subcategory
+ * and category IDs from the search_scm_for_acq form.
+ * It makes an API call to fetch the scheme data and updates the scheme_mst_step2 property.
+ * If the fetched schemes already exist in the scheme_mst_step2, it shows a snackbar message indicating that the scheme is already populated.
+ * Otherwise, it concatenates the fetched schemes to the scheme_mst_step2 and resets the amc_id control in the search_scm_for_acq form.
+ */
 schemePropulate_forStep2 = () => {
    console.log(this.search_scm_for_acq.value);
    this.dbIntr.api_call(0,'/scheme',

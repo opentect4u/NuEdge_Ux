@@ -26,18 +26,35 @@ export class QueryNatureEntryScreenComponent implements OnInit {
   ngOnInit(): void {
     // console.log(this.data)
   }
+  /**
+   * * * This function is used to toggle the visibility of the dialog.
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * * This function is used to maximize the dialog.
+   * * * @returns void
+   * * * @memberof QueryNatureEntryScreenComponent
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to toggle the full screen mode of the dialog.
+   */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to submit the query nature form.
+   * * * It sends the form data to the server and closes the dialog with a success message.
+   * * * @returns void
+   * * * @memberof QueryNatureEntryScreenComponent
+   */
   submitQueryNature(){
     console.log(this.queryNatureForm.value)
     const payload = {

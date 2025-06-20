@@ -38,12 +38,28 @@ export class BankComponent implements OnInit {
    this.addBank();
   }
 
+  /**
+   *  * This function is used to get the bank details form array.
+   *  * It returns the FormArray instance containing the bank details.
+   *  * @returns {FormArray} - The FormArray instance containing bank details.
+   */
   get bknDtls(): FormArray{
     return this.bank.get('bnkDtls') as FormArray;
   }
+  /**
+   * * This function is used to add a new bank details form group to the bank details form array.
+   * * It creates a new FormGroup instance with the specified bank details and adds it to the form array.
+   * * @param {any} [bnkDtls] - Optional parameter containing the bank details to be added.
+   */
   addBank(bnkDtls?: any){
    this.bknDtls.push(this.setBankForm(bnkDtls));
   }
+  /**
+   * * This function is used to create a FormGroup for bank details.
+   * * It initializes the form controls with the provided bank details or default values.
+   * * @param {any} [bnkDtls] - Optional parameter containing the bank details to be used for initialization.
+   * * @returns {FormGroup} - The FormGroup instance containing the bank details form controls.
+   */
   setBankForm(bnkDtls){
    return new FormGroup({
     id: new FormControl(bnkDtls ? bnkDtls?.id : 0),
@@ -59,6 +75,11 @@ export class BankComponent implements OnInit {
     branch_add: new FormControl(bnkDtls ? global.getActualVal(bnkDtls.branch_add) : '',[Validators.required])
    })
   }
+  /**
+   * * This function is used to submit the bank details form.
+   * * It creates a FormData object, appends the bank details and uploaded cheque files to it,
+   * * and makes an API call to save the bank details.
+   */
   submitBnk(){
     const bank = new FormData();
     bank.append('bank_dtls',JSON.stringify(this.bknDtls.value));
@@ -75,6 +96,12 @@ export class BankComponent implements OnInit {
         this.reset();
     })
   }
+  /**
+   * * This function is used to modify the bank details in the bank master data.
+   * * It checks if the bank details already exist in the bank master data and updates them accordingly.
+   * * If the bank details do not exist, it adds them to the bank master data.
+   * * @param {any[]} res - The array of bank details to be modified.
+   */
   modifyBank(res){
       res.forEach(element => {
               if(this.bankMstDtls.findIndex((obj) => obj.id == element.id)!= -1){
@@ -101,19 +128,41 @@ export class BankComponent implements OnInit {
               }
       });
   }
+  /**
+   * * * This function is used to remove a bank details form group from the bank details form array.
+   * * * It takes the index of the form group to be removed as a parameter.
+   * * * @param {number} index - The index of the form group to be removed.
+   * * * @returns void
+   */
   removeBank(index){
     this.bknDtls.removeAt(index);
   }
+  /**
+   * * * This function is used to reset the bank details form array.
+   * * * It clears the existing bank details and adds a new empty bank details form group
+   */
   reset(){
    this.bknDtls.clear();
    this.addBank();
   }
+  /**
+   * * * This function is used to populate the bank details form array with the provided bank details.
+   * * * It clears the existing bank details and adds the provided bank details to the form array.
+   * * * @param {any} bank - The bank details to be populated in the form array.
+   * * * @returns void
+   */
   populateDT(bank){
     console.log(bank);
 
     this.bknDtls.clear();
     this.addBank(bank);
   }
+  /**
+   * * * This function is called when the tab is changed.
+   * * * It updates the company ID and fetches the bank details for the selected company.
+   * * * @param {any} ev - The event object containing the tab details.
+   * * * @returns void
+   */
   onTabChange(ev){
     console.log(ev);
     this.cmpId = ev.tabDtls.id;
@@ -123,6 +172,13 @@ export class BankComponent implements OnInit {
     this.getbankDtls(this.cmpId);
 
   }
+  /**
+   * * * This function is used to get the file from the input event and set it in the form control.
+   * * * It also sets the preview URL for the uploaded cheque file.
+   * * * @param {any} ev - The input event containing the file.
+   * * * @param {number} index - The index of the form control in the form array.
+   * * * @returns void
+   */
   getFile(ev,index){
     this.bknDtls.controls[index].get('upload_chq').setValue(ev.target.files[0]);
     this.bknDtls.controls[index].get('chq_preview')?.patchValue(

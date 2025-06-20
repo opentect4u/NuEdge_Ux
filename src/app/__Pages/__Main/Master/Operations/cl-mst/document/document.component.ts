@@ -67,7 +67,10 @@ export class DocumentComponent implements OnInit {
     // this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
 
-
+  /** This function is used to open the dialog for adding or modifying documents
+   * @param id - The ID of the document to be modified, or 0 for a new document
+   * @param items - Optional parameter containing client data to be passed to the dialog
+   */
   openDialog(id: number, items: client | null = null) {
     console.log(items);
 
@@ -103,17 +106,34 @@ export class DocumentComponent implements OnInit {
       this.__utility.getmenuIconVisible({id:Number(dialogConfig.id),isVisible:false,flag:"DM"})
     }
   }
+  /** This function is used to open the dialog for adding masters
+   * @param __id - The ID of the master to be modified, or 0 for a new master
+   * @param __items - Optional parameter containing items to be passed to the dialog
+   * @return void
+   */
   addMasters(__id: number, __items) { this.openDialog(__id, __items); }
+  /** This function is used to get the document master data
+   * @param __paginate - Optional parameter to specify pagination, default is '10'
+   * @return void
+   */
   getDocumentMaster(__paginate: string | null = '10') {
     this.__dbIntr.api_call(0, '/documentsearch', "paginate="+__paginate).pipe(map((x: any) => x.data)).subscribe((res: any) => {
            this.setPaginator(res.data);
            this.__paginate = res.links
     })
   }
+  /** This function is used to set the paginator for the document data
+   * @param __res - The response data containing the documents to be displayed
+   * @return void
+   */
   private setPaginator(__res){
     this.__documents = new MatTableDataSource(__res);
     this.__documents.paginator = this.paginator;
   }
+  /** This function is used to delete a document by its ID
+   * @param __id - The ID of the document to be deleted
+   * @return void
+   * */
   openDocumentMst(__mode){
     switch(__mode){
       case 'M' :this.openDialog(0);break;
@@ -121,6 +141,9 @@ export class DocumentComponent implements OnInit {
       default: break;
     }
   }
+  /** This function is used to open the dialog for document reports
+   * @return void
+   */
   openDialogFormRPT(){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -147,10 +170,18 @@ export class DocumentComponent implements OnInit {
     }
 
   }
+  /** This function is used to delete a document by its ID
+   * @param __id - The ID of the document to be deleted
+   * @return void
+   */
   getval(__paginate){
     this.__pageNumber.setValue(__paginate);
      this.getDocumentMaster(__paginate);
   }
+  /** This function is used to get the paginated data for documents
+   * @param __paginate - The pagination object containing the URL for fetching paginated data
+   * @return void
+   */
   getPaginate(__paginate){
   if(__paginate.url){
    this.__dbIntr.getpaginationData(__paginate.url + ('&paginate='+this.__pageNumber.value)).pipe(map((x: any) => x.data)).subscribe((res: any) => {

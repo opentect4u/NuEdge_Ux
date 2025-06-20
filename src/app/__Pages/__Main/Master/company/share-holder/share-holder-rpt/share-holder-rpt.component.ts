@@ -17,6 +17,12 @@ export class ShareHolderRPTComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  /**
+   * * * This function is used to populate the data table with the selected row data.
+   * * * It emits an event with the index and data of the selected row.
+   * * @param {any} ev - The event containing the selected row data.
+   * * @returns {void}
+   */
   populateDT(ev){
    this.sendSelectedRowDt.emit({index:0,data:ev});
   }

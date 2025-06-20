@@ -14,6 +14,11 @@ export class OptionDashboardComponent implements OnInit {
 
   ngOnInit() {
   }
+  /**
+   *  * This function is used to navigate to a specific URL based on the provided items.
+   *  * It uses the utility service to perform the navigation.  
+   * @param items 
+   */
   navigate(items){
   this.utility.navigate(items.url);
   }

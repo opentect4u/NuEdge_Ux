@@ -97,6 +97,15 @@ export class ClientRptComponent implements OnInit {
 
   }
 
+  /** * * This function is used to set the columns for the client report table based on the client type.
+ * * @param res - The response indicating the type of client (1 for minor, 2 for existing, etc.)
+ * * @returns void
+ * * @description
+ * * This function sets the columns for the client report table based on the client type.
+ * * It filters the columns based on the client type and updates the ClmnList, __exportedClmns, and SelectedClms properties.
+ * * @example
+ * * // Usage: Call this function with the appropriate response value to set the columns for the client report table.
+ */
    setColumns(res){
     const __columnToRemove =  ['edit','delete','upload_details','client_type'];
     const columns = this.data.client_type == 'M' ?
@@ -122,22 +131,61 @@ export class ClientRptComponent implements OnInit {
     this.SelectedClms = this.__columns.map(x => x.field);
   }
 
+  /** * * This function is used to get the list of states from the server.
+ * * It makes an API call to fetch the states and updates the __stateMst property with the response data.
+ * * @returns void
+ * * @memberof ClientRptComponent
+ *  * @description
+ * * This function retrieves the list of states from the server and updates the __stateMst property with the response data.
+ * * * @example
+ * * // Usage: Call this function to fetch the list of states from the server.
+ */
   getState(){
     this.__dbIntr.api_call(0,'/states',null).pipe(pluck("data")).subscribe(res =>{
       this.__stateMst = res;
     })
   }
+  /** * * This function is used to get the list of districts based on the selected state IDs.
+   * * It makes an API call to fetch the districts and updates the __distMst property with the response data.
+   * * @param __state_id - The array of state IDs for which districts need to be fetched.
+   * * @returns void
+   * * @memberof ClientRptComponent
+   *  * @description
+   * * This function retrieves the list of districts based on the selected state IDs and updates the __distMst property with the response data.
+   * * * @example
+   * * // Usage: Call this function with the selected state IDs to fetch the list of districts.
+   * */
   getdistrict(__state_id){
     this.__dbIntr.api_call(0,'/districts','state_id_array='+ JSON.stringify(__state_id)).pipe(pluck("data")).subscribe(res =>{
       this.__distMst = res;
     })
   }
+  /** * * This function is used to get the list of cities based on the selected district IDs.
+   * * It makes an API call to fetch the cities and updates the __cityMst property with the response data.
+   * * @param __dist_id - The array of district IDs for which cities need to be fetched.
+   * * @returns void
+   * * @memberof ClientRptComponent
+   *  * @description
+   * * This function retrieves the list of cities based on the selected district IDs and updates the __cityMst property with the response data.
+   * * * @example
+   * * // Usage: Call this function with the selected district IDs to fetch the list of cities.
+   * */
   getcity(__dist_id){
     this.__dbIntr.api_call(0,'/city','district_id_array='+ JSON.stringify(__dist_id)).pipe(pluck("data")).subscribe(res =>{
       this.__cityMst = res;
     })
   }
 
+  /** * * This function is used to export the client data to a table format.
+   * * It makes an API call to fetch the client data based on the provided FormData and updates the __export property with the response data.
+   * * @param __client - The FormData object containing the client data to be exported.
+   * * @returns void
+   * * @memberof ClientRptComponent
+   * * @description
+   * * This function exports the client data to a table format by making an API call and updating the __export property with the response data.
+   * * * @example
+   * * // Usage: Call this function with the FormData object containing the client data to be exported.
+   * */
   tableExport(__client: FormData) {
     __client.delete('paginate');
     this.__dbIntr
@@ -198,6 +246,16 @@ export class ClientRptComponent implements OnInit {
         },
       });
   }
+  /** * * This function is used to toggle the visibility of the search result for clients.
+   * * It updates the display style of the client search result element based on the provided value.
+   * * @param value - The display style to be applied to the client search result element.
+   * * @returns void
+   * * @memberof ClientRptComponent 
+   * * @description
+   * * This function toggles the visibility of the search result for clients by updating the display style of the client search result element.
+   * * * @example
+   * * // Usage: Call this function with the desired display style to toggle the visibility of the client search result.
+   * */
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -223,15 +281,25 @@ export class ClientRptComponent implements OnInit {
         });
     }
   }
+  /** * * This function is used to toggle the visibility of the client search result element.
+   * * It updates the display style of the client search result element based on the provided value.
+   * * @param value - The display style to be applied to the client search result element.*/
   setPaginator(__res) {
     this.__selectClient = new MatTableDataSource(__res);
   }
+  /** * * This function is used to toggle the visibility of the client search result element.
+   * 
+   * 
+   * * It updates the display style of the client search result element based on the provided value.*/
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
+  /** * * This function is used to minimize the dialog by updating its size and position.
+   * * It removes the 'mat_dialog' and 'full_screen' panel classes and updates the size and position of the dialog.
+   * * @returns void*/
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
@@ -241,6 +309,11 @@ export class ClientRptComponent implements OnInit {
       right: this.data.right + 'px',
     });
   }
+  /** * * This function is used to maximize the dialog by updating its size and position.
+   * * It removes the 'full_screen' panel class and adds the 'mat_dialog' panel class, then updates the position of the dialog.
+   * * @returns void
+   * * @description
+   * * This function is responsible for maximizing the dialog by updating its size and position.*/
   maximize() {
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
@@ -248,6 +321,11 @@ export class ClientRptComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
 
+  /** * * This function is used to open the delete confirmation dialog for a client.
+   * * It creates a dialog configuration object with the necessary properties and opens the DeletemstComponent dialog.
+   * * @param __clDtls - The client details object containing the client information.
+   * * @returns void
+   * * @description*/
   exportPdf() {
     this.__Rpt.downloadReport(
       '#client',
@@ -264,6 +342,10 @@ export class ClientRptComponent implements OnInit {
     );
   }
 
+  /** * * This function is used to open the delete confirmation dialog for a client.
+   * * It creates a dialog configuration object with the necessary properties and opens the DeletemstComponent dialog.
+   * * @param __clDtls - The client details object containing the client information.
+   * * @returns void*/
   getClientRPTMst(){
       const __client = new FormData();
       __client.append('anniversary_date_month',this.formValue?.anniversary_date);
@@ -287,10 +369,13 @@ export class ClientRptComponent implements OnInit {
       })
   }
 
+  /** * * This function is used to submit the client report form.*/
   submit() {
     this.formValue = this.__clientForm.value;
      this.getClientRPTMst()
   }
+  /** * * This function is used to toggle the visibility of the client search result element.
+   * * It updates the display style of the client search result element based on the provided value*/
   refreshOrAdvanceFlt() {
     this.__clientForm.patchValue({
       dob: '',
@@ -307,9 +392,17 @@ export class ClientRptComponent implements OnInit {
     this.sort = new sort();
     this.submit();
   }
+  /** * * This function is used to open the delete confirmation dialog for a client.
+   * * It creates a dialog configuration object with the necessary properties and opens the DeletemstComponent dialog.
+   * * @param __clDtls - The client details object containing the client information.
+   * * @returns void*/
   populateDT(__items) {
     this.openDialog(__items, __items.id, __items.client_type);
   }
+  /** * * This function is used to open the dialog for adding or updating a client.
+   * * It creates a dialog configuration object with the necessary properties and opens the ClModifcationComponent dialog.
+   * * @param __clDtls - The client details object containing the client information. 
+   * * @param __clid - The client ID for the client to be added or updated.*/
   openDialog(__clDtls: client, __clid: number, __clType: string) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -378,6 +471,8 @@ export class ClientRptComponent implements OnInit {
       });
     }
   }
+  /** * * This function is used to update the row data in the client report table.
+   * * It filters the __selectClient and __export data arrays to update the client information*/
   updateRow(row_obj){
     console.log(row_obj);
 
@@ -458,6 +553,10 @@ export class ClientRptComponent implements OnInit {
       })
   }
 
+  /** * * This function is used to delete a client from the client report table.
+   * * It opens a confirmation dialog to confirm the deletion and removes the client from the __selectClient and __export data arrays if the deletion is confirmed.
+   * * @param __el - The client object to be deleted.
+   * * @param index - The index of the client in the __selectClient data array.*/
   deleteClient(__el,index){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -484,6 +583,9 @@ export class ClientRptComponent implements OnInit {
 
     })
   }
+  /** * * This function is used to handle the selection of a client from the search result.
+   * * It updates the client code in the form control and hides the search result element.
+   * * @param client - The selected client object.*/
   getItems(client,mode){
     this.__clientForm.controls['client_code'].reset(
       client.id,
@@ -491,14 +593,23 @@ export class ClientRptComponent implements OnInit {
     );
     this.searchResultVisibilityForClient('none');
   }
+  /** * * This function is used to handle the click event outside the client search result element.
+   * * It hides the search result element if the click event is triggered outside of it.
+   * * @param __ev - The click event object.*/
   outsideClickforClient(__ev) {
     if (__ev) {
       this.searchResultVisibilityForClient('none');
     }
   }
+  /** * * This function is used to toggle the visibility of the client search result element.
+   * * * It updates the display style of the client search result element based on the provided value.
+   * * @param display_mode - The display style to be applied to the client search result*/
   searchResultVisibilityForClient(display_mode) {
     this.__clientCode.nativeElement.style.display = display_mode;
   }
+  /** * * This function is used to open the dialog for previewing the uploaded documents of a client.
+   * * It creates a dialog configuration object with the necessary properties and opens the DocumentsComponent dialog.
+   * * @param client - The client object containing the uploaded documents.*/
   PreviewDocs(client){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.role = "dialog";
@@ -515,6 +626,14 @@ export class ClientRptComponent implements OnInit {
       dialogConfig
     );
   }
+  /** * * This function is used to handle the click event on the menu items.
+   * * It checks the value of the clicked item and performs the corresponding action.
+   * * @param ev - The click event object containing the selected item.
+   * * @returns void
+   * * @description
+   * * This function handles the click event on the menu items and performs the corresponding action based on the selected item value.
+   * * If the selected item value is 'A', it does nothing. Otherwise, it calls the refreshOrAdvanceFlt() function to refresh or advance the filter.*/
+
   onItemClick(ev){
   //  console.log(ev);
    if(ev.option.value == 'A'){
@@ -524,10 +643,24 @@ export class ClientRptComponent implements OnInit {
     this.refreshOrAdvanceFlt();
    }
   }
+  /** * * This function is used to handle the selection of items per page in the client report table.
+   * * * It updates the page number in the form control and calls the getClientRPTMst() function to fetch the client report data.
+   * * * @param __itemsPerPage - The selected items per page object containing the value of items per page.
+   * * * @returns void
+   * * * @description
+   * * This function handles the selection of items per page in the client report table and updates the page number accordingly.
+   * */
   onselectItem(__itemsPerPage) {
     // this.__pageNumber.setValue(__itemsPerPage.option.value);
     this.getClientRPTMst();
   }
+  /** * * This function is used to handle the custom sorting of the client report table.
+   * * It updates the sort field and order based on the selected sorting options and calls the getClientRPTMst() function to fetch the sorted client report data.
+   * * @param ev - The event object containing the sort field and order.
+   * * * @returns void
+   * * * @description
+   * * This function handles the custom sorting of the client report table and updates the sort field and order accordingly.
+   * */
   customSort(ev){
     if(ev.sortField != 'edit' && ev.sortField != 'delete'){
      this.sort.field = ev.sortField;
@@ -535,6 +668,13 @@ export class ClientRptComponent implements OnInit {
       this.getClientRPTMst();
     }
   }
+  /** * * This function is used to get the selected columns from the provided columns array.
+   * * It filters out the columns that are not needed for export and updates the __columns and __exportedClmns properties.
+   * * @param columns - The array of column objects containing the field and header information.
+   * * * @returns void
+   * * * @description
+   * * This function retrieves the selected columns from the provided columns array and updates the __columns and __exportedClmns properties accordingly.
+   * */
   getSelectedColumns = (columns)  =>{
     const clm =  ['edit','delete','upload_details'];
     this.__columns = columns.map(({ field, header }) => ({field, header}))

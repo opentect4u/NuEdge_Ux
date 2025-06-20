@@ -148,6 +148,11 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     this.getstate();
   }
 
+  /**
+   * * This function is used to change the wheel speed of the scroll in a container.
+   * * It adds event listeners for mouse wheel events and adjusts the scroll position based on the speed.
+   * * @param {HTMLElement} container - The container element to apply the wheel speed change.
+   */
   changeWheelSpeed(container, speedY) {
     var scrollY = 0;
     var handleScrollReset = function() {
@@ -264,6 +269,14 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     this.formvalue = this.clientFrm.value;
     this.getClientMstData();
   }
+  /* * * This function is responsible for fetching client master data based on the form values.
+   * * It creates a FormData object, appends the necessary fields, and makes an API call to retrieve the data.
+    * * @returns void
+   * * @memberof ClientCmnRptComponent
+   * * * @description
+   * * This function is used to fetch client master data based on the form values.
+   * * It creates a FormData object, appends the necessary fields, and makes an API call to retrieve the data.
+   */
   getClientMstData = () => {
     const __client = new FormData();
     __client.append('anniversary_date_month',this.formvalue.doa_as_per_month ? this.formvalue.doa_as_per_month : '');
@@ -296,6 +309,11 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
 
   };
 
+  /**
+   * * * This function is responsible for exporting client data based on the provided form data.
+   * * * It removes the 'paginate' field from the form data, makes an API call to export the client data,
+   * * * and updates the __exportClient variable with the response data.
+   */
   tableExport = (__client : FormData) =>{
     __client.delete('paginate');
     this.dbIntr.api_call(1,'/clientExport',__client)
@@ -304,22 +322,49 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
 
   })
   }
+  /**
+   * * * This function is used to get the columns for the client table.
+   * * * It retrieves the columns from the __utility service based on the __columns property.
+   * * * @returns {column[]} - An array of column objects for the client table.
+   */
   getColumns = () =>{
     return this.__utility.getColumns(this.__columns);
   }
 
+  /**
+   * * * This function is used to filter the global search in the client table.
+   * * * It retrieves the value from the event target, and applies the filter to the primeTble.
+   * * * @param {$event} - The event object containing the target value for filtering.
+   * * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTble.filterGlobal(value,'contains')
   }
 
+  /**
+   * * * This function is used to filter the global search in the merge client table.
+   * * * It retrieves the value from the event target, and applies the filter to the mergeClientTble.
+   * * * @param {$event} - The event object containing the target value for filtering.
+   * * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   */
   filterGlobal_merge = ($event) => {
     let value = $event.target.value;
     this.mergeClientTble.filterGlobal(value,'contains')
   }
 
 
-
+/*  * * * This function is used to handle the tab details for the client report.
+ * * * It resets the client form, sets the client type based on the tab details, and retrieves the merge client data if applicable.
+  * * * @param {any} tabDtls - The details of the tab to be handled.
+  * * * @returns {void}
+  * * @memberof ClientCmnRptComponent
+  * * * @description
+  * * * This function is responsible for handling the tab details for the client report.
+  * * * It resets the client form, sets the client type based on the tab details, and retrieves the merge client data if applicable.
+  */
   TabDetails = (tabDtls) => {
     try{
       this.mergeClient = [];
@@ -338,6 +383,14 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     }
   };
 
+  /** * * * This function is used to get the merge client data from the server.
+   * * * It makes an API call to the '/mergeClient' endpoint and processes the response data.
+   * * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * * @description
+   * * This function is responsible for fetching the merge client data from the server.
+   * * It makes an API call to the '/mergeClient' endpoint and processes the response data.
+   */
   getMergeClient = () =>{
     this.dbIntr.api_call(0,'/mergeClient',null)
     .pipe(pluck('data'))
@@ -359,6 +412,17 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
   //     })
   // }
 
+  /* * * * This function is used to handle the item click event in the client report.
+   * * * It checks the value of the clicked item and performs actions based on the value.
+   * * * If the value is 'A', it does nothing; otherwise, it resets the client form.
+   * * * @param {any} ev - The event object containing the clicked item.
+   * * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * * @description
+   * * This function is responsible for handling the item click event in the client report.
+   * * It checks the value of the clicked item and performs actions based on the value.
+   * * If the value is 'A', it does nothing; otherwise, it resets the client form.
+   * */
   onItemClick = (ev) => {
     console.log(ev);
     if(ev.option.value == 'A'){
@@ -367,6 +431,15 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
       this.reset();
     }
   };
+  /* * * * This function is used to open the client modification dialog.
+   * * * It creates a dialog configuration object, sets the data for the dialog, and opens the dialog.
+   * * * @param {client} item - The client item to be modified.
+   * * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * * @description
+   * * This function is responsible for opening the client modification dialog.
+   * * It creates a dialog configuration object, sets the data for the dialog, and opens the dialog.
+   * */
   reset = () =>{
     this.clientMst = [];
     this.__exportClient = new MatTableDataSource([]);
@@ -388,10 +461,21 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     }
   }
 
+  /** * This function is used to open the client modification dialog.
+   * * It creates a dialog configuration object, sets the data for the dialog, and opens the dialog.
+   * * @param {client} item - The client item to be modified.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for opening the client modification dialog.
+   * * It creates a dialog configuration object, sets the data for the dialog, and opens the dialog.
+   * */
   getSelectedItemsFromParent = (items) => {
     this.getItems(items.item, items.flag);
   };
-
+// * * * This function is used to handle the selected items from the parent component for merging clients.
+// * * It resets the search_client_name field in the mergeClSrch form group and sets the search_client_id field with the selected item's id.
+// * * It also calls the searchResultVisibilityForMergeClient function to hide the search result.
   getSelectedItemsFromParentForMergeClient = (items) =>{
       console.log(items)
       this.mergeClSrch
@@ -401,6 +485,18 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
       this.searchResultVisibilityForMergeClient('none');
   }
 
+  /** * This function is used to handle the selected items from the parent component.
+   * * It resets the client_name field in the clientFrm form group and sets the client_id field with the selected item's id.
+   * * It also calls the searchResultVisibilityForClient function to hide the search result.
+   * * @param {client} items - The selected client item.
+   * * @param {string} flag - The flag indicating the type of item selected.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for handling the selected items from the parent component.
+   * * It resets the client_name field in the clientFrm form group and sets the client_id field with the selected item's id.
+   * * It also calls the searchResultVisibilityForClient function to hide the search result.
+   */
   getItems = (items: client, flag: string) => {
     this.clientFrm
       .get('client_name')
@@ -409,6 +505,12 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     this.searchResultVisibilityForClient('none');
   };
 
+  /**
+   * * * This function is used to open the client modification dialog.
+   * * * It creates a dialog configuration object, sets the data for the dialog, and opens the dialog.
+   * * * @param {client} item - The client item to be modified.
+   * * * @returns {void}
+   */
   getstate: getstate = () => {
     this.dbIntr
       .api_call(0, '/states', null)
@@ -420,6 +522,17 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
       });
   };
 
+  /** * This function is used to get the districts based on the selected states.
+   * * It checks if the array of state IDs is not empty, makes an API call to fetch the districts,
+   * * and updates the distMst array with the response data.
+   * * @param {common[]} arr_state_id - The array of state IDs.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for fetching the districts based on the selected states.
+   * * It checks if the array of state IDs is not empty, makes an API call to fetch the districts,
+   * * and updates the distMst array with the response data.
+   */
   getdistrict: getdistrict = (arr_state_id: common[]) => {
     if (arr_state_id.length > 0) {
       this.dbIntr
@@ -434,6 +547,17 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     }
   };
 
+  /** * This function is used to get the cities based on the selected districts.
+   * * It checks if the array of district IDs is not empty, makes an API call to fetch the cities,
+   * * and updates the cityMst array with the response data.
+   * * @param {common[]} arr_dist_id - The array of district IDs.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for fetching the cities based on the selected districts.
+   * * * It checks if the array of district IDs is not empty, makes an API call to fetch the cities,
+   * * * and updates the cityMst array with the response data.
+   * */
   getcity: getcity = (arr_dist_id: common[]) => {
     if (arr_dist_id.length > 0) {
       this.dbIntr
@@ -448,10 +572,28 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     }
   };
 
+  /** * This function is used to convert an array of common objects into a string representation of their IDs.
+   * * It maps the array to extract the 'id' property of each object and then converts it to a JSON string.
+   * * @param {common[]} arr - The array of common objects.
+   * * @returns {string} - The JSON string representation of the IDs.
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for converting an array of common objects into a string representation of their IDs.
+   * * It maps the array to extract the 'id' property of each object and then converts it to a JSON string.
+   */
   getStringifyDT = (arr: common[]): string => {
     return JSON.stringify(arr.map((item) => item.id));
   };
 
+  /** * This function is used to set the columns for the client report based on the selected client type.
+   * * It filters the columns based on the client type and updates the ClmnList, __exportedClmns, and SelectedClms properties.
+   * * @param {number} res - The response value indicating the type of client.
+   * * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for setting the columns for the client report based on the selected client type.
+   * * It filters the columns based on the client type and updates the ClmnList, __exportedClmns, and SelectedClms properties.
+   */
   setColumns = (res) => {
     // const __columnToRemove =  ['edit','delete','upload_details','client_type'];
     // const columns = this.clientFrm.value.client_type == 'M' ?
@@ -509,6 +651,17 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     }
   }
 
+  /** * This function is used to open the client modification dialog.
+   * * It creates a dialog configuration object, sets the data for the dialog, and opens the dialog.
+   * * @param {client} item - The client item to be modified. 
+   * * @param {number} id - The ID of the client to be modified.
+   * * @param {string} client_type - The type of the client to be modified.
+   * * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for opening the client modification dialog. 
+   * * It creates a dialog configuration object, sets the data for the dialog, and opens the dialog.
+   */
   exportPdf = () => {
     // this.__Rpt.downloadReport(
     //   '#client',
@@ -534,6 +687,15 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
       this.__exportedClmns.length
     );
   }
+  /** * This function is used to open the documents dialog for a client.
+   * * It creates a dialog configuration object, sets the data for the dialog, and opens the dialog.
+   * * @param {client} client - The client for which the documents dialog is to be opened.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for opening the documents dialog for a client.
+   * * It creates a dialog configuration object, sets the data for the dialog, and opens the dialog.
+   */
   PreviewDocs = (client) => {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.role = "dialog";
@@ -550,11 +712,33 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
       dialogConfig
     );
   }
+  /** * This function is used to handle the selection of an item in the pagination component.
+   * * It sets the value of the __pageNumber form control to the selected item and  
+   * * calls the getClientMstData function to fetch the client master data.
+   * * @param {any} item - The selected item from the pagination component.
+   * * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for handling the selection of an item in the pagination component.
+   * * It sets the value of the __pageNumber form control to the selected item and
+   * * calls the getClientMstData function to fetch the client master data.
+   */
   onSelectItem = (item) =>{
    this.__pageNumber.setValue(item);
    this.getClientMstData();
 
   }
+  /** * This function is used to get the pagination data for the client master.
+   * * It checks if the paginate object has a URL, appends the necessary parameters to the URL,
+   * * and makes an API call to fetch the pagination data.
+   * * @param {any} paginate - The pagination object containing the URL.
+   * * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for fetching the pagination data for the client master.
+   * * It checks if the paginate object has a URL, appends the necessary parameters to the URL,
+   * * and makes an API call to fetch the pagination data.
+   */
   getPaginate = (paginate) =>{
     if (paginate.url) {
       this.dbIntr
@@ -581,6 +765,17 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
         });
     }
   }
+  /** * This function is used to handle the custom sorting of the client master data.
+   * * It checks if the sort field is not 'edit' or 'delete', updates the sort object with the sort field and order,
+   * * and calls the getClientMstData function to fetch the sorted client master data.
+   * * @param {any} sort - The sort object containing the sort field and order.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for handling the custom sorting of the client master data.
+   * * * It checks if the sort field is not 'edit' or 'delete', updates the sort object with the sort field and order,
+   * * * and calls the getClientMstData function to fetch the sorted client master data.
+   * */
   customSort = (sort) =>{
     if(sort.sortField!='edit' && sort.sortField!='delete'){
     this.sort.field = sort.sortField;
@@ -590,6 +785,15 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
       }
     }
   }
+  /** * This function is used to get the selected columns from the provided columns array.
+   * * It filters out the columns that are not needed for export and updates the __columns and __exportedClmns properties.
+   * * @param {any[]} columns - The array of columns to be processed.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for getting the selected columns from the provided columns array.
+   * * It filters out the columns that are not needed for export and updates the __columns and __exportedClmns properties.
+   */
   getSelectedColumns = (columns)  =>{
     // const clm =  ['edit','delete','upload_details','client_type'];
     // this.__columns = columns.map(({ field, header }) => ({field, header}))
@@ -605,10 +809,28 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
 
   }
 
+  /** * This function is used to edit a client.
+   * * It opens the client modification dialog with the provided client details, client ID, and client type.
+   * * @param {client} __client - The client object to be edited.
+   * * @returns {void}  
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for editing a client.
+   * * It opens the client modification dialog with the provided client details, client ID, and client type.
+   */
   EditClient = (__client:client) =>{
     this.openDialog(__client, __client.id, __client.client_type);
   }
 
+  /** * This function is used to delete a client.
+   * * It opens a confirmation dialog with the client details and calls the delete API if confirmed.
+   * * @param {client} __client - The client object to be deleted.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for deleting a client.
+   * * It opens a confirmation dialog with the client details and calls the delete API if confirmed.
+   */
   deleteClient = (__client:client) =>{
       console.log(__client);
       const dialogConfig = new MatDialogConfig();
@@ -635,6 +857,15 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     })
   }
 
+  /** * This function is used to remove a client from the client master and export client data.
+   * * It filters out the client with the specified ID from both the client master and export client data.
+   * * @param {number} id - The ID of the client to be removed.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for removing a client from the client master and export client data.
+   * * It filters out the client with the specified ID from both the client master and export client data.
+   */
   removeArray(id:number){
     console.log(id);
 
@@ -647,6 +878,17 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     this.__exportClient._updateChangeSubscription();
   }
 
+  /** * This function is used to open the client modification dialog.
+   * * It creates a dialog configuration object, sets the data for the dialog, and opens the dialog.
+   * * @param {client} __clDtls - The client details to be modified.
+   * * @param {number} __clid - The ID of the client to be modified.
+   * * @param {string} __clType - The type of the client to be modified.
+   * * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for opening the client modification dialog.
+   * * It creates a dialog configuration object, sets the data for the dialog, and opens the dialog.
+   */
   openDialog(__clDtls: client, __clid: number, __clType: string) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -715,7 +957,17 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
       });
     }
   }
-
+  /** * This function is used to update a row in the client master and export client data.
+   * * It filters the client master and export client data to find the row with the specified ID,
+   * * and updates the row with the new values from the provided row object.
+   * * @param {client} row_obj - The row object containing the updated values.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for updating a row in the client master and export client data.
+   * * * It filters the client master and export client data to find the row with the specified ID,
+   * * * and updates the row with the new values from the provided row object.
+   */
   updateRow(row_obj){
       this.clientMst = this.clientMst.filter((value: client, key) => {
         if(value.id === row_obj.id){
@@ -796,14 +1048,42 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
         return true;
       })
   }
+  /** * This function is used to get the columns for the merge client report.
+   * * It uses the utility service to get the columns based on the merge_client_column property.
+   * * @returns {column[]} - The array of columns for the merge client report.
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for fetching the columns for the merge client report.
+   * * It uses the utility service to get the columns based on the merge_client_column property.
+   */
   getcolumns = () =>{
     return this.__utility.getColumns(this.merge_client_column);
   }
 
+  /** * This function is used to search for clients to merge.
+   * * It resets the search_client_name field in the mergeClSrch form group and
+   * * sets the search_client_id field with the selected item's id.
+   * * It also calls the searchClientToMerge function to perform the search.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for searching for clients to merge.
+   * * It resets the search_client_name field in the mergeClSrch form group and
+   * * sets the search_client_id field with the selected item's id.
+   * * It also calls the searchClientToMerge function to perform the search.
+   * */
   searchClientToMerge = () =>{
 
   }
 
+  /** * This function is used to merge the selected client with the main client.
+   * * It logs the selected main client and the selected merge client to the console.
+   * * @returns {void}
+   * * @memberof ClientCmnRptComponent
+   * * @description
+   * * This function is responsible for merging the selected client with the main client.
+   * * It logs the selected main client and the selected merge client to the console.
+   */
   mergeClientWithMain = () =>{
       console.log(this.selected_main)
       console.log(this.selectedMergeClient)

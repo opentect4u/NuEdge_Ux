@@ -13,6 +13,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 })
 export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
 
+  
   @ViewChild('op') Overlay__pannel:OverlayPanel
   @Input() __items: any = [];
   @Input() __flag:string;
@@ -22,6 +23,10 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
 
   ngOnInit() {
   }
+  /**
+   * Used to navigate to corrosponding screen
+   * @param __items 
+   */
   navigate(__items){
     // console.log(this.__flag)
     if(this.__flag == 'BM'){
@@ -33,6 +38,11 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
 
   ngAfterViewInit(): void {
   }
+
+  /**
+   * use for chart purpose
+   * @param item 
+   */
   showReport = (item) =>{
     this.chart_dtls = null;
      if(item.flag == 'L'){

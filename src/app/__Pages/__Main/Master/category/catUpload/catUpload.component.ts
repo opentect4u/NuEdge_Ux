@@ -73,6 +73,9 @@ export class CatUploadComponent implements OnInit {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
     // this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
+  /**
+   * For get category from backend api and show 5 latest  category entry
+   */
   previewlatestCategoryEntry() {
     this.__dbIntr
       .api_call(0, '/category', null)
@@ -81,6 +84,11 @@ export class CatUploadComponent implements OnInit {
         this.__selectRNT = new MatTableDataSource(res.splice(0,5));
       });
   }
+
+ /**
+ * For navigating to category screen with query params 
+ * and populate these particular category into category form dialog box
+ */
   populateDT(__items: category) {
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/category',
@@ -91,6 +99,11 @@ export class CatUploadComponent implements OnInit {
 
     );
   }
+
+   /**
+   * For navigating to sub-category screen with query params 
+   * and populate these particular sub-category into sub-category form dialog box
+   */
   showCorrospondingsubCategory(__rntDtls) {
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/subcategory',
@@ -105,6 +118,12 @@ export class CatUploadComponent implements OnInit {
       }
     );
   }
+
+  
+   /**
+   * For navigating to category screen
+   * and populate these particular sub-category into sub-category form dialog box
+   */
   viewAll(){
     this.__utility.navigate(
       '/main/master/productwisemenu/category'

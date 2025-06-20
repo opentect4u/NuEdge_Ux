@@ -1,3 +1,9 @@
+/**
+ * Master Layout screen where all 
+ * screens under master, 
+ * will render through it
+ */
+
 import { Component, OnInit } from '@angular/core';
 
 @Component({

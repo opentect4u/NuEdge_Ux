@@ -1,3 +1,9 @@
+
+/**
+ *  Authentication Layout page where all other unauthenticaed page will be rendered
+ * 
+ */
+
 import { Component,OnInit } from '@angular/core';
 import { UtiliService } from 'src/app/__Services/utils.service';
 

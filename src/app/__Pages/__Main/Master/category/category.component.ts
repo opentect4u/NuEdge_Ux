@@ -1,3 +1,10 @@
+/**
+ * Landing screen for category,
+ * from where category can be added,
+ * category can be viewed in list report 
+ * and can be upload category in bulk
+ */
+
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -26,12 +33,19 @@ export class CategoryComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     // this.getCategorymaster();
+
+    /**
+     * these  will be evaluated if thare is any id in query params
+     */
     if (this.__rtDt.snapshot.queryParamMap.get('id')) {
       this.getParticularCategory();
     }
   }
 
-
+  
+  /**
+   * Get Category by id from backend, these func will be called if thare is any id in query params
+   */
   getParticularCategory() {
     this.__dbIntr
       .api_call(
@@ -46,7 +60,12 @@ export class CategoryComponent implements OnInit {
         }
       });
   }
-
+ 
+  /**
+   * Open Dialog for add / modified Category
+   * @param __category 
+   * @param __catId 
+   */
   openDialog(__category: category | null = null, __catId: number) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -80,21 +99,38 @@ export class CategoryComponent implements OnInit {
       });
     }
   }
+
+  /**
+   * Func will be called when we click on particular tiles
+   * @param __menu 
+   */
   getItems = (__menu) => {
     switch (__menu.flag) {
       case 'M':
+        /**
+         * For Open Dialog box for add category
+         */
         this.openDialog(null, 0);
         break;
       case 'U':
+        /**
+         * For Navigating tobulk upload of category screen
+         */
         this.__utility.navigate('main/master/productwisemenu/category/uploadcategory');
         break;
-      case 'R':this.openDialogForReports(btoa('1'));break;
+        /**
+         * For Open Dialog box for showing category list
+         */
+          case 'R':this.openDialogForReports(btoa('1'));break;
       default:
         break;
     }
   }
 
 
+  /**
+   * Open Dialog for showing Category List in report
+   */
   openDialogForReports(__prodid: string | null = null){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

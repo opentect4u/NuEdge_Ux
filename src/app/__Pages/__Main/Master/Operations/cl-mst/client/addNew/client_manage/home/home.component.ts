@@ -77,6 +77,13 @@ export class HomeComponent implements OnInit {
      }
   }
 
+  /**
+   *  Fetches client details based on the query parameters
+   *  and opens a dialog with the client details.
+   *  The client type is determined by the 'flag' parameter in the route.
+   *  If a client ID is provided, it fetches the client details and opens a dialog.
+   *  If no client ID is provided, it does not open a dialog.
+   */
   getClDetailsParticular() {
     this.__dbIntr
       .api_call(
@@ -97,6 +104,9 @@ export class HomeComponent implements OnInit {
   }
 
 
+  /** * Navigates to different sections of the application based on the menu item clicked.
+ * @param __menu - The menu item that was clicked.
+ */
   navigate(__menu) {
     switch (__menu.flag) {
       case 'M':this.openDialog(null,0,atob(this.__RtDT.snapshot.paramMap.get('id')));break;
@@ -110,6 +120,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  /** * Opens a dialog for client reports with specific configurations.
+ * The dialog is set to be fullscreen and has no backdrop.
+ * It passes the client type as data to the dialog component.
+ */
   openDialogForReports(){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -140,6 +154,13 @@ export class HomeComponent implements OnInit {
   }
 
 
+  /** * Opens a dialog for client modification with specific configurations.
+ * The dialog is set to have a width of 60% and is not closable by clicking outside.
+ * It passes client details, ID, type, and other parameters as data to the dialog component.
+ * @param __clDtls - The client details to be passed to the dialog.
+ * @param __clid - The client ID to be passed to the dialog.
+ * @param __clType - The client type to be passed to the dialog.
+ */
   openDialog(__clDtls: client, __clid: number, __clType: string) {
     // const dialogConfig = new MatDialogConfig();
     // dialogConfig.autoFocus = false;

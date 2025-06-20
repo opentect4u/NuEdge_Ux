@@ -56,6 +56,16 @@ ngOnInit(){
   this.getTransMst();
 }
 
+/**
+ * * This function is used to fetch the transaction master data based on the provided filters and pagination.
+ * * @returns void
+ * * @memberof TrnsrptComponent
+ * * @description
+ * * This function is responsible for fetching the transaction master data from the server.
+ * * It creates a FormData object, appends the necessary parameters such as pagination, product ID,
+ * * field, order, transaction name, and transaction type ID, and then makes an API call to retrieve the data.
+ * * The response is then processed to set the paginator and export the data.
+ */
 getTransMst(){
   const __tranSearch = new FormData();
   __tranSearch.append('paginate',this.__pageNumber.value);
@@ -72,14 +82,33 @@ getTransMst(){
    })
 }
 
+/**
+ * * This function is used to filter the global search in the PrimeNG table.
+ * * @param $event - The event object containing the search input value.
+ * * @returns void
+ * * @memberof TrnsrptComponent
+ */
 filterGlobal = ($event) => {
   let value = $event.target.value;
   this.primeTbl.filterGlobal(value,'contains')
 }
+/**
+ *  * This function is used to get the columns for the transaction report table.
+ *  * It retrieves the columns from the utility service based on the predefined column configuration.
+ *  * @function getColumns
+ * @returns {column[]} - Returns the columns for the transaction report table.
+ * * @memberof TrnsrptComponent
+ * * @description
+ */
 getColumns = () =>{
   return this.__utility.getColumns(this.__columns);
 }
 
+/**
+ * * This function is used to fetch the transaction type master data.
+ * * It makes an API call to retrieve the transaction type data based on the product ID.
+ * * The retrieved data is then stored in the __trns_type variable for further use.
+ */
 getTransactionTypeMst(){
   this.__dbIntr.api_call(0,'/transctiontype',
   'product_id=' + this.data.product_id).pipe(map((x: responseDT) => x.data))
@@ -88,12 +117,22 @@ getTransactionTypeMst(){
   });
 }
 
+/**
+ *  * This function is used to export the transaction data based on the provided filters.
+ *  * It removes the 'paginate' parameter from the export data and makes an API call to retrieve the transaction export data.
+ *  * The retrieved data is then stored in the __export variable for further use.
+ */
 tableExport(__trnsExport){
   __trnsExport.delete('paginate');
   this.__dbIntr.api_call(1,'/transctionExport',__trnsExport).pipe(map((x: any) => x.data)).subscribe((res: any[]) =>{
     this.__export = new MatTableDataSource(res);
   })
 }
+/**
+ *  * This function is used to get the transaction master data with pagination.
+ *  * It makes an API call to retrieve the transaction data based on the provided pagination parameter
+ * @param __paginate 
+ */
 getTrnsMst(__paginate: string | null = '10'){
   this.__dbIntr.api_call(0,'/transction',
   'paginate='+__paginate + '&product_id=' + this.data.product_id).pipe(map((x: responseDT) => x.data))
@@ -103,9 +142,27 @@ getTrnsMst(__paginate: string | null = '10'){
   });
 }
 
+/**
+ *  * This function is used to set the paginator for the transaction type data.
+ * * It takes the response data as input and initializes the MatTableDataSource with the provided data.
+ * * @function setPaginator
+ *  * @memberof TrnsrptComponent
+ *  * @description
+ *  * This function is responsible for setting the paginator for the transaction type data.
+ *  * It initializes the MatTableDataSource with the provided response data.
+ *  * @param {any} __res - The response data to be set as the paginator.
+ * @param __res 
+ */
 private setPaginator(__res) {
   this.__selecttrnsType = new MatTableDataSource(__res);
 }
+
+/**
+ *  * This function is used to get the pagination data for the transaction report.
+ *  * It makes an API call to retrieve the pagination data based on the provided URL and pagination parameters.
+ *  * The retrieved data is then processed to set the paginator and update the __paginate variable.
+ * @param __paginate 
+ */
 getPaginate(__paginate) {
   if (__paginate.url) {
     this.__dbIntr
@@ -126,9 +183,25 @@ getPaginate(__paginate) {
       });
   }
 }
+/**
+ *  * This function is used to populate the dialog with the transaction details.
+ * * It opens a dialog with the provided transaction ID and items.
+ * * @function populateDT
+ *  * @memberof TrnsrptComponent
+ * * @description
+ * * This function is responsible for populating the dialog with the transaction details.
+ * * It opens a dialog with the provided transaction ID and items, allowing the user to view or modify the transaction details.
+ * @param __items 
+ */
 populateDT(__items: any) {
   this.openDialog(__items.id, __items);
 }
+/**
+ *  * This function is used to open a dialog for adding or updating a transaction.
+ *  * It creates a MatDialogConfig object, sets various properties for the dialog,
+ * @param id 
+ * @param __items 
+ */
 openDialog(id, __items) {
   // console.log(__items);
   const dialogConfig = new MatDialogConfig();
@@ -170,18 +243,34 @@ openDialog(id, __items) {
   }
 
 }
+/**
+ * * This function is used to toggle the visibility of the dialog.
+ * * It adds or removes panel classes to change the dialog's appearance and updates its position.
+ * * @returns void
+ */
 fullScreen(){
   this.dialogRef.removePanelClass('mat_dialog');
   this.dialogRef.addPanelClass('full_screen');
   this.dialogRef.updatePosition({top:'0px'});
   this.__isVisible = !this.__isVisible;
 }
+/**
+ * * * This function is used to minimize the dialog.
+ * * * It removes the 'mat_dialog' and 'full_screen' panel classes, updates the dialog size, and sets its position.
+ * * * @returns void
+ */
 minimize(){
   this.dialogRef.removePanelClass('mat_dialog');
   this.dialogRef.removePanelClass('full_screen');
   this.dialogRef.updateSize("40%",'47px');
   this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
 }
+/**
+ * * * This function is used to maximize the dialog.
+ * * * It removes the 'full_screen' panel class, adds the 'mat_dialog' panel class, and updates the dialog position.
+ * * * It also toggles the visibility state of the dialog.
+ * * * @returns void
+ */
 maximize(){
   this.dialogRef.removePanelClass('full_screen');
   this.dialogRef.addPanelClass('mat_dialog');
@@ -189,16 +278,31 @@ maximize(){
   this.__isVisible = !this.__isVisible;
 }
 
+/**
+ * * This function is used to export the transaction report as a PDF.
+ * * It calls the downloadReport method of the RPTService with the specified parameters.
+ */
 exportPdf(){
   this.__Rpt.downloadReport('#trns',
   {
     title: 'Transaction - ' + new Date().toLocaleDateString()
   }, 'Transaction','portrait')
 }
+/**
+ * * This function is used to submit the form and fetch the transaction master data based on the selected transaction type.
+ * * It retrieves the value of the transaction type form control and calls the getTransMst method to fetch the data.
+ * * @returns void
+ */
 submit(){
   this.formValue =this.__trnsType.value;
    this.getTransMst();
 }
+/**
+ *  * This function is used to update a row in the transaction type and export data.
+ *  * It filters the data in both __selecttrnsType and __export data sources to find the row with the matching ID,
+ *  * and updates the transaction type and name for that row.
+ * @param row_obj 
+ */
 private updateRow(row_obj: any) {
   this.__selecttrnsType.data = this.__selecttrnsType.data.filter(
     (value: any, key) => {
@@ -219,12 +323,25 @@ private updateRow(row_obj: any) {
     }
   );
 }
+/**
+ *  * This function is used to add a new row to the transaction type and export data.
+ *  * It unshifts the new row object to both __selecttrnsType and __export data sources,
+ *  * and updates the change subscription for both data sources.
+ * @param row_obj 
+ */
 addRow(row_obj){
   this.__selecttrnsType.data.unshift(row_obj);
   this.__export.data.unshift(row_obj);
   this.__export._updateChangeSubscription();
   this.__selecttrnsType._updateChangeSubscription();
 }
+/**
+ *  * This function is used to delete a transaction type from the list.
+ *  * It opens a confirmation dialog to confirm the deletion of the transaction type.
+ *  * If confirmed, it removes the transaction type from both __selecttrnsType and __export data sources.
+ * @param __el 
+ * @param index 
+ */
 delete(__el,index){
   const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -251,6 +368,13 @@ delete(__el,index){
 
     })
 }
+/**
+ *  * This function is used to handle the custom sorting of the transaction report table.
+ *  * It checks if the sort field is not 'edit' or 'delete', and if so,
+ *  * it updates the sort object with the new field and order, and then calls the getTransMst method to fetch the sorted data.
+ * @function customSort
+ * @param ev 
+ */
 customSort(ev){
   if(ev.sortField != 'edit' && ev.sortField != 'delete'){
     this.sort.field = ev.sortField;
@@ -259,6 +383,14 @@ customSort(ev){
   }
 
 }
+/**
+ *  * This function is used to handle the selection of an item from the transaction type dropdown.
+ *  * It updates the transaction type form control value and calls the getTransMst method to fetch the data based on the selected item.
+ *  * @function onselectItem
+ *  * @memberof TrnsrptComponent
+ *  * @description
+ * @param ev 
+ */
 onselectItem(ev){
   // this.__pageNumber.setValue(ev.option.value);
   // this.submit();

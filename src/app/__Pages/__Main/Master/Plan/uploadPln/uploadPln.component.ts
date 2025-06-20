@@ -45,6 +45,12 @@ export class UploadPlnComponent implements OnInit {
     this.previewlatestRntEntry();
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
   }
+  /**
+   * * * This function is used to preview the latest RNT entry.
+   * * * It makes an API call to fetch the latest RNT entries and updates the data source for the table.
+   * * * @returns void
+   * * * @memberof UploadPlnComponent
+   */
   previewlatestRntEntry() {
     this.__dbIntr
       .api_call(0, '/plan', null)
@@ -55,6 +61,11 @@ export class UploadPlnComponent implements OnInit {
       });
   }
 
+  /**
+   * * * This function is used to handle the file upload for the plan.
+   * * * It validates the file type and size, creates a FormData object, appends the file to it,
+   * * * and makes an API call to upload the file.
+   */
   populateDT(__items: plan) {
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/plan',
@@ -64,6 +75,12 @@ export class UploadPlnComponent implements OnInit {
       // { queryParams: {id: btoa(__items.id.toString())} }
     );
   }
+  /**
+   * * * This function is used to navigate to the view all plans page.
+   * * * It redirects the user to the '/main/master/productwisemenu/plan' route.
+   * * * @returns void
+   * * * @memberof UploadPlnComponent
+   */
   viewAll(){
     this.__utility.navigate('/main/master/productwisemenu/plan');
   }

@@ -76,6 +76,11 @@ export class PertnerDtlsEntryComponent implements OnInit {
 
 
 
+  /** This function is used to handle the selection of an item from a dropdown or list.
+   * It takes an event object as a parameter and performs different actions based on the flag property of the event.
+   * @param {any} ev - The event object containing the selected item information.
+   * @returns {void}
+   */
   getselectedItem(ev){
     switch(ev.flag){
       case 'C' :
@@ -93,6 +98,12 @@ export class PertnerDtlsEntryComponent implements OnInit {
       default: break;
     }
   }
+  /** This function is used to retrieve the list of states based on the selected country ID.
+   * If a country ID is provided, it makes an API call to fetch the states associated with that country.
+   * If no country ID is provided, it resets the state form control and clears the state list.
+   * @param {number} country_id - The ID of the selected country.
+   * @returns {void}
+   */
    getStateMst(country_id){
     if(country_id){
       this.dbIntr.api_call(0,'/states','country_id='+country_id).pipe(pluck("data")).subscribe(res =>{
@@ -105,6 +116,12 @@ export class PertnerDtlsEntryComponent implements OnInit {
     }
 
    }
+   /** This function is used to retrieve the list of districts based on the selected state ID.
+    * If a state ID is provided, it makes an API call to fetch the districts associated with that state.
+    * If no state ID is provided, it resets the district form control and clears the district list. 
+    * @param {number} state_id - The ID of the selected state.
+    * @returns {void}
+    */
    getDistrictMst(state_id){
     console.log(state_id);
 
@@ -118,6 +135,12 @@ export class PertnerDtlsEntryComponent implements OnInit {
 
     }
    }
+   /** This function is used to retrieve the list of cities based on the selected district ID.
+    * If a district ID is provided, it makes an API call to fetch the cities associated with that district. 
+    * If no district ID is provided, it resets the city form control and clears the city list.
+    * @param {number} district_id - The ID of the selected district.
+    * @returns {void}
+    */
    getCityMst(district_id){
     if(district_id){
       this.dbIntr.api_call(0,'/city','district_id='+district_id).pipe(pluck("data")).subscribe(res =>{
@@ -128,6 +151,12 @@ export class PertnerDtlsEntryComponent implements OnInit {
       this.pertnershipDtls.get(['address','city_id']).reset('',{emitEvent:true});
     }
    }
+   /** This function is used to retrieve the list of pincodes based on the selected city ID.
+    * If a city ID is provided, it makes an API call to fetch the pincodes associated with that city.
+    * If no city ID is provided, it resets the pincode form control and clears the pincode list.
+    * @param {number} city_id - The ID of the selected city.
+    * @returns {void}
+    */
    getPincodeMst(city_id){
     if(city_id){
       this.dbIntr.api_call(0,'/pincode','city_id='+city_id).pipe(pluck("data")).subscribe(res =>{
@@ -140,6 +169,11 @@ export class PertnerDtlsEntryComponent implements OnInit {
     }
    }
 
+   /**
+    * * This function is used to reset the partnership details form.
+    * * It sets the id field to 0, clears the partnership details, and emits a reset event.
+    * * @returns {void}
+    */
    reset(){
     this.pertnershipDtls.patchValue({
       id:0
@@ -148,6 +182,11 @@ export class PertnerDtlsEntryComponent implements OnInit {
     this.getReset.emit('');
   }
 
+  /** * * This function is used to submit the partnership details form.
+   * * It creates a FormData object, appends the form values to it, and makes an API call to save the partnership details.
+   * * If the API call is successful, it shows a success message and emits the updated partnership details.
+   * @returns {void}
+   */
   submitPertnershipDtls(){
     const pernershipDtls = new FormData();
     pernershipDtls.append('id',this.pertnershipDtls.value.id ? this.pertnershipDtls.value.id : 0);
@@ -172,6 +211,11 @@ export class PertnerDtlsEntryComponent implements OnInit {
         })
   }
 
+  /** This function is used to set the partnership details in the form.
+   * It clears the state, district, city, and pincode arrays, and then sets the form values based on the provided response.
+   * @param {any} res - The response object containing the partnership details to be set in the form.
+   * @returns {void}
+   */
   setPertnershipDtls(res){
     this.state.length = 0;
     this.district.length = 0;

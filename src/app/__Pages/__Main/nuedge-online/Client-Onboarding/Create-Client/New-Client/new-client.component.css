@@ -237,8 +237,21 @@ fieldset
     }
     :host ::ng-deep #pincode_id>.multiselect-dropdown .dropdown-btn .dropdown-multiselect__caret{
                 height: 29px !important;
+               
     }
     :host ::ng-deep #pincode_id>.multiselect-dropdown>div>.dropdown-btn{
         height: 29px !important;
         line-height: 15px !important;
     }
+
+    :host ::ng-deep #bank_pincode>.multiselect-dropdown .dropdown-btn .dropdown-multiselect__caret{
+                height: 29px !important;
+                top:50%!important;
+                transform: translateY(-7%)!important;
+    }
+    :host ::ng-deep #bank_pincode>.multiselect-dropdown>div>.dropdown-btn{
+        height: 29px !important;
+        line-height: 15px !important;
+    }
+
+    

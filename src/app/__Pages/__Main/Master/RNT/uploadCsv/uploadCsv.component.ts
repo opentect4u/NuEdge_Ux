@@ -374,12 +374,20 @@ export class UploadCsvComponent implements OnInit {
   }
   /*** End */
 
+  /**
+   * Function for navigating to RNT screen with query params, when click on particular RNT
+   * @param __items 
+   */
   populateDT(__items: rnt) {
     this.__utility.navigatewithqueryparams('/main/master/productwisemenu/rnt', {
       // queryParams: {id: btoa(__items.id.toString()) },
       queryParams: {id: this.__utility.encrypt_dtls(__items.id.toString()) },
     });
   }
+  /**
+   * Function for navigating to AMC screen with query params, when click on particular AMC
+   * 
+  */
   showCorrospondingAMC(__rntDtls) {
     this.__utility.navigatewithqueryparams('/main/master/productwisemenu/amc', {
       // queryParams: {
@@ -388,6 +396,9 @@ export class UploadCsvComponent implements OnInit {
       queryParams: {id: this.__utility.encrypt_dtls(__rntDtls.id.toString()) },
     });
   }
+  /**
+   * Function for navigating to RNT screen , when click on View All button
+   */
   viewAll(){
     this.__utility.navigate('/main/master/productwisemenu/rnt');
     // this.__utility.navigatewithqueryparams('/main/master/productwisemenu/rnt',{

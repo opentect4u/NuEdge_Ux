@@ -14,6 +14,9 @@ export class MFDashboardComponent implements OnInit {
    }
 
   ngOnInit() {}
+  /*  * This function is used to navigate to the selected menu item
+   * @param __url - The URL of the selected menu item
+   */
   navigate(__url){
         this.__utility.navigatewithqueryparams(__url,{queryParams:{product_id:this.__rtDt.snapshot.params['id']}})
   }

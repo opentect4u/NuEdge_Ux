@@ -50,6 +50,12 @@ export class LicenseDtlsComponent implements OnInit {
   ngOnInit(): void {
     this.setCompanyProfileId(this.TabMenu[0].id);
   }
+  /**
+   * * This function is used to set the company profile ID and fetch the license details and product master data.
+   * * It updates the cmProfileId property and calls the getlicesnseDtls and getProductMst methods to retrieve the respective data.
+   * * @param {number} cm_profile_id - The ID of the company profile to be set.
+   * * @returns {void}
+   */
   setCompanyProfileId(cm_profile_id){
     this.cmProfileId = cm_profile_id;
     this.getlicesnseDtls(cm_profile_id);
@@ -70,6 +76,11 @@ export class LicenseDtlsComponent implements OnInit {
 
 
   ngAfterViewInit(){}
+  /**** This function is used to handle the file input change event.
+   * It sets the validators for the file input field, checks if the file is valid,
+   * and updates the form controls accordingly.
+   * @param {Event} ev - The change event triggered by the file input.
+   */
   getFile(ev){
     this.license.get('file').setValidators([
       Validators.required,
@@ -86,6 +97,10 @@ export class LicenseDtlsComponent implements OnInit {
       this.license.get('file_preview')?.patchValue('');
     }
   }
+  /**** This function is used to set the license details in the form.
+   * It updates the form controls with the provided license data or sets default values if no data is provided.
+   * @param {any} res - The license data to be set in the form.
+   */
   setLicenceInForm(res){
     this.license.patchValue({
       id:res ? res.id : 0,
@@ -102,6 +117,11 @@ export class LicenseDtlsComponent implements OnInit {
     this.license.get('file').updateValueAndValidity({emitEvent:false});
 
   }
+  /** This function is used to submit the license details form.
+   * It creates a FormData object, appends the license details to it,
+   * and makes an API call to save the license data.
+   * @returns {void}
+   */
   submitLicenceDtls(){
     const licence =new FormData();
     licence.append('id', this.license.value.id ? this.license.value.id : 0);
@@ -155,9 +175,18 @@ export class LicenseDtlsComponent implements OnInit {
     this.license.get('file').reset('',{emitEvent:false});
   }
   /*** End */
+  /** This function is used to populate the license details in the form when a tab is changed.
+   * It sets the license details in the form based on the selected tab's data.
+   * @param {any} ev - The event object containing the tab details.
+   */
   populateDT(ev){
     this.setLicenceInForm(ev);
   }
+  /** This function is used to handle the tab change event.
+   * It updates the company profile ID based on the selected tab and resets the form.
+   * @param {any} ev - The event object containing the tab details.
+   * * @returns {void}
+   */
   onTabChange(ev){
     this.setCompanyProfileId(ev.tabDtls?.id);
     this.reset();

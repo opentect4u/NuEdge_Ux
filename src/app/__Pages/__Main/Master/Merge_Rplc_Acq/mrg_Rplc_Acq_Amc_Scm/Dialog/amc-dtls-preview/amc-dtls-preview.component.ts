@@ -82,21 +82,40 @@ export class AmcDtlsPreviewComponent implements OnInit {
   ngOnInit(): void {
     this.addSecurityQuesAns(this.data.id > 0 ? (this.data.amc.security_qus_ans ? JSON.parse(this.data.amc.security_qus_ans) : []) : []);
   }
+  /* * This function is used to get the security questions and answers form array
+   * @returns FormArray - The form array containing security questions and answers
+   */
   get sec_qusAns(): FormArray {
     return this.__amcForm.get("sec_qusAns") as FormArray;
   }
+
+  /** Toggle modal dialog in fullscreen */
   fullScreen(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({top:'0px'});
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * Minimize the dialog to a smaller size and position it at the bottom right corner
+   * @returns void
+   * This function updates the dialog size to 40% width and 55px height,
+   * and positions it at the bottom right corner of the screen.
+   * It also removes the 'mat_dialog' class and adds a 'full_screen' class to the dialog.
+   */
   minimize(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.updateSize("40%",'55px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /*
+    * This function is used to toggle the visibility of the dialog
+    * It removes the 'full_screen' class and adds the 'mat_dialog' class to the dialog.
+    * It also updates the position of the dialog to the top of the screen.
+    * @param void
+    * @returns void
+    */
   maximize(){
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
@@ -104,6 +123,11 @@ export class AmcDtlsPreviewComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
 
+  /** * Adds security questions and answers to the form array.
+ * If the provided array is empty, it initializes with a new security question and answer.
+ * If the provided array has elements, it populates the form array with existing security questions and answers.
+ * @param secQusAns - An array of security questions and answers or undefined/null.
+ */
   addSecurityQuesAns(secQusAns : any | undefined | null = []): void {
     console.log(secQusAns);
 
@@ -116,6 +140,12 @@ export class AmcDtlsPreviewComponent implements OnInit {
       })
     }
   }
+  /** * Creates a new FormGroup for security questions and answers.
+   * @param id - The ID of the security question and answer (default is 0).
+   * @param sec_qus - The security question (default is an empty string).
+   * @param sec_ans - The security answer (default is an empty string).
+   * @returns FormGroup - A new FormGroup instance with the specified values.
+   */
   SecurityQuesAns(id: number | null = 0,
     sec_qus:string | null = '',
     sec_ans: string | null = '') : FormGroup{

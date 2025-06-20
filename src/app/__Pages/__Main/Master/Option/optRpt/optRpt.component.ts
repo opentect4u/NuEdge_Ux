@@ -64,6 +64,16 @@ export class OptrptComponent implements OnInit {
     this.formValue = this.__catForm.value;
     this.getoptionMst();
   }
+  /**
+   * * This function is used to fetch the option master data from the server.
+   * * It creates a FormData object, appends the necessary parameters, and makes an API call to retrieve the data.
+   * * The response is then processed to set the paginator and export the data. 
+   * * @returns void
+   * * @memberof OptrptComponent
+   * * @description
+   * * This function is responsible for fetching the option master data based on the form values and pagination settings.
+   * * It uses the DbIntrService to make an API call and processes the response to update the table data and export options.
+   */
   getoptionMst() {
     const __optionSrch = new FormData();
     __optionSrch.append('option', this.formValue?.option);
@@ -80,13 +90,32 @@ export class OptrptComponent implements OnInit {
         this.tableExport(__optionSrch);
       });
   }
+  /**
+   *  * This function is used to get the columns for the option report table.
+   *  * It utilizes the utility service to retrieve the columns based on the predefined column structure.
+   *  * @function getColumns
+   * @returns Array<column>
+   * * @memberof OptrptComponent
+   */
   getColumns = () =>{
     return this.__utility.getColumns(this.__columns);
   }
+  /**
+   * * * This function is used to filter the global search in the option report table.
+   * * * It takes the event as an argument, retrieves the value from the event target,
+   * * * and applies the filter to the prime table.
+   * * * @function filterGlobal 
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
   }
+  /**
+   *  * This function is used to export the option data to a file.
+   *  * It removes the pagination parameter from the search options and makes an API call to export the data.
+   *  * The response is then processed to set the export data source.
+   * @param __optionSrch 
+   */
   tableExport(__optionSrch) {
     __optionSrch.delete('paginate');
     this.__dbIntr
@@ -97,9 +126,26 @@ export class OptrptComponent implements OnInit {
       });
   }
 
+  /**
+   *  * This function is used to set the paginator for the option report table.
+   *  * It takes the response data as an argument and initializes the MatTableDataSource with the data.
+   *  * @function setPaginator    
+   * @param __res 
+   * * @memberof OptrptComponent
+   * * @description
+   * * This function is responsible for setting the paginator for the option report table.
+   * * It initializes the MatTableDataSource with the provided response data, allowing for pagination and sorting of the table. 
+   */
   private setPaginator(__res) {
     this.__selectOption = new MatTableDataSource(__res);
   }
+  /**
+   *  * This function is used to get the pagination data for the option report table.
+   *  * It takes the pagination object as an argument and makes an API call to retrieve the pagination data.
+   *  * The response is then processed to set the paginator and update the pagination links.
+   * @function getPaginate  
+   * @param __paginate 
+   */
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -118,10 +164,24 @@ export class OptrptComponent implements OnInit {
     }
   }
 
+  /**
+   *  * This function is used to populate the option report table with the provided items.
+   *  * It opens a dialog for adding or updating the option based on the provided items.
+   *  * @function populateDT
+   *  * @memberof OptrptComponent
+   * @param __items 
+   */
   populateDT(__items: option) {
     this.openDialog(__items, __items.id);
   }
 
+  /**
+   *  * This function is used to open a dialog for adding or updating an option.
+   *  * It creates a MatDialogConfig object, sets various properties for the dialog,
+   *  * and opens the OptionModificationComponent dialog with the provided configuration. 
+   * @param __category 
+   * @param __catId 
+   */
   openDialog(__category: option | null = null, __catId: number) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -164,6 +224,15 @@ export class OptrptComponent implements OnInit {
       });
     }
   }
+  /**
+   *  * This function is used to update a row in the option report table.
+   *  * It filters the existing data in the __selectOption and __export data sources,
+   *  * and updates the opt_name of the row object with the provided row_obj. 
+   * * @function updateRow
+   * * @memberof OptrptComponent
+   * * @description
+   * @param row_obj 
+   */
   private updateRow(row_obj: option) {
     this.__selectOption.data = this.__selectOption.data.filter(
       (value: option, key) => {
@@ -180,12 +249,35 @@ export class OptrptComponent implements OnInit {
       return true;
     });
   }
+  /**
+   * * This function is used to toggle the full screen mode of the dialog.  
+   * * It removes the 'mat_dialog' panel class and adds the 'full_screen' panel class to the dialogRef.
+   * * * It also updates the position of the dialogRef to the top of the screen.
+   * * @function fullScreen
+   * * @memberof OptrptComponent
+   *  
+   * * This function is responsible for toggling the full screen mode of the dialog.
+   * * It removes the 'mat_dialog' panel class and adds the 'full_screen' panel class to the dialogRef.
+   * * It also updates the position of the dialogRef to the top of the screen.
+   * * @description
+   */
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   *  * This function is used to minimize the dialog.
+   *  * It removes the 'mat_dialog' and 'full_screen' panel classes from the dialogRef,
+   *  * updates the size of the dialogRef to '40%' width and '55px' height, 
+   * *  * and updates the position of the dialogRef to the bottom right corner of the screen.
+   * *  * @function minimize
+   * *  * @memberof OptrptComponent
+   * * * @description
+   * *  * This function is responsible for minimizing the dialog by removing the 'mat_dialog' and 'full_screen' panel classes,
+   * *  * updating the size to '40%' width and '55px' height, and positioning it at the bottom right corner of the screen.
+   */
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
@@ -195,6 +287,17 @@ export class OptrptComponent implements OnInit {
       right: this.data.right + 'px',
     });
   }
+  /**
+   * 
+   * * This function is used to maximize the dialog.  
+   * * It removes the 'full_screen' panel class and adds the 'mat_dialog' panel class to the dialogRef.
+   * * It also updates the position of the dialogRef to the top of the screen.
+   * * @function maximize
+   * * @memberof OptrptComponent
+   * * @description
+   * * This function is responsible for maximizing the dialog by removing the 'full_screen' panel class,
+   * * adding the 'mat_dialog' panel class, and updating the position of the dialogRef to the top of the screen.
+   */
   maximize() {
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
@@ -202,6 +305,11 @@ export class OptrptComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
 
+  /**
+   * * This function is used to export the option report as a PDF file.
+   * * It calls the downloadReport method of the RPTService with the appropriate parameters.
+   * * @function exportPdf
+   */
   exportPdf() {
     this.__Rpt.downloadReport(
       '#Option',
@@ -212,10 +320,34 @@ export class OptrptComponent implements OnInit {
       'p'
     );
   }
+  /**
+   * * * This function is used to submit the form data for the option report.
+   * * * It retrieves the values from the form and calls the getoptionMst method to fetch the option master data.
+   * * * @function submit 
+   * * * @memberof OptrptComponent
+   * * * @description
+   * * * This function is responsible for submitting the form data for the option report.
+   * * * It retrieves the values from the form and calls the getoptionMst method to fetch the option master data based on the submitted values.
+   * * * @returns void
+   */
   submit() {
     this.formValue = this.__catForm.value;
     this.getoptionMst();
   }
+  /**
+   *  * This function is used to delete an option from the option report table. 
+   *  * It opens a confirmation dialog to confirm the deletion and then makes an API call to delete the option.
+   * *  * If the deletion is successful, it removes the option from both the __selectOption and __export data sources.
+   * * * @function delete
+   * * * @memberof OptrptComponent
+   * * * @description
+   * * * This function is responsible for deleting an option from the option report table.
+   * * * It opens a confirmation dialog to confirm the deletion and then makes an API call to delete the option.
+   * * * If the deletion is successful, it removes the option from both the __selectOption and __export data sources.
+   * * * @param __el  
+   * * * @param index
+   * * * @returns void
+   */
   delete(__el,index){
     const dialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = false;
@@ -242,6 +374,15 @@ export class OptrptComponent implements OnInit {
 
       })
   }
+  /**
+   * * * This function is used to export the option report table data to an Excel file.
+   * * * It retrieves the table element by its ID, converts it to a workbook using the XLSX library,
+   * * * and then writes the workbook to a file named 'option.xlsx'.
+   * * * @function exportTbl  
+   *  * * @memberof OptrptComponent
+   * * * @description
+   * * * This function is responsible for exporting the option report table data to an Excel file.
+   */
   exportTbl(){
     // let { sheetName, fileName } = getFileName(name);
     let targetTableElm = document.getElementById('Option');
@@ -250,6 +391,19 @@ export class OptrptComponent implements OnInit {
     });
     XLSX.writeFile(wb, `option.xlsx`,{cellStyles:true});
   }
+  /**
+   *  * This function is used to handle the custom sorting of the option report table.
+   *  * It checks if the sort field is not 'edit' or 'delete',  
+   *  *  * and if so, it updates the sort object with the sort field and order,
+   *  *  * and then calls the getoptionMst method to fetch the sorted option master data.
+   *  * * @function customSort
+   *  * * @memberof OptrptComponent
+   *  * * @description
+   *  *  * This function is responsible for handling the custom sorting of the option report table.
+   *  *  * It checks if the sort field is not 'edit' or 'delete', and if so, it updates the sort object with the sort field and order,
+   *  *  * and then calls the getoptionMst method to fetch the sorted option master data.
+   *  *  * @param ev - The event object containing the sort field and order.
+   */
   customSort(ev){
     if(ev.sortField != 'edit' && ev.sortField != 'delete'){
     this.sort.field = ev.sortField;
@@ -257,6 +411,14 @@ export class OptrptComponent implements OnInit {
     this.getoptionMst();
     }
   }
+  /**
+   *  * This function is used to handle the selection of an item in the option report table.
+   *  * It calls the getoptionMst method to fetch the updated option master data
+   *  * * @function onselectItem
+   *  * @memberof OptrptComponent
+   *  * @description
+   *  * This function is responsible for handling the selection of an item in the option report table.
+   */
   onselectItem(ev){
     this.getoptionMst();
   }

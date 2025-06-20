@@ -45,6 +45,15 @@ export class TrnstypeModificationComponent implements OnInit {
   }
 
   ngOnInit() { }
+  /**
+   * 
+   * @returns void
+   * * @memberof TrnstypeModificationComponent
+   * * @description 
+   * * This function is responsible for submitting the transaction type form data to the server.
+   * * It checks if the form is valid, creates a FormData object, appends the form values to it,
+   * * and makes an API call to submit the data.
+   */
   submit() {
     if (this.__trns_type.invalid) {
       return;
@@ -70,14 +79,38 @@ export class TrnstypeModificationComponent implements OnInit {
   //     this.__ProductMaster = res;
   //   })
   // }
+  /**
+   * * * This function is used to toggle the visibility of the dialog.
+   * * * @returns void
+   * * * @memberof TrnstypeModificationComponent  
+   * * * @description
+   * * * This function is responsible for toggling the visibility of the dialog.
+   * * * It updates the size and position of the dialog based on the current visibility state.
+   * * * @example
+   * * * // Usage: Call this function when the user clicks the toggle button on the dialog.
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * * This function is used to maximize the dialog.
+   * * * @returns void
+   * * * @memberof TrnstypeModificationComponent    
+   * * * @description
+   * * * This function is responsible for maximizing the dialog by updating its size and toggling the visibility state.
+   * * * @example
+   * * * // Usage: Call this function when the user clicks the maximize button on the dialog.
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   *  * * This function is used to toggle the full screen mode of the dialog.
+   *  * @returns void
+   *  * @memberof TrnstypeModificationComponent
+   */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;

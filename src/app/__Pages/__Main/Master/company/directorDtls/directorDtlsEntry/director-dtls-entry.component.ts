@@ -60,6 +60,11 @@ export class DirectorDtlsEntryComponent implements OnInit {
 
   ngAfterViewInit(){}
 
+  /** * * This function is used to set the director details form with the provided director data.
+ * * It resets the state, district, city, and pincode arrays before setting the form values.
+ * * @param {any} director - The director data to be set in the form.
+ * * @returns void
+ */
   setDirectorDtls(director){
   this.state.length = 0;
   this.district.length = 0;
@@ -91,6 +96,11 @@ export class DirectorDtlsEntryComponent implements OnInit {
   }
 
 
+  /** * This function is used to handle the selection of an item from a dropdown or list.
+ * * It takes an event object as a parameter and performs different actions based on the flag property of the event.
+ * * @param {any} ev - The event object containing the selected item information.
+ * * @returns void
+ */
   getselectedItem(ev){
     console.log(ev);
     switch(ev.flag){
@@ -109,6 +119,12 @@ export class DirectorDtlsEntryComponent implements OnInit {
       default: break;
     }
   }
+  /** * This function is used to fetch the list of states based on the selected country ID. 
+   * * It makes an API call to retrieve the states and updates the state array.
+   * * If no country ID is provided, it resets the state array and clears the state_id form control.
+   * * @param {number} country_id - The ID of the selected country.
+   * * @returns void
+   */
    getStateMst(country_id){
     if(country_id){
       this.dbIntr.api_call(0,'/states','country_id='+country_id).pipe(pluck("data")).subscribe(res =>{
@@ -121,6 +137,14 @@ export class DirectorDtlsEntryComponent implements OnInit {
     }
 
    }
+   /**
+    * 
+    * @param state_id - The ID of the selected state.
+    * * This function is used to fetch the list of districts based on the selected state ID.
+    * * It makes an API call to retrieve the districts and updates the district array.
+    * * If no state ID is provided, it resets the district array and clears the dist_id form control.
+    * @returns void
+    */
    getDistrictMst(state_id){
     if(state_id){
       this.dbIntr.api_call(0,'/districts','state_id='+state_id).pipe(pluck("data")).subscribe(res =>{
@@ -131,6 +155,14 @@ export class DirectorDtlsEntryComponent implements OnInit {
       this.directorDtlsFrm.get(['address','dist_id']).reset('',{emitEvent:true});
     }
    }
+   /**
+    * 
+    * @param district_id - The ID of the selected district.
+    * * This function is used to fetch the list of cities based on the selected district ID.
+    * * It makes an API call to retrieve the cities and updates the city array.
+    * * If no district ID is provided, it resets the city array and clears the city_id form control.
+    * @returns void
+    */
    getCityMst(district_id){
     if(district_id){
       this.dbIntr.api_call(0,'/city','district_id='+district_id).pipe(pluck("data")).subscribe(res =>{
@@ -141,6 +173,11 @@ export class DirectorDtlsEntryComponent implements OnInit {
       this.directorDtlsFrm.get(['address','city_id']).reset('',{emitEvent:true});
     }
    }
+   /**
+    * 
+    * @param city_id - The ID of the selected city.
+    * * This function is used to fetch the list of pincodes based on the selected city
+    */
    getPincodeMst(city_id){
     if(city_id){
       this.dbIntr.api_call(0,'/pincode','city_id='+city_id).pipe(pluck("data")).subscribe(res =>{
@@ -152,6 +189,13 @@ export class DirectorDtlsEntryComponent implements OnInit {
       this.directorDtlsFrm.get(['address','pincode']).reset('',{emitEvent:false});
     }
    }
+   /**
+    * * This function is used to submit the director details form.
+    * * It collects the form data, appends it to a FormData object, and sends it to the server via an API call.
+    * * On success, it displays a success message and emits the updated director details.
+    * * @returns void
+    * @memberof DirectorDtlsEntryComponent
+    */
    submitDirectorDetails(){
    console.log(this.directorDtlsFrm.value);
        const directorDtlsFrmData =  new FormData();
@@ -180,6 +224,12 @@ export class DirectorDtlsEntryComponent implements OnInit {
         this.reset();
        })
    }
+   /**
+    * * * This function is used to reset the director details form fields to their initial values.
+    * * * It clears the form controls and emits a reset event to notify other components.
+    * * @returns void
+    * @memberof DirectorDtlsEntryComponent
+    */
    reset(){
     this.directorDtlsFrm.patchValue({
       comp_profile_id:'',

@@ -74,6 +74,11 @@ tableData = new MatTableDataSource<any>(
     // this.getISINMst();
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
   }
+  /**
+   * * This function is used to navigate to the ISIN view all page.
+   * * @returns void
+   * * @memberof UploadISINComponent
+   */
   viewAll(){
      this.utility.navigate('/main/master/productwisemenu/scheme/isin')
   }

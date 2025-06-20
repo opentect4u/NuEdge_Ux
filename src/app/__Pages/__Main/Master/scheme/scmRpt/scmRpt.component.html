@@ -374,8 +374,7 @@
       <tr tabindex="999" >
         <td *ngFor="let col of columns"
         [style.max-width]="col.width"
-            [style.min-width]="col.width"
-        >
+            [style.min-width]="col.width">
           <ng-container [ngSwitch]="true">
             <ng-container *ngSwitchCase="col.field == 'edit'">
               <button pButton type="button" icon="pi pi-pencil" (click)="populateDT(scheme)"

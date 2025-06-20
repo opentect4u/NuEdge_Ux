@@ -26,18 +26,48 @@ export class ManualEntrComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  /**
+   * * This function is used to toggle the visibility of the dialog.
+   * * @returns void
+   * * @memberof ManualEntrComponent
+   * * @description
+   * * This function is responsible for toggling the visibility of the dialog.
+   * * It updates the size and position of the dialog based on the current visibility state.
+   * * @example
+   * * // Usage: Call this function when the user clicks the toggle button on the dialog.
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * This function is used to maximize the dialog.
+   * * @returns void
+   * * @memberof ManualEntrComponent  
+   * * @description
+   * * This function is responsible for maximizing the dialog by updating its size and toggling the visibility state.
+   * * * @example
+   * * // Usage: Call this function when the user clicks the maximize button on the dialog.
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to toggle the full screen mode of the dialog.
+   * * * @returns void
+   * * * @memberof ManualEntrComponent
+   * * * @description
+   */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * * * This function is used to submit the STP Type form data.
+   * * * @returns void
+   * * * @memberof ManualEntrComponent
+   */
   submitSwpType(){
     const stpType = new FormData();
     stpType.append('stp_type_name',this.stpForm.value.stp_type_name);

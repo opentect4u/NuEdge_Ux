@@ -58,6 +58,39 @@ export class SiptyperptComponent implements OnInit {
     this.getSIPTypeMst();
   }
 
+  /*
+    * This function is used to fetch the SIP Type Master data from the server.
+    * It creates a FormData object, appends the necessary parameters, and makes an API call to retrieve the data.
+    * @returns void
+    * @memberof SiptyperptComponent
+    * @description
+    * This function is responsible for fetching the SIP Type Master data from the server.
+    * It creates a FormData object, appends the necessary parameters, and makes an API call to retrieve the data.
+    * @example
+    *  // Usage: Call this function to get the SIP Type Master data.
+    * * @returns {void}
+    * @memberof SiptyperptComponent
+    * @description
+    * This function is responsible for fetching the SIP Type Master data from the server.
+    * It creates a FormData object, appends the necessary parameters, and makes an API call to retrieve the data.
+    * * @example
+    * // Usage: Call this function to get the SIP Type Master data.
+    * * @returns {void}
+    * @memberof SiptyperptComponent
+    * @description
+    * This function is responsible for fetching the SIP Type Master data from the server.
+    * It creates a FormData object, appends the necessary parameters, and makes an API call to retrieve the data.
+    * * @example
+    * // Usage: Call this function to get the SIP Type Master data.
+    * * @returns {void}
+    * @memberof SiptyperptComponent
+    * @description
+    *   
+    * This function is responsible for fetching the SIP Type Master data from the server.
+    * It creates a FormData object, appends the necessary parameters, and makes an API call to retrieve the data.
+    * * @example
+    * // Usage: Call this function to get the SIP Type Master data.
+    */
   getSIPTypeMst() {
     const __SIPTypeSearch = new FormData();
     __SIPTypeSearch.append('sip_type_name',this.formValue?.sip_type_name);
@@ -75,14 +108,30 @@ export class SiptyperptComponent implements OnInit {
       });
   }
 
+  /**
+   * 
+   * @param $event - The event object that contains the value to filter the global search.
+   * @description
+   * This function is used to filter the global search in the SIP Type table.
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
   }
+  /**   * 
+   * @returns {column[]} - Returns the columns for the SIP Type table.
+   * @description
+   * This function is used to get the columns for the SIP Type table.
+   */
   getColumns = () =>{
     return this.__utility.getColumns(this.__columns);
   }
 
+  /**   * 
+   * @param __SIPTypeExport - The FormData object containing the parameters for exporting SIP Type data.
+   * @description
+   * This function is used to export the SIP Type data based on the provided parameters.
+   */
   tableExport(
     __SIPTypeExport
   ) {
@@ -94,6 +143,11 @@ export class SiptyperptComponent implements OnInit {
         this.__export = new MatTableDataSource(res);
       });
   }
+  /**   * 
+   * @param __paginate - The pagination value to be used for fetching the SIP Type Master data.
+   * @description
+   * This function is used to get the SIP Type Master data with pagination.
+   */
   getTrnsTypeMst(__paginate: string | null = '10') {
     this.__dbIntr
       .api_call(0, '/sipType', 'paginate=' + __paginate)
@@ -104,9 +158,28 @@ export class SiptyperptComponent implements OnInit {
       });
   }
 
+  /**   * 
+   * @param __res - The response data to be set in the paginator.
+   * @description
+   * This function is used to set the paginator with the provided response data.
+   */
   private setPaginator(__res) {
     this.__selecttrnsType = new MatTableDataSource(__res);
   }
+  /**  * 
+   * @param __paginate - The pagination object containing the URL for fetching paginated data.
+   * @description
+   * This function is used to get paginated data based on the provided pagination object.
+   * It checks if the URL is present in the pagination object and makes an API call to fetch the data.
+   * @param {any} __paginate - The pagination object containing the URL for fetching paginated data.
+   * @return {void}
+   * @memberof SiptyperptComponent
+   * @description
+   * This function is used to get paginated data based on the provided pagination object.
+   * It checks if the URL is present in the pagination object and makes an API call to fetch the data.
+   * @example
+   * // Usage: Call this function with the pagination object to fetch paginated data.
+   */
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -124,9 +197,48 @@ export class SiptyperptComponent implements OnInit {
         });
     }
   }
+  /**   * 
+   * @param __items - The item to be populated in the dialog.
+   * @description
+   * This function is used to open a dialog for adding or updating a SIP Type.
+   * It takes an item as a parameter and passes it to the dialog component.
+   * @param {any} __items - The item to be populated in the dialog.
+   * @return {void}
+   * @memberof SiptyperptComponent
+   * @description
+   * This function is used to open a dialog for adding or updating a SIP Type.
+   * It takes an item as a parameter and passes it to the dialog component.
+   * @example
+   * // Usage: Call this function with the item to open the dialog.
+   */
   populateDT(__items: any) {
     this.openDialog(__items.id, __items);
   }
+  /**   * 
+   * @param {number} id - The ID of the SIP Type to be added or updated.
+   * @param {any} __items - Additional items to be passed to the dialog.
+   * @description
+   * This function is used to open a dialog for adding or updating a SIP Type.
+   * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * and opens the SiptypemodificationComponent dialog with the provided configuration.
+   * * @returns {void}
+   * @memberof SiptyperptComponent
+   * @description
+   * This function is responsible for opening a dialog for adding or updating a SIP Type.
+   * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * and opens the SiptypemodificationComponent dialog with the provided configuration.
+   * * @example
+   * // Usage: Call this function to open the dialog for adding or updating a SIP Type.
+   *  
+   * * @param {number} id - The ID of the SIP Type to be added or updated.
+   * @param {any} __items - Additional items to be passed to the dialog.
+   * * @returns {void}
+   * @memberof SiptyperptComponent
+   * @description
+   * This function is responsible for opening a dialog for adding or updating a SIP Type.
+   * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * and opens the SiptypemodificationComponent dialog with the provided configuration.
+   */
   openDialog(id, __items) {
     // console.log(__items);
 
@@ -170,12 +282,40 @@ export class SiptyperptComponent implements OnInit {
       });
     }
   }
+  /**   * 
+   * @description
+   * This function is used to toggle the visibility of the dialog.
+   * It removes the 'mat_dialog' panel class and adds the 'full_screen' panel class to the dialog reference.
+   * It also updates the position of the dialog to the top of the screen.
+   * * @returns {void}
+   * @memberof SiptyperptComponent
+   * @description
+   * This function is responsible for toggling the visibility of the dialog.
+   * It removes the 'mat_dialog' panel class and adds the 'full_screen' panel class to the dialog reference.
+   * It also updates the position of the dialog to the top of the screen.
+   * * @example
+   * // Usage: Call this function to toggle the visibility of the dialog.
+   */
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
+  /**   * 
+   * @description
+   * This function is used to minimize the dialog.
+   *  It removes the 'mat_dialog' and 'full_screen' panel classes from the dialog reference,
+   * and updates the size and position of the dialog.
+   * * @returns {void}
+   * @memberof SiptyperptComponent
+   * @description
+   * This function is responsible for minimizing the dialog.
+   * It removes the 'mat_dialog' and 'full_screen' panel classes from the dialog reference,
+   * and updates the size and position of the dialog.
+   * * @example
+   * // Usage: Call this function to minimize the dialog.
+   */
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
@@ -185,6 +325,20 @@ export class SiptyperptComponent implements OnInit {
       right: this.data.right + 'px',
     });
   }
+  /**   * 
+   * @description
+   * This function is used to maximize the dialog.
+   * It removes the 'full_screen' panel class and adds the 'mat_dialog' panel class to the dialog reference.
+   * It also updates the position of the dialog to the top of the screen.
+   * * @returns {void}
+   * @memberof SiptyperptComponent
+   * @description
+   * This function is responsible for maximizing the dialog.
+   *  It removes the 'full_screen' panel class and adds the 'mat_dialog' panel class to the dialog reference.
+   * It also updates the position of the dialog to the top of the screen.
+   * * @example
+   * // Usage: Call this function to maximize the dialog.
+   */
   maximize() {
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
@@ -192,6 +346,25 @@ export class SiptyperptComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
 
+  /**   *
+   * This function is used to export the SIP Type data as a PDF file.
+   * It calls the downloadReport method of the RPTService with the appropriate parameters.
+   * * @returns void
+   * @memberof SiptyperptComponent
+   * @description 
+   * This function is responsible for exporting the SIP Type data as a PDF file.
+   * It calls the downloadReport method of the RPTService with the appropriate parameters.
+   * * @example
+   * // Usage: Call this function to export the SIP Type data as a PDF file.
+   * @returns {void}
+   * @memberof SiptyperptComponent
+   * @description
+   * This function is responsible for exporting the SIP Type data as a PDF file.
+   * 
+   * It calls the downloadReport method of the RPTService with the appropriate parameters.
+   * * @example
+   * // Usage: Call this function to export the SIP Type data as a PDF file.
+   */
   exportPdf() {
     this.__Rpt.downloadReport(
       '#SipType',
@@ -202,6 +375,12 @@ export class SiptyperptComponent implements OnInit {
       'p'
     );
   }
+  /**
+   * * This function is used to submit the form and fetch the SIP Type Master data.
+   * It retrieves the value from the form control and calls the getSIPTypeMst method to fetch the data.
+   * @returns void
+   * @memberof SiptyperptComponent  
+   */
   submit() {
     this.formValue = this.__trnsType.value;
     this.getSIPTypeMst();
@@ -222,12 +401,34 @@ export class SiptyperptComponent implements OnInit {
       return true;
     });
   }
+  /**
+   * 
+   * @param row_obj - The SIP Type object to be added to the master table.
+   * @description
+   * This function is used to add a new row to the SIP Type master table.
+   * It takes a SIP Type object as a parameter and adds it to both the __selecttrnsType and __export data sources.
+   * * @returns void
+   * @memberof SiptyperptComponent
+   * @description
+   * This function is responsible for adding a new row to the SIP Type master table.
+   */
   addRow(row_obj) {
     this.__selecttrnsType.data.unshift(row_obj);
     this.__export.data.unshift(row_obj);
     this.__export._updateChangeSubscription();
     this.__selecttrnsType._updateChangeSubscription();
   }
+  /**
+   * 
+   * @param __el - The SIP Type object to be deleted from the master table.
+   * @description
+   * This function is used to delete a SIP Type from the master table.
+   * It opens a confirmation dialog and, upon confirmation, removes the SIP Type from both the __selecttrnsType and __export data sources.
+   * @param index 
+   * @returns void
+   * @memberof SiptyperptComponent
+   * @description
+   */
   delete(__el,index){
     const dialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = false;
@@ -254,6 +455,21 @@ export class SiptyperptComponent implements OnInit {
 
       })
   }
+  /**
+   * 
+   * @param ev - The event object containing the sort field and order.
+   * @description
+   * This function is used to handle the custom sorting of the SIP Type master table.
+   * It updates the sort field and order based on the event object and calls the getSIPTypeMst method to fetch the sorted data.
+   * @returns void
+   * @memberof SiptyperptComponent
+   * @description
+   * This function is responsible for handling the custom sorting of the SIP Type master table.
+   * It updates the sort field and order based on the event object and calls the getSIPTypeMst method to fetch the sorted data.
+   * * @example
+   * // Usage: Call this function when the user interacts with the sorting feature of the SIP Type master table.
+   * @param {any} ev - The event object containing the sort field and order.
+   */
   customSort(ev){
     if(ev.sortField!= 'edit' && ev.sortField != 'delete'){
     this.sort.field = ev.sortField;
@@ -261,6 +477,12 @@ export class SiptyperptComponent implements OnInit {
     this.getSIPTypeMst();
   }
   }
+  /**
+   * * This function is used to handle the selection of an item in the SIP Type master table.
+   * It calls the getSIPTypeMst method to fetch the updated data based on the selected item.
+   * @returns void
+   * @param ev 
+   */
   onselectItem(ev){
     this.getSIPTypeMst();
   }

@@ -13,6 +13,11 @@ export class PertnerDtlsRPTComponent implements OnInit {
   @Output() setPertnerDormDtls:EventEmitter<any> = new EventEmitter<any>();
   constructor() { }
   ngOnInit(): void {}
+  /** * This function is used to populate the data table with the partner details.
+   * It emits an event with the index and data of the selected partner details.
+   * @param {any} pertnerDtls - The partner details to be populated in the data table.
+   * @returns {void}
+   */
   populateDT(pertnerDtls){
    this.setPertnerDormDtls.emit({index:0,data:pertnerDtls})
   }

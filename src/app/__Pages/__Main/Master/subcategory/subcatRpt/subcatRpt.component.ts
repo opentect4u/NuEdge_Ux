@@ -1,3 +1,7 @@
+/**
+* Sub category report screen open in modal dialog box
+*/
+
 import { Overlay } from '@angular/cdk/overlay';
 import {
   Component,
@@ -85,6 +89,9 @@ export class SubcatrptComponent implements OnInit {
     private __dbIntr: DbIntrService
   ) {
   }
+  /**
+   * Export PDF of sub-category
+   */
   exportPdf() {
     this.__Rpt.downloadReport(
       '#subcategory',
@@ -101,6 +108,9 @@ export class SubcatrptComponent implements OnInit {
     this.getSubcatMst();
   }
 
+  /**
+   * Get sub category master data from backend API
+   */
   getSubcatMst() {
     const __amcSearch = new FormData();
     __amcSearch.append(
@@ -134,13 +144,31 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
       });
   }
 
+  /**Function for search in datatable */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
   }
+  /**Function for get columns for searching in datatable */
   getColumns = () =>{
     return this.__utility.getColumns(this.__columns);
   }
+
+
+  /**
+   *  Get sub category master data from backend API
+   * * This function fetches subcategory data from the backend API and sets it to the paginator.
+   * @param params - Optional parameter for additional query parameters.
+   * * @param __paginate - Optional parameter to specify the number of items per page.  
+    * * Default value is '10'.
+   * * This function uses the `api_call` method from the `DbIntrService` to make the API call.
+   * * It subscribes to the response and maps the data to the `__selectSubCategory` MatTableDataSource.
+   * * @returns void
+   * * @example
+   * ```typescript
+   * this.getSubCategorymaster();
+   * ```  
+   */
   getSubCategorymaster(
     params: string | null = null,
     __paginate: string | null = '10'
@@ -156,7 +184,10 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
   private setPaginator(__res) {
     this.__selectSubCategory = new MatTableDataSource(__res);
   }
-
+  
+  /**
+   * Get Category from backend API for listed down in filer scetion, so that we can filter that subcategory via these
+   */
   getCategoryMst(){
      this.__dbIntr.api_call(0,'/category',null).pipe(pluck("data")).subscribe((res:category[]) =>{
       this.__catMst = res;
@@ -166,6 +197,11 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
       this.submit();
      })
   }
+
+  /**
+   * automatically populate category.
+   * @param catDtls 
+   */
   setCategoryControl(catDtls){
     this.__subcatForm.patchValue({
       cat_name:catDtls.map(({id,cat_name}) => ({id,cat_name}))
@@ -199,12 +235,19 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
         error: (err) => console.log(),
       });
   }
+  /**
+   * Open modal dialog box in full screen
+   */
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
+
+  /**
+   * minimize modal dialog box
+   */
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
@@ -214,12 +257,19 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
       right: this.data.right + 'px',
     });
   }
+  /**
+   * maximize modal dialog box
+   */
   maximize() {
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
+
+   /**
+   * get subcategory list via selected filter
+   */
   submit() {
     this.formValue = this.__subcatForm.value;
     this.getSubcatMst();
@@ -229,6 +279,8 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
       this.searchResultVisibility('none', mode);
     }
   }
+
+  /**Function for list selection from search input field and select particular item from that list*/
   getItems(__items, __type) {
     switch (__type) {
       case 'S':
@@ -243,6 +295,8 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
         break;
     }
   }
+
+  /**Function for export table*/
   tableExport(__amcSearch) {
     __amcSearch.delete('paginate');
     this.__dbIntr
@@ -252,6 +306,11 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
         this.__export = new MatTableDataSource(res);
       });
   }
+  /**
+   * function for visibility of search input field list
+   * @param display_mode 
+   * @param __type 
+   */
   searchResultVisibility(display_mode, __type) {
     switch (__type) {
       case 'S':
@@ -262,6 +321,20 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
     }
   }
 
+  /**
+   *  Function for pagination of subcategory
+   * * This function retrieves paginated data from the backend API based on the provided pagination URL and parameters.
+   * * @param __paginate - An object containing the pagination URL and other parameters.
+   * * This function constructs the URL with the current page number, selected category IDs, subcategory ID, sort order, and sort field.
+   * * It then calls the `getpaginationData` method from the `DbIntrService` to fetch the data.
+   * * @returns void
+   * * @example
+   * ```typescript
+   * this.getPaginate({
+   *   url: 'https://api.example.com/subcategories',
+   *  });
+   * @param __paginate 
+   */
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -280,6 +353,12 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
         });
     }
   }
+
+  /**
+   * Open Dialog box for modification of subcategory
+   * @param __subcategory 
+   * @param __subcatId 
+   */
   openDialog(__subcategory: subcat | null = null, __subcatId: number) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -321,9 +400,14 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
       });
     }
   }
+  /**
+   * Func for open subcategory modal in dialog box
+   * @param __items 
+   */
   populateDT(__items) {
     this.openDialog(__items, __items.id);
   }
+  /** Update subcategory */
   updateRow(row_obj: subcat) {
     this.__selectSubCategory.data = this.__selectSubCategory.data.filter(
       (value: subcat, key) => {
@@ -344,6 +428,10 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
       return true;
     });
   }
+
+  /**
+   * Function for reset form and call API for fetching subcategory
+   */
   refreshOrAdvanceFlt() {
     // this.__subcatForm.get('cat_name').setValue('',{emitEvent:false});
     this.__subcatForm.get('subcat_name').setValue('',{emitEvent:false});
@@ -356,6 +444,9 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
     this.sort = new sort();
     this.submit();
   }
+  /**
+   * Function for delete subcategory
+   */
   delete(__el, index) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -381,6 +472,22 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
       }
     });
   }
+  /**
+   *  Function for custom sort of subcategory table
+   * * This function is triggered when the user sorts the table by a specific field.
+   * * It updates the `sort` object with the selected field and order.
+   * * @param ev - The event object containing the sort field and order.
+   * * * If the sort field is not 'edit' or 'delete', it calls the `getSubcatMst` method to fetch the sorted data.
+   * * @returns void
+   * * @example
+   * ```typescript
+   * this.customSort({ sortField: 'subcategory_name', sortOrder: 1 });
+   * ```
+   * * @description
+   * This function checks if the `sortField` is not 'edit' or 'delete' before updating the `sort` object and fetching the data.
+   * * It ensures that the sorting functionality works only for valid fields and does not interfere with the edit or delete actions.
+   * @param ev 
+   */
   customSort(ev) {
     if(ev.sortField != 'edit' && ev.sortField != 'delete'){
     this.sort.field = ev.sortField;
@@ -390,6 +497,21 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
   }
   }
   }
+  /*
+    * Function for handling item selection from the dropdown
+    * @param ev - The event object containing the selected item.
+    * @description
+    * This function is triggered when an item is selected from the dropdown.
+    *   It calls the `getSubcatMst` method to fetch the subcategory data based on the selected item.
+    *  @returns void
+    *  @example
+    * ```typescript
+    * this.onselectItem(event);
+    * ```
+    * @param ev
+    * @returns void
+    * */
+
   onselectItem(ev) {
     // this.submit();
     this.getSubcatMst();

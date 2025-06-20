@@ -1,3 +1,7 @@
+/**
+ * Scheme landing screen where all the menu are listed.
+ */
+
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
@@ -109,22 +113,38 @@ export class SchemeComponent implements OnInit {
         // this.__utility.getBreadCrumb(this.__brdCrmbs);
 
     // this.getSchememaster();
+    /**
+     * Check if query params are present in the URL.
+     * If 'id' and 'flag' are present, fetch the particular scheme.
+     */
     if (
       this.__rtDt.snapshot.queryParamMap.get('id') &&
       this.__rtDt.snapshot.queryParamMap.get('flag')
     ) {
       this.getParticularScheme();
     }
+    /**
+     * Check if 'amc_id' is present in the query params.
+     * If present, open the dialog for reports with '1' as product ID (for Mutual Fund).
+     */
     if(this.__rtDt.snapshot.queryParamMap.get('amc_id')){
       this.opendialogForReports(
         '1',/**For Mutual Fund */
         atob(this.__rtDt.snapshot.queryParamMap.get('amc_id'))
         )
     }
+    /**
+     * Check if 'scheme_type' is present in the query params.
+     * If present, open the dialog for scheme modification with '0' as scheme ID and the decoded scheme type.
+     */
     if(this.__rtDt.snapshot.queryParamMap.get('scheme_type')){
       this.openDialog(null, 0, atob(this.__rtDt.snapshot.queryParamMap.get('scheme_type')));
     }
   }
+  /**
+   * Fetches the scheme master data from the database.
+   * It retrieves the data using the API call and updates the data source for the table.
+   */
   getParticularScheme() {
     this.__dbIntr
       .api_call(
@@ -144,6 +164,15 @@ export class SchemeComponent implements OnInit {
   }
 
 
+  /**
+   * 
+   * Opens a dialog for scheme modification.
+   * If the dialog is already open, it updates the size of the dialog.
+   * @param __scheme - The scheme data to be modified, can be null for new schemes.
+   * @param __scmId - The ID of the scheme to be modified, 0 for new schemes.
+   * @param __scmType - The type of the scheme (e.g., 'Ongoing', 'NFO').
+   * @returns void
+   */
   openDialog(
     __scheme: scheme | null = null,
     __scmId: number,
@@ -185,6 +214,11 @@ export class SchemeComponent implements OnInit {
     }
   }
 
+  /**
+   * 
+   * @param __menu - The menu item that was clicked.
+   * This function handles the navigation based on the menu item clicked.
+   */
   navigate(__menu) {
     console.log(__menu.url);
 
@@ -195,15 +229,36 @@ export class SchemeComponent implements OnInit {
         // this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}});
         break;
         case 'R':
+          /**
+           * Opens the dialog for reports.
+           * If 'amc_id' is present in the query params, it will pass that value.
+           * If not, it will default to '1' as the product ID (for Mutual Fund).
+           */
           this.opendialogForReports('1');
           break;
       default:
+        /**
+         * Opens the dialog for scheme modification.
+         * If no scheme is selected, it will open a new dialog with scheme ID 0.
+         * If a scheme is selected, it will open the dialog with the selected scheme's ID.
+         */
         this.openDialog(null, 0, __menu.flag);
         break;
     }
   }
 
 
+  /**
+   *  Opens a dialog for reports.
+   * The dialog will display reports related to the selected scheme.
+   *  * If 'amc_id' is provided, it will be used to filter the reports.
+   * If 'amc_id' is null, it will default to null.
+   *  * @param __prdId - The product ID for which the reports are to be displayed.
+   * * This function is used to open a full-screen dialog for displaying reports related to the scheme.
+   * * It uses the MatDialog service to open the dialog with specific configurations.   
+   * @param amc_id - The AMC ID to filter the reports, defaults to null if not provided.
+   * @returns void
+   */
    opendialogForReports(__prdId,amc_id: string | null = null){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

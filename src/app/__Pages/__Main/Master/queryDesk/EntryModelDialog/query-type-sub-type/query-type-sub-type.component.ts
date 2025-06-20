@@ -52,10 +52,20 @@ export class QueryTypeSubTypeComponent implements OnInit {
     })
   }
 
+  /**
+   * * * This function is used to toggle the visibility of the dialog.
+   * * * @returns void
+   * * * @memberof QueryTypeSubTypeComponent
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * * * This function is used to maximize the dialog.
+   * * * @returns void
+   * * * @memberof QueryTypeSubTypeComponent
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
@@ -65,12 +75,27 @@ export class QueryTypeSubTypeComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
 
+  /**
+   * * * This function is used to fetch the list of products from the database.
+   * * * @returns void
+   * * * @memberof QueryTypeSubTypeComponent
+   */
   fetchProduct(){
       this.DbIntr.api_call(0,'/product',null).pipe(pluck('data')).subscribe((res:Required<{id:number,product_name:string}>[]) =>{
         this.md_product = res;
       })
   }
 
+  /**
+   *  * This function is used to fetch the query types based on the selected product ID.
+   *  * @returns void
+   *  * @memberof QueryTypeSubTypeComponent
+   * @param product_id - The ID of the product for which query types are to be fetched.
+   *  * @description
+   *  * This function makes an API call to fetch the query types associated with the specified product ID.
+   *  * If query types are found, they are assigned to the `md_query` variable.
+   *  * If no query types are found, the `query_type_id` form control is reset.
+   */
   fetchQueryType(product_id){
     this.DbIntr.api_call(0,`/cus_service/queryType?product_id=${product_id}`,null).pipe(pluck('data')).subscribe((res:any) =>{
       if(res.length > 0){
@@ -81,6 +106,11 @@ export class QueryTypeSubTypeComponent implements OnInit {
       }
     })
 }
+/**
+ * * * This function is used to submit the query type and subtype form data.
+ * * * It collects the form values, converts them to a suitable format, and makes an API call to save the data.
+ * * * @returns void
+ */
   submitQueryTypeSubType(){
     const payload = {
       ...this.queryTypeSubTypeForm.value,

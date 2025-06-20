@@ -28,6 +28,10 @@ export class QueryDeskHomeComponent implements OnInit {
     console.log(this.__menu);
   }
 
+  /**
+   * * This function is used to handle the click event on the menu items.
+   * * It checks the flag of the clicked item and opens the corresponding dialog.
+   */
   getItems(item){
     console.log(item);
     let compName;
@@ -61,6 +65,10 @@ export class QueryDeskHomeComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * * This function is used to open a dialog for adding or updating Query Desk entries.
+   * * It creates a MatDialogConfig object, sets various properties for the dialog,
+   */
   openDialog(el:any | undefined = null,flag,compName,title){
     if(flag != 'R'){
 

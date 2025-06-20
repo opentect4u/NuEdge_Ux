@@ -152,6 +152,12 @@ export class UploadCsvComponent implements OnInit {
     // this.__utility.getBreadCrumb(this.__brdCrmbs);
     this.setColumns();
   }
+  /** 
+   * * This function is responsible for previewing the latest client entries based on the client type.
+   * * It makes an API call to fetch the latest client entries and updates the data source for the table.
+   * * @returns void
+   * @memberof UploadCsvComponent
+   */
   previewlatestClientEntry() {
     this.__dbIntr.api_call(0, '/client', 'client_type='+ atob(this.__rtDt.snapshot.paramMap.get('id'))).pipe(pluck('data','data')).subscribe((res: client[]) => {
       this.__selectClient = new MatTableDataSource(res.splice(0,5));
@@ -159,6 +165,11 @@ export class UploadCsvComponent implements OnInit {
 
     })
   }
+  /** * * This function is responsible for setting the columns and table data for downloading/uploading CSV files.
+ * * It retrieves the client type from the route parameters, filters the columns to be displayed,
+ * * and sets the table data based on the client type.
+ * * @returns void
+ */
   setColumns(){
     /** FOR SETTING COLUMNS & TABLE DATA FOR DOWNLOADING UPLOAD CSV */
     console.log(atob(this.__rtDt.snapshot.paramMap.get('id')));
@@ -174,6 +185,10 @@ export class UploadCsvComponent implements OnInit {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef).filter(x => this.__columns.includes(x));
     this.clmsToDisplay = this.tableColumns.filter((x) => columns.includes(x.columnDef));
    }
+   /** * * This function is responsible for setting the table data based on the client type.
+ * * It filters the client columns data to exclude specific fields based on the client type.
+ * * @param flag - The client type flag ('M', 'N', or default).
+ */
    setTableData(flag){
     switch(flag){
       case 'M':
@@ -192,6 +207,11 @@ export class UploadCsvComponent implements OnInit {
         break;
     }
    }
+   /** * * This function is responsible for navigating to the client master page with the selected item.
+ * * It takes the selected item as a parameter and navigates to the client master page with the item's client_type and id as query parameters.
+ * * @param __items - The selected item containing client_type and id.
+ * * @returns void
+ */
   populateDT(__items: client) {
     this.__utility.navigatewithqueryparams(
       (atob(this.__rtDt.snapshot.paramMap.get('id')) == 'E' ?
@@ -199,10 +219,20 @@ export class UploadCsvComponent implements OnInit {
       '/main/master/mstOperations/clntMst/clOption/addnew/clientmaster/')+ btoa(__items.client_type),
       { queryParams: { cl_id: btoa(__items.id.toString()) } })
   }
+  /** * * This function is responsible for handling file selection for uploading RNT files.
+ * * It sets the validators for the file input based on the selected file's size and extension.
+ * * @param __ev - The event object containing the selected files.
+ * * @returns void
+ */
   getFiles(__ev) {
     this.__uploadRnt.get('rntFile').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)]);
     this.__uploadRnt.get('file')?.patchValue(this.__uploadRnt.get('rntFile').status == 'VALID' ? __ev.files[0] : '');
   }
+  /** * * This function is responsible for uploading the RNT file.
+ * * It checks if the form is valid, creates a FormData object, appends the file to it,
+ * * and makes an API call to upload the file.
+ * * @returns void
+ */
   uploadRnt() {
 
     if (this.__uploadRnt.invalid) {
@@ -218,6 +248,12 @@ export class UploadCsvComponent implements OnInit {
       }
     })
   }
+  /*   * This function is used to handle file drop events for uploading RNT files.
+   *   It checks if the dropped files meet the required conditions (file size and extension),
+   *   and updates the form control values accordingly.
+   * * @param __ev - The event object containing the dropped files.
+   * * @returns void
+   */
   onFileDropped(__ev) {
     this.__uploadRnt.get('file').patchValue('');
     this.__uploadRnt.controls.rntFile.setErrors({
@@ -258,6 +294,10 @@ export class UploadCsvComponent implements OnInit {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
+  /** * * This function is responsible for resetting the file input and its validators.
+ * * It clears the file input value and sets the validators for the file input to require a file with a valid extension.
+ * * @returns void
+ */
   deleteFiles() {
     this.__uploadRnt.reset();
     this.__uploadRnt
@@ -268,6 +308,10 @@ export class UploadCsvComponent implements OnInit {
       ]);
     this.__uploadRnt.get('rntFile').updateValueAndValidity();
   }
+  /** * * This function is responsible for navigating to the client master page based on the client type.
+ * * It checks the client type from the route parameters and navigates to the appropriate client master page.
+ * * @returns void
+ */
   viewAll(){
     this.__utility.navigate(
       ((atob(this.__rtDt.snapshot.paramMap.get('id')) == 'E'

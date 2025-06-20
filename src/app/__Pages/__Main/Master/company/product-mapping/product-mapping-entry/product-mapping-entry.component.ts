@@ -31,6 +31,11 @@ export class ProductMappingEntryComponent implements OnInit {
   ngOnInit(): void {
   }
   ngAfterViewInit(){}
+  /**
+   * * This function is used to reset the product mapping form.
+   * * It clears the form values and emits a reset event.
+   * * @returns void
+   */
   reset(){
     this.product_mapping.patchValue({
       cm_profile_id:'',
@@ -39,6 +44,11 @@ export class ProductMappingEntryComponent implements OnInit {
     });
     this.resetFrmDt.emit('')
   }
+  /** * * This function is used to set the form data for product mapping.
+   * * It populates the form with the provided response data or sets default values if no data is provided.
+   * * @param {any} res - The response data to populate the form with.
+   * * @returns void
+   */
   setFormData(res){
     this.product_mapping.patchValue({
       id:res ? res.id : 0,
@@ -46,6 +56,11 @@ export class ProductMappingEntryComponent implements OnInit {
       product_name:res ? res.product_name : '',
     })
   }
+  /** * * This function is used to submit the product mapping form.
+   * * It creates a FormData object with the form values and sends it to the API for saving.
+   * * If the API call is successful, it shows a success message and emits an event with the modified product mapping data.
+   * * @returns void
+   */
   submitProduct(){
     const product  = new FormData();
     product.append('cm_profile_id',this.product_mapping.value.cm_profile_id);

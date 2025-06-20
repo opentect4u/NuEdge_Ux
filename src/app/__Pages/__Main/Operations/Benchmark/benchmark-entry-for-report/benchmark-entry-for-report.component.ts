@@ -64,22 +64,31 @@ export class BenchmarkEntryForReportComponent implements OnInit {
     });
   }
 
+  /** This function is used to minimize the dialog box*/
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
 
+  /** This function is used to maximize the dialog box*/
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
 
+  /** This function is used to toggle the dialog box into fullscreen*/
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
 
 
+  /**
+   * Fetches the exchange master data from the database
+   * and populates the exchangeMstDt array with the retrieved data.
+   * This function is called during the component's initialization to ensure
+   * that the exchange data is available for selection in the form.
+   */
   getechangeMstDt = () =>{
     this.__dbIntr.api_call(0,'/exchange',null)
     .pipe(pluck('data'))
@@ -88,6 +97,13 @@ export class BenchmarkEntryForReportComponent implements OnInit {
     })
   }
 
+  /** * Fetches the benchmark data based on the selected exchange ID.
+ * If an exchange ID is provided, it makes an API call to retrieve the benchmark data
+ * and populates the benchmark array with the retrieved data.
+ * If no exchange ID is provided, it clears the benchmark array
+ * and resets the benchmark form control to an empty value.
+ * @param ex_id - The ID of the selected exchange.
+ */
   getBenchmarkDt = (ex_id: number) => {
     if (ex_id) {
       this.__dbIntr
@@ -102,10 +118,22 @@ export class BenchmarkEntryForReportComponent implements OnInit {
     }
   };
 
+  /**
+   * Logs the current values of the benchmark report form to the console.
+   * This function is typically used for debugging purposes to check the form values.
+   * It can be called when the user wants to see the current state of the form data.
+   */
   getBenchmark = () =>{
     console.log(this.benchmarkRptFrm.value)
   }
 
+  /**
+   * Submits the benchmark report form data to the server.
+   * It makes an API call to the '/benchmarkSchemeAddEdit' endpoint with the form data.
+   * If the submission is successful, it shows a success message and closes the dialog,
+   * passing the submitted data back to the parent component.
+   * If there is an error, it shows an error message.
+   */
   submitBenchmark = () =>{
     this.__dbIntr.api_call(1,'/benchmarkSchemeAddEdit',this.__utility.convertFormData(this.benchmarkRptFrm.value))
     .subscribe((res:any) =>{

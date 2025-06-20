@@ -1,3 +1,9 @@
+/**
+ * This is the landing screen, 
+ * after user authenticated user is going to navigate 
+ * to this screen first
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { menuBodyList } from 'src/app/__Model/menuBody';
 import { view } from 'src/app/__Model/view';
@@ -116,6 +122,11 @@ export class HomeComponent implements OnInit {
     this.checkStatusofTiles(false,index);
   }
 
+  /**
+   * For changing loading status 
+   * @param is_pending 
+   * @param index 
+   */
   checkStatusofTiles = (is_pending:boolean,index:number) =>{
     this.__topValues[index].is_pending = is_pending;
   }

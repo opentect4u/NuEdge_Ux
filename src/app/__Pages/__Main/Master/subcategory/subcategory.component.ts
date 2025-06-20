@@ -27,6 +27,9 @@ export class SubcategoryComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
   ngOnInit(): void {
+    /**
+     * Evalute if there is any id present in url
+     */
     if(this.route.snapshot.queryParamMap.get('id')){
        this.getItems({flag:'R'});//Showing Reports of sub category for the corrosponding category
     }
@@ -34,7 +37,10 @@ export class SubcategoryComponent implements OnInit {
          this.getParticularSubcategory();
     }
   }
-
+  
+  /**
+   * Get particular sub category by subcatId.
+   */
   getParticularSubcategory() {
     this.__dbIntr
       .api_call(
@@ -50,6 +56,10 @@ export class SubcategoryComponent implements OnInit {
       });
   }
 
+  /** * Function to open dialog for adding or updating subcategory
+   * @param __subcategory - The subcategory object to be edited or null for new subcategory
+   * @param __subcatId - The ID of the subcategory, 0 for new subcategory
+   */
   openDialog(__subcategory: subcat | null = null, __subcatId: number) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -83,16 +93,29 @@ export class SubcategoryComponent implements OnInit {
       });
     }
   }
+
+  /** * Function to handle menu item clicks
+   * @param __menu - The menu item that was clicked
+   */
   getItems = (__menu) => {
     switch (__menu.flag) {
       case 'M':
+        /**
+         * Open Dialog box for adding sub category
+         */
         this.openDialog(null, 0);
         break;
       case 'U':
+        /**
+         * Navigating to sub category upload screen
+         */
         this.__utility.navigate('main/master/productwisemenu/subcategory/uploadSubcat');
         // this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}});
         break;
         case 'R':
+          /**
+         * Open Dialog box for  sub category list
+         */
           this.openDialogForReports(
             '1',
             global.getActualVal(this.route.snapshot.queryParamMap.get('id')) ? this.__utility.decrypt_dtls(this.route.snapshot.queryParamMap.get('id')) : '',
@@ -103,6 +126,13 @@ export class SubcategoryComponent implements OnInit {
         break;
     }
   }
+
+  /**
+   * Function for open subcategory reports
+   * @param __prodid 
+   * @param __catId 
+   * @param __subcatId 
+   */
   openDialogForReports(__prodid: string | null = null,__catId: string | null = null,__subcatId:string | null = null){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

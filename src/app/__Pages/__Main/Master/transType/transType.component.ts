@@ -21,6 +21,14 @@ export class TransTypeComponent implements OnInit {
   }
 
 
+  /**
+   * 
+   * @param id 
+   * @param __items 
+   * * This function is used to open a dialog for adding or updating Transaction Type.
+   * * It creates a MatDialogConfig object, sets various properties for the dialog,
+   * * and opens the TrnstypeModificationComponent dialog with the provided configuration.
+   */
   openDialog(id, __items) {
     const dialogConfig = new MatDialogConfig();
   dialogConfig.autoFocus = false;
@@ -52,6 +60,17 @@ export class TransTypeComponent implements OnInit {
     });
   }
   }
+  /**
+   *  * This function is used to handle the click event on the menu items.
+   *  * It checks the flag of the clicked item and opens the corresponding dialog.  
+   *  * @param {any} __menu - The clicked menu item.
+   * * @return {void}
+   * * @memberof TransTypeComponent
+   * 
+   * This function is responsible for handling the click event on the menu items.
+   * It checks the flag of the clicked item and opens the corresponding dialog.
+   * @param __menu 
+   */
   getItems = (__menu) =>{
     switch (__menu.flag) {
       case 'M':
@@ -64,6 +83,12 @@ export class TransTypeComponent implements OnInit {
         break;
     }
   }
+  /**
+   *  * This function is used to open a dialog for generating reports.
+   *  * It creates a MatDialogConfig object, sets various properties for the dialog,
+   *  * and opens the TrnstyperptComponent dialog with the provided configuration.  
+   * @param __prdId 
+   */
   openDialogForReports(__prdId){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

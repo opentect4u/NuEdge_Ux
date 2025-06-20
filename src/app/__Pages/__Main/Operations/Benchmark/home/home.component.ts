@@ -20,6 +20,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  /** * This function is used to handle the click event on the menu items
+   * @param ev - The event object containing the flag of the selected menu item
+   */
   getItems = (ev) =>{
     switch(ev.flag){
       case 'M' :
@@ -32,6 +35,9 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  /** * This function is used to open the dialog for adding a benchmark
+   * @returns void
+   */
   openDialog = () =>{
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

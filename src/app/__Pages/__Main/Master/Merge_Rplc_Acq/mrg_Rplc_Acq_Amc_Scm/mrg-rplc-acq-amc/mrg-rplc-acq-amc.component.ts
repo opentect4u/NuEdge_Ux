@@ -207,10 +207,18 @@ export class MrgRplcAcqAmcComponent implements OnInit {
 
   }
 
+  /** geeters for accessing FormArray */
   get sec_qusAns(): FormArray {
     return this.amcFrm.get("sec_qusAns") as FormArray;
   }
 
+  /** 
+   * This function is used to create a FormGroup for security question and answer
+   * @param id - The ID of the security question and answer, default is 0
+   * @param sec_qus - The security question, default is an empty string
+   * @param sec_ans - The security answer, default is an empty string
+   * @returns FormGroup containing the security question and answer fields
+   */
   SecurityQuesAns(id: number | null = 0,
     sec_qus:string | null = '',
     sec_ans: string | null = '') : FormGroup{
@@ -220,14 +228,24 @@ export class MrgRplcAcqAmcComponent implements OnInit {
       sec_ans: new FormControl(sec_ans)
     })
   }
+  /* * This function is used to add a new security question and answer FormGroup to the FormArray
+   * It creates a new FormGroup using the SecurityQuesAns method and pushes it to the sec_qusAns FormArray
+   */
   addSecurityQuesAns = () =>{
     this.sec_qusAns.push(this.SecurityQuesAns());
   }
 
+  /** This function is used to remove a security question and answer FormGroup from the FormArray
+   * @param index - The index of the FormGroup to be removed from the sec_qusAns FormArray
+   * */
   removeSecurityQuesAns(index){
     this.sec_qusAns.removeAt(index);
   }
 
+  /** This function is used to get the RNT Master data from the database
+   * It makes an API call to the '/rnt' endpoint and subscribes to the response
+   * The response data is then assigned to the __RntMaster property
+   */
   getrntMst = () =>{
     this.__dbIntr.api_call(0,'/rnt',null)
     .pipe(pluck('data'))
@@ -236,6 +254,12 @@ export class MrgRplcAcqAmcComponent implements OnInit {
     })
   }
 
+  /** This function is used to populate the AMC data into the amcTblDT array
+   * It checks if the amc_dtls property is not null and if the AMC item is not already present in the amcTblDT array
+   * If the AMC item is already present, it shows a snackbar message indicating that the AMC is already populated
+   * If the AMC item is not present, it adds the amc_dtls to the amcTblDT array and updates the final_preview_dt array
+   * If the parent_id is '47', it sets the form control values for the amc_dtls
+   * */
   populateAMC = () =>{
     if(this.amc_dtls){
       if(
@@ -267,11 +291,17 @@ export class MrgRplcAcqAmcComponent implements OnInit {
     }
     }
 
+    /** This function is used to get columns
+     * */
     getColumns = () =>{
       return this.utility.getColumns(this.amcClm);
     }
 
 
+    /** This function is used to get the selected items from the parent component
+     * @param ev - The event object containing the selected item and flag
+     * @return void
+     * */
     getSelectedItemsFromParent =<T extends {flag:string,item:amc}> (ev:T) =>{
       this.amc_dtls = ev.item;
       this.search_amc.get('amc_id').setValue(ev.item.id);
@@ -286,6 +316,10 @@ export class MrgRplcAcqAmcComponent implements OnInit {
       this.populateAMC();
     }
 
+    /** This function is used to get the selected items from the parent component for acquisition
+     * @param ev - The event object containing the selected item and flag
+     * @return void
+     * */
     getSelectedItemsFromParentFor_acq_amc = <T extends {flag:string,item:amc}> (ev:T) =>{
       this.acq_amc_dtls = ev.item;
       this.acq_srch_frm.get('amc_id').setValue(ev.item.id);
@@ -404,6 +438,10 @@ export class MrgRplcAcqAmcComponent implements OnInit {
 
     }
 
+    /** This function is used to open the dialog for AMC details preview
+     * @param item - The AMC item for which the details preview dialog is to be opened
+     * @return void
+     * */
     mergeAMC = (step) =>{
       if(step == 2){
         this.stepper.next();
@@ -451,6 +489,10 @@ export class MrgRplcAcqAmcComponent implements OnInit {
       }
     }
 
+    /** This function is used to open the dialog for AMC details preview
+     * @param item - The AMC item for which the details preview dialog is to be opened
+     * @return void
+     * */
     setFinalPreviewList = (ev) =>{
       this.setFinalSelectedAMC(ev);
           if(this.parent_id == '46'){
@@ -471,6 +513,10 @@ export class MrgRplcAcqAmcComponent implements OnInit {
         this.utility.showSnackbar(`Please select ${this.parent_id == '46' ? 'atlease two' : ''} AMC`,2);
     }
 
+    /** This function is used to set the final selected AMC for merging or replacing
+     * @param ev - The selected AMC item
+     * @return void
+     * */
     setFinalSelectedAMC = (ev) =>{
       if(this.parent_id == '46'){
         this.final_preview_dt = ev;
@@ -486,6 +532,10 @@ export class MrgRplcAcqAmcComponent implements OnInit {
 
 
     }
+    /** This function is used to set the final selected AMC for acquisition
+     * @param ev - The selected AMC item
+     * @return void
+     * */
     setFinalSelectedAMCFor_acqAMC = (ev: amc):void =>{
       this.final_preview_acq_amc.length = 0;
       this.amcFrm.reset();
@@ -503,6 +553,11 @@ export class MrgRplcAcqAmcComponent implements OnInit {
       });
       /*** End */
     }
+
+    /** This function is used to set the final preview list for acquisition AMC
+     * @param ev - The selected AMC item
+     * @return void
+     * */
     setFinalPreviewListFor_acqAMC = (ev):void =>{
       if(ev){
        this.stepper.next();
@@ -513,6 +568,10 @@ export class MrgRplcAcqAmcComponent implements OnInit {
       }
     }
 
+    /** This function is used to set the form control values for the selected AMC
+     * @param ev - The selected AMC item
+     * @return void
+     * */
     setFormControl(ev: amc){
        this.amcFrm.patchValue({
         amc_code:global.getActualVal(ev) ? ev.amc_code : '',
@@ -570,20 +629,37 @@ export class MrgRplcAcqAmcComponent implements OnInit {
     }
 
 
+    /** This function is used to prevent non-numeric input in the effective date field
+     * @param __ev - The event object containing the input value
+     * @return void
+     * */
     preventNonumeric(__ev) {
       dates.numberOnly(__ev);
     }
 
+    /** This function is used to handle the step change event in the stepper
+     * @param ev - The event object containing the selected index of the stepper
+     * @return void
+     * */
     onStepChange = (ev) =>{
         this.stepper_index = ev.selectedIndex;
         this.amcFrm.get('effective_date').setValidators(ev.selectedIndex > 1 ?Validators.required : null);
         this.amcFrm.get('effective_date').updateValueAndValidity();
     }
 
+    /** This function is used to view the details of the selected AMC
+     * @param dtls - The AMC item for which the details are to be viewed
+     * @return void
+     * */
     ViewDetails = (dtls:amc) => {
       this.openDialog(dtls,dtls.id);
     }
 
+    /** This function is used to open the dialog for AMC details preview
+     * @param __amc - The AMC item for which the details preview dialog is to be opened
+     * @param __amcId - The ID of the AMC item
+     * @return void
+     * */
     openDialog(__amc: amc,__amcId){
       const dialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = false;
@@ -622,6 +698,13 @@ export class MrgRplcAcqAmcComponent implements OnInit {
       }
     }
 
+    /** This function is used to handle the acquisition of AMC
+     * It checks if the acq_amc_dtls and amc_id are present,
+     * if the selected AMC is already populated in the amcTblDT_foracq array,
+     * if not, it adds the selected AMC to the amcTblDT_foracq array and updates the final_preview_acq_amc array.
+     * It also updates the amcFrm with the selected AMC details.
+     * @return void
+     */
     acquisition = () =>{
         // const dt = {
         //    acq_from:this.final_preview_dt.map(item => {return item.id}),
