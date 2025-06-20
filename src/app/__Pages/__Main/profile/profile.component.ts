@@ -51,9 +51,19 @@ export class ProfileComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {}
+  /**
+   * @description This function is used to change the active tab
+   * It updates the active_tab property with the flag of the selected tab.
+   * @param {Object} tab - The tab object containing the flag property.
+   */
   changeTab = (tab) =>{
       this.active_tab = tab.flag;
   }
+  /**
+   * @description This function is used to toggle the visibility of the old password field
+   * It updates the isOldVisibility property to the opposite of its current value.
+   * @param {boolean} ev - The event object containing the visibility state.
+   */
   changePassword(){
     if(this.profile.value.manage_password.old_password === this.profile.value.manage_password.password){
             this.utility.showSnackbar('Old password and new password must not same',2);
@@ -92,6 +102,11 @@ export class ProfileComponent implements OnInit {
       );
     };
   }
+  /**
+   * @description This function checks if the provided password matches the stored password
+   * @param {string} pass - The password to be checked.
+   * @returns {Observable<boolean>} An observable that emits true if the password matches, false otherwise.
+   */
   checkIfPasswordMatch(pass: string): Observable<boolean> {
       return of(pass === this.profile.get(['manage_password','password']).value);
   }

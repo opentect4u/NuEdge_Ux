@@ -75,6 +75,11 @@ export class ClietCdDaasboardComponent implements OnInit {
   ngOnInit() {
     this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
+  /**
+   * 
+   * @param __items This function is used to navigate to different pages based on the flag provided in the __items object.
+   * It uses the utility service to navigate with or without query parameters.
+   */
   navigate(__items) {
     console.log(__items);
 

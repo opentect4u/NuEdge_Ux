@@ -25,11 +25,21 @@ export class LiveSWPComponent implements OnInit {
   constructor(private utility:UtiliService) { }
 
   ngOnInit(): void {}
-
+  /**
+   * 
+   * @param $event This function filters the global search input for the SWP table.
+   * It takes the event object as a parameter and retrieves the value from the input field.
+   */
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.primaryTbl.filterGlobal(value,'contains')
   }
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the table.
+   * @description This function is used to get the columns for the table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }
@@ -39,6 +49,13 @@ export class LiveSWPComponent implements OnInit {
     }
     this.totalAmt = this.Total__Count(changes.liveSWP.currentValue,(item:ILiveSWP) => Number(item.amount));
   }
+  /**
+   * @description This function calculates the total count of elements in an array based on a predicate function.
+   * @param {T[]} arr - The array of elements to be counted.
+   * @param {(elem: T, idx: number) => number} predicate - A function that takes an element and its index, returning a number to be summed.
+   * @returns {number} The total count of elements based on the predicate function.
+   * @template T - The type of elements in the array.
+   */
   Total__Count<T>(arr: T[], predicate: (elem: T, idx: number) => number) {
     return arr.reduce((prev, curr, idx) => prev + (predicate(curr, idx)), 0)
   }

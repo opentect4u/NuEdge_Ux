@@ -104,9 +104,19 @@ export class AmcModificationComponent implements OnInit {
           this.__amcForm.controls['l3_email'].setValue(res ? global.getActualVal(this.__amcForm.controls['local_contact_per_email'].value) : '');
     })
   }
+  /**
+   * Get Security Questions and Answers FormArray
+   * @returns FormArray of security questions and answers
+   */
   get sec_qusAns(): FormArray {
     return this.__amcForm.get("sec_qusAns") as FormArray;
   }
+  /**
+   * Add Security Questions and Answers to the FormArray
+   * @param secQusAns - Array of security questions and answers to be added
+   * If secQusAns is empty, a new SecurityQuesAns form group is added.
+   * If secQusAns has data, each item is used to create a SecurityQuesAns form group and added to the FormArray.
+   */
   addSecurityQuesAns(secQusAns : any | undefined | null = []): void {
     console.log(secQusAns);
 
@@ -119,6 +129,10 @@ export class AmcModificationComponent implements OnInit {
       })
     }
   }
+  /**
+   * Creates a FormGroup for Security Questions and Answers
+   * @param id - ID of the security question and answer (default is 0)
+   */
   SecurityQuesAns(id: number | null = 0,
     sec_qus:string | null = '',
     sec_ans: string | null = '') : FormGroup{
@@ -128,18 +142,36 @@ export class AmcModificationComponent implements OnInit {
       sec_ans: new FormControl(sec_ans)
     })
   }
+  /**
+   * Toggle Fullscreen Mode
+   * This method toggles the dialog between fullscreen and normal mode.
+   * When in fullscreen mode, it removes the 'mat_dialog' class and adds 'full_screen' class to the dialog panel.
+   * It also updates the position of the dialog to the top of the screen.
+   * When exiting fullscreen, it reverts these changes and updates the size and position accordingly.
+   */
   fullScreen(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({top:'0px'});
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * Minimize the dialog
+   * This method minimizes the dialog by removing the 'mat_dialog' and 'full_screen' classes,
+   * updating the size to 40% width and 30px height, and positioning it at the bottom right corner.
+   */
   minimize(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.updateSize("40%",'30px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * Maximize the dialog
+   * This method maximizes the dialog by removing the 'full_screen' class and adding the 'mat_dialog' class,
+   * updating the position to the top of the screen, and toggling the visibility state.
+   * It is used to revert the dialog back to its normal size after being minimized or fullscreened.
+   */
   maximize(){
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
@@ -152,14 +184,33 @@ export class AmcModificationComponent implements OnInit {
   //     this.__ProductMaster = res;
   //   })
   // }
+  /**
+   * Fetches the RNT Master data from the database
+   * This method makes an API call to retrieve the RNT Master data and stores it in the __RntMaster variable.
+   * It uses the DbIntrService to make the API call and maps the response to extract the data.
+   * The retrieved data is then assigned to the __RntMaster variable for use in the component.
+   */
   getRNTMaster() {
     this.__dbIntr.api_call(0, '/rnt', null).pipe(map((x: responseDT) => x.data)).subscribe((res: rnt[]) => {
       this.__RntMaster = res;
     })
   }
+  /**
+   * Prevents non-numeric input in the event
+   * This method is used to restrict input to numeric values only.
+   * It calls the numberOnly method from the dates utility to filter out non-numeric characters.
+   * @param __ev - The event object containing the input value  
+   */
   preventNonumeric(__ev) {
     dates.numberOnly(__ev);
   }
+  /**
+   * Submits the AMC form
+   * This method checks if the form is valid before proceeding with the submission.
+   * If the form is invalid, it shows a snackbar message indicating that submission failed due to errors.
+   * If the form is valid, it creates a FormData object with the form values and makes an API call to submit the AMC data.
+   * After successful submission, it shows a success message and closes the dialog with the updated data.
+   */
   submit() {
     if (this.__amcForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error', 0);
@@ -230,12 +281,31 @@ export class AmcModificationComponent implements OnInit {
     }
     })
   }
+  /**
+   * Resets the AMC form
+   * This method resets the form to its initial state, clearing all fields and removing any validation errors.
+   * It is typically called when the user wants to start over or clear the form inputs.
+   * After resetting, the form is ready for new input without any previous data lingering.
+   */
   reset(){
     this.__amcForm.reset();
   }
+  /**
+   * Removes a security question and answer from the FormArray
+   * @param index - The index of the security question and answer to be removed
+   * This method removes a specific security question and answer from the FormArray based on the provided index.
+   * It is typically used when the user wants to delete a security question and answer entry from the form.
+   */
   removeSecurityQuesAns(index){
     this.sec_qusAns.removeAt(index);
   }
+  /**
+   * Handles file selection for the AMC logo
+   * @param __ev - The event object containing the selected file(s)
+   * This method sets validators for the logo field based on the selected file's size and extension.
+   * If the form control is valid and a file is selected, it reads the file and updates the preview.
+   * If no valid file is selected, it clears the logo file and preview fields.
+   */
   getFile(__ev){
     this.__amcForm.controls['logo'].setValidators([fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
     this.__amcForm.controls['logo'].updateValueAndValidity();

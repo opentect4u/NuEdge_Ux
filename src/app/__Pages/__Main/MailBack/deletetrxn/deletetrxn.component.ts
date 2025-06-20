@@ -149,12 +149,25 @@ export class DeletetrxnComponent implements OnInit {
      })
   }
 
+  /**
+   * 
+   * @param res - This function checks the transaction data to determine if all transactions are locked or not.
+   * It updates the `__is_check_all_locked` property based on whether all transactions have a lock flag of 'L'.
+   * It also counts the number of locked and unlocked transactions and updates the respective properties.
+   */
   checkCount_hide_selectAll = (res: Partial<TrxnRpt[]>) =>{
     this.__is_check_all_locked = res.every(item => item.divi_lock_flag == 'L');
     this.__lock_trxn_count =  this.arrayCount(res, x => x.divi_lock_flag == 'L');
      this.__unlock_trxn_count = this.arrayCount(res, x => x.divi_lock_flag == 'N');
   }
 
+  /**
+   * 
+   * @param ev - This function is triggered when a tab is changed.
+   * It updates the `file_type` value in the `searchTrxn` form group based on the selected tab's flag.
+   * It also resets the transaction data and selected transactions, and expands the state if it is currently collapsed.
+   * @param ev - The event object containing the details of the tab change.
+   */
   changeTabDtls = (ev) =>{
     this.searchTrxn.get('file_type').setValue(ev.tabDtls.flag);
     this.reset();
@@ -275,6 +288,9 @@ export class DeletetrxnComponent implements OnInit {
     }
   }
 
+  /**
+   * for checking if all transactions are locked
+   */
   reset = () =>{
     this.searchTrxn.patchValue({
       folio_no:'',

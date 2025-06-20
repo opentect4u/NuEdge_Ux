@@ -29,6 +29,13 @@ export class CreateCustomerByEntryComponent implements OnInit {
 
 
 
+  /**
+   * @description This function is used to submit the form data
+   * It emits the form value through the sendEntry event emitter.
+   * The form value is logged to the console for debugging purposes.
+   * 
+   * @returns void
+   */
   submitForm(){
     console.log(this.customer_entry_form?.value);
     this.sendEntry.emit(this.customer_entry_form?.value);
@@ -77,6 +84,12 @@ export class CreateCustomerByEntryComponent implements OnInit {
         }
       });
   }
+  /**
+   * @description This function is used to reset the form
+   * It resets the form group and also resets the Select2 UI elements for tax status and mode of holding.
+   * 
+   * @returns void
+   */
   resetForm(): void {
     this.customer_entry_form.reset(); // Reset form group
     $('#tax_status').val('').trigger('change'); // Reset Select2 UI

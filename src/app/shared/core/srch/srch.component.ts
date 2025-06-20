@@ -38,12 +38,33 @@ export class SrchComponent implements OnInit, ControlValueAccessor{
   constructor(@Self() public ngControl:NgControl) {
       ngControl.valueAccessor = this;
   }
+  /**
+   * @description This function is used to write the value to the control
+   * It is part of the ControlValueAccessor interface and is called by Angular when the value of the control changes.
+   * In this case, it does not perform any action as it is not required for this component.
+   * @param obj - The value to be written to the control.
+   * @returns {void}
+   */
   writeValue(obj: any): void {
     // console.log(obj);
   }
+  /**
+   * @description This function is used to register a callback function that will be called when the control's value changes
+   * It is part of the ControlValueAccessor interface and is called by Angular when the control's value changes.
+   * In this case, it does not perform any action as it is not required for this component.
+   * @param fn - The callback function to be registered.
+   * @returns {void}
+   */
   registerOnChange(fn: any): void {
     // console.log(fn);
   }
+  /**
+   * @description This function is used to register a callback function that will be called when the control is touched
+   * It is part of the ControlValueAccessor interface and is called by Angular when the control is touched.
+   * In this case, it does not perform any action as it is not required for this component.
+   * @param fn - The callback function to be registered.
+   * @returns {void}
+   */
   registerOnTouched(fn: any): void {
     // console.log(fn);
   }
@@ -75,7 +96,14 @@ export class SrchComponent implements OnInit, ControlValueAccessor{
       .withWrap(true);
       // .withTypeAhead()
   }
-
+  /**
+   * 
+   * @param event - This function is used to handle the key up event on the search input field
+   * It stops the event propagation and checks if the pressed key is Enter, Down Arrow, or Up Arrow.
+   * If Enter is pressed, it calls the getItems function with the active item's items.
+   * If Down Arrow or Up Arrow is pressed, it calls the keyManager's onKeydown method to navigate through the list.
+   * @returns {void}
+   */
   onKeyUp(event:KeyboardEvent) {
     event.stopPropagation();
     if (event.keyCode === ENTER) {
@@ -84,7 +112,12 @@ export class SrchComponent implements OnInit, ControlValueAccessor{
       this.keyManager.onKeydown(event);
     }
   }
-
+  /**
+   * 
+   * @param event - This function is used to handle the scroll event on the search list
+   * It checks if the scroll position is at the end of the list and emits the scrollEnd event with the event object.
+   * @returns {void}
+   */
   scrollEnd = (event) =>{
     this.scrollToEnd.emit(event);
   }

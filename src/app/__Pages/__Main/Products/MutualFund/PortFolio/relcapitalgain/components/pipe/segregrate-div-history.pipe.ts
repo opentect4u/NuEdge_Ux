@@ -7,7 +7,16 @@ import { global } from 'src/app/__Utility/globalFunc';
   name: 'segregrateDivHistory'
 })
 export class SegregrateDivHistoryPipe implements PipeTransform {
-
+  /**
+   * 
+   * @param value The input value to be transformed, which is expected to be an array of dividend history objects.
+   * @description This pipe transforms the input value by segregating dividend history based on the transaction subtype.
+   * If the tab_id is 'DD', it returns a modified array with specific properties for dividend payout and reinvestment.
+   * Otherwise, it calls the getIDCWSegregratedReport method to process the data further.
+   * @param tab_id - The identifier for the tab, which determines how the input value should be processed.
+   * It can be 'DD' for dividend details or any other value for general processing.
+   * @returns 
+   */
   transform(value: any, tab_id) {
     if(tab_id == 'DD'){
       const dt =  value.map(el => ({
@@ -19,7 +28,12 @@ export class SegregrateDivHistoryPipe implements PipeTransform {
     }
     return this.getIDCWSegregratedReport(value)
   }
-
+  /**
+   * 
+   * @param res The input value to be transformed, which is expected to be an array of dividend history objects.
+   * @description This method processes the input value by segregating dividend history based on the scheme
+   * @returns 
+   */
   getIDCWSegregratedReport(res){
     let div_history = [];
     from(res)

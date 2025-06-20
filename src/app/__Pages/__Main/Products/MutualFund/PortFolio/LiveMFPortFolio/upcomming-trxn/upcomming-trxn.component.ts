@@ -21,7 +21,12 @@ export class UpcommingTrxnComponent implements OnInit {
   public get upcommingtrxn():Partial<IUpcommingTrxn>[]{
     return this._upcommingtrxn
   }
-
+  /**
+   * * @description This setter method is used to set the upcomming transactions data and calculate the total amount in the footer.
+   * * It takes an array of Partial<IUpcommingTrxn> as input and assigns it to the _upcommingtrxn property.
+   * * It also calculates the total amount in the footer by summing up the amount property of each transaction.
+   * @param transDtls An array of Partial<IUpcommingTrxn> representing the upcomming transactions.
+   */
   public set upcommingtrxn(transDtls:Partial<IUpcommingTrxn>[]){
     this._upcommingtrxn = transDtls;
     this.total_amount_in_footer = global.Total__Count(transDtls, (item:Partial<IUpcommingTrxn>) => Number(item.amount));
@@ -39,11 +44,23 @@ export class UpcommingTrxnComponent implements OnInit {
   constructor(private utility:UtiliService) { }
 
   ngOnInit(): void {}
-
+  /**
+   * 
+   * @param $event This function filters the global search input for the upcomming transactions table.
+   * It takes the event object as a parameter and retrieves the value from the input field.
+   * The table is then filtered based on the value using the 'contains' filter match mode.
+   * @description This function filters the global search input for the upcomming transactions table.
+   */
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.primaryTbl.filterGlobal(value,'contains')
   }
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the table.
+   * @description This function is used to get the columns for the table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }

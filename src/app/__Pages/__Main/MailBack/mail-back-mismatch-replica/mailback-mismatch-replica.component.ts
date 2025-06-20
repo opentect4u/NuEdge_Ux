@@ -71,6 +71,11 @@ export class MailbackMismatchReplicaComponent implements OnInit {
     this.getTrxnRpt("B","T");
   }
 
+  /**
+   * @description This function is used to change the tab details based on the selected tab and mode
+   * @param TabDtls - The details of the selected tab
+   * @param mode - The mode of the tab (P for parent, C for child)
+   */
   changeTabDtls = <T extends {index:number,tabDtls:IsubTab | ITab}>(TabDtls:T,mode:string) => {
        console.log(TabDtls.tabDtls.flag);
       this.tblminWidth = TabDtls.index == 0 ? '350rem' : '150rem'
@@ -118,6 +123,13 @@ export class MailbackMismatchReplicaComponent implements OnInit {
       }
   }
 
+  /**
+   * 
+   * @param $event - This function is used to filter the global data in the PrimeNG table
+   * It takes the event object as a parameter and retrieves the value from the target input field
+   * The value is then passed to the filterGlobal method of the PrimeNG table with 'contains' as the filter match mode
+   * @returns void
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
@@ -151,10 +163,21 @@ export class MailbackMismatchReplicaComponent implements OnInit {
 
   };
 
+  /**
+   * @description This function is used to get the columns for the transaction report
+   * It uses the utility service to retrieve the columns based on the TrxnClm property
+   * @returns {column[]} - An array of column objects
+   */
   getColumns =() =>{
     return this.utility.getColumns(this.TrxnClm);
   }
 
+  /**
+   * @description This function is used to manage the columns based on the selected flag
+   * It filters the TrxnClm array based on the flag and the index of the currently active tab
+   * The function updates the TrxnClm property with the filtered columns
+   * @param flag - The flag indicating which columns to show or hide
+   */
   column_manage = (flag:string) =>{
     console.log(flag);
     const clm_divident:string[] = ['amc_link','scheme_link','isin_link','plan_opt','lock_trxn'];
@@ -190,6 +213,11 @@ export class MailbackMismatchReplicaComponent implements OnInit {
     }
 
   }
+  /**
+   * @description This function is called when the component is destroyed
+   * It unsubscribes from the API subscription to prevent memory leaks
+   * @returns void
+   */
   ngOnDestroy(): void{
     this.api_subscription.unsubscribe();
   }

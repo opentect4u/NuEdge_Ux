@@ -27,6 +27,12 @@ export class CustomerServiceAttachmentDownloadComponent implements OnInit {
     })
   }
 
+  /**
+   * @description This function fetches the attachments for customer service based on the provided query_id.
+   * It sends a POST request to the '/cus_service/downloadFile' endpoint with the query_id as a form data parameter.
+   * Upon successful response, it sets the pdfURL property to the sanitized URL of the fetched attachment.
+   * @param {string} query_id - The ID of the customer service query for which attachments are to be fetched.
+   */
   fetchAttachmentsForCustomerService = (query_id) =>{
       const fd = new FormData();
       fd.append('query_id',query_id);

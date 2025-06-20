@@ -21,6 +21,11 @@ constructor(
 ngOnInit(){
 
 }
+/**
+ * @description This function is used to close the dialog
+ * It updates the size of the dialog to 30% of the screen width
+ * and sets the bottom and right position of the dialog
+ */
 delete(){
     const __fb = new FormData();
     if(this.data.flag === 'F'){

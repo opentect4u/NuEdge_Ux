@@ -65,12 +65,27 @@ export class MemberSrchComponent implements OnInit {
     });
   }
 
+  /**
+   * @description This function is a placeholder for searching family members.
+   * It currently does not perform any action.
+   * 
+   * @returns {void}
+   */
   searchFamilyMembers = () =>{}
 
+  /**
+   * @description This function is used to set the visibility of the search results for clients.
+   * It updates the `displayMode_forMembers` property with the provided display mode.
+   */
   searchResultVisibilityForClient = (display_mode:string) =>{
       this.displayMode_forMembers = display_mode;
   }
 
+  /**
+   * @description This function is used to get the selected item from the parent component.
+   * It resets the `member_name` form control with the selected item's client name,
+   * hides the search result for client by calling `searchResultVisibilityForClient` with 'none',
+   */
   getSelectedItemsFromParent = (searchRlt: {
     flag: string;
     item: any;
@@ -104,9 +119,20 @@ export class MemberSrchComponent implements OnInit {
          this.getFamilyMemberMstDT = [];
      }
 }
+/**
+ * @description This function is used to get the columns for the member table.
+ * It uses the utility service to retrieve the columns defined in the MemberColumn class.
+ * The columns are expected to be in a specific format that includes field names, headers, and visibility flags.
+ * @returns {column[]} - An array of column objects for the member table
+ */
 getColumns = () =>{
   return this.utility.getColumns(this.members_clmn);
 }
+/**
+ * @description This function is used to filter the global data in the PrimeNG table.
+ * It takes the event object as a parameter and retrieves the value from the target input field.
+ * The value is then passed to the filterGlobal method of the PrimeNG table with 'contains' as the filter match mode.
+ */
 filterGlobal = ($event) => {
   let value = $event.target.value;
   this.pTable.filterGlobal(value, 'contains');

@@ -167,6 +167,10 @@ export class CreateFamilyComponent implements OnInit {
   // searchResultVisibilityForClient = (display_mode:string) =>{
   //     this.displayMode_forfamily_head = display_mode
   // }
+  /**
+   * @description This function is used to select the family head from the search results.
+   * It checks if the selected family head is already in the selected family members list.
+   */
   changeRelation = (event,client:client,index:number) =>{
       console.log(client);
       console.log(index);
@@ -174,6 +178,10 @@ export class CreateFamilyComponent implements OnInit {
   }
 
 
+  /**
+   * @description This function is used to select the family head from the search results.
+   * It checks if the selected family head is already in the selected family members list.
+   */
   createFamily = () =>{
     this.confirm_selected_family_members = [];
    if(this.selectedFamily_header == null){
@@ -189,6 +197,10 @@ export class CreateFamilyComponent implements OnInit {
   }
 
 
+  /**
+   * @description This function is used to add family members to the selected family head.
+   * It checks if the selected family head is already in the selected family members list.
+   */
   confirmaddFamilyMembers = () =>{
     const dt = Object.assign({},
       {
@@ -216,11 +228,19 @@ export class CreateFamilyComponent implements OnInit {
   }
 
 
+  /**
+   * @description This function is used to select the family head from the search results.
+   * It checks if the selected family head is already in the selected family members list.
+   */
   checkSelected = (family_head) =>{
     // console.log(family_head);
     // console.log(this.selectedFamily_header);
   }
 
+  /**
+   * @description This function is used to select the family head from the search results.
+   * It checks if the selected family head is already in the selected family members list.
+   */
   deleteMembers = (members:client,index:number) =>{
     this.selectedFamily_member = this.selectedFamily_member.filter((item:client) => item.id != members.id)
   }

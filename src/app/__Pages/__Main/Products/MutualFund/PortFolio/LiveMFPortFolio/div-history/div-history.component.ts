@@ -44,7 +44,11 @@ export class DivHistoryComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  /**
+   * @description This function is used to get the columns for the table
+   * It uses the utility service to get the columns based on the input column array.
+   * @returns {Array} An array of columns formatted for the table.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }

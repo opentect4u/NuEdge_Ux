@@ -169,6 +169,13 @@ export class MailbackMismatchComponent implements OnInit {
     this.setTableWidth(this.index,this.sub_index)
   }
 
+  /**
+   * @description This function is used to set the table width based on the index and sub_index
+   * It sets the `tblWidth` property to a specific value based on the index and sub_index values
+   * @param index - The index of the current tab
+   * @param sub_index - The sub_index of the current tab
+   * @returns void
+   */
   setTableWidth(index:number,sub_index:number) : void{
 
       if(index == 1){
@@ -191,6 +198,13 @@ export class MailbackMismatchComponent implements OnInit {
       console.log(this.tblWidth)
   }
 
+  /**
+   * @description This function is used to manage the columns based on the selected flag
+   * It filters the columns based on the flag and the index of the currently active tab
+   * @param flag - The flag indicating which columns to display
+   * @returns void
+   * @memberof MailbackMismatchComponent
+   */
   column_manage = (flag:string) =>{
     const clm_divident:string[] = ['amc_link','scheme_link','isin_link','plan_opt'];
     const clm: string[] = ['divident_opt', 'scheme_link', 'isin_link', 'option_name', 'plan_name', 'plan_opt', 'lock_trxn'];
@@ -236,6 +250,13 @@ export class MailbackMismatchComponent implements OnInit {
     // console.log(this.TrxnClm.length);
 
   }
+  /**
+   * @description This function is used to set the transaction type from the child component
+   * It takes an element as a parameter and assigns it to the `trxnTypeRpt` property
+   * @param el - The element containing the transaction type data
+   * @returns void
+   * @memberof MailbackMismatchComponent
+   */
   setTrxnFromChild = (el) =>{
     // console.log(el);
     this.trxnTypeRpt = el;
@@ -254,6 +275,10 @@ export class MailbackMismatchComponent implements OnInit {
 
   }
 
+  /**
+   * @description This function is triggered when the mismatch count tab is changed
+   * It updates the `count_tab_index` property with the index of the selected tab
+   */
   changeTabDtls_forMismatch_count = (ev) =>{
     this.count_tab_index = ev.index;
   }

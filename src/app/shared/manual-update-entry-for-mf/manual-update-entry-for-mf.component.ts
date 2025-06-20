@@ -90,7 +90,12 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
     console.log(this.data);
 
   }
-
+  /**
+   * @description This function is used to disable the fields based on the manual transaction status
+   * It checks if the manual transaction status is 'R' (Rejected) and disables the relevant fields accordingly.
+   * The fields that are disabled include:
+   * - manual
+   */
   disabledFields(){
     if(this.data.data.manual_trans_status == 'R'){
       this.__manualUpdateForm.controls['manual_trans_status'].disable({onlySelf:true,emitEvent:false});
@@ -111,6 +116,12 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
 
     }
   }
+  /**
+   * @description This function is used to fetch the reject reason from the server
+   * It makes an API call to the '/fd/rejectReason' endpoint and retrieves the data.
+   * The retrieved data is then assigned to the rejectReason variable.
+   * This function is called during the initialization of the component to populate the reject reason options.
+   */
   getRejectReason(){
     this.__dbIntr.api_call(0,'/fd/rejectReason',null).pipe(pluck("data")).subscribe(res =>{
             this.rejectReason = res;
@@ -160,19 +171,38 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
     this.disabledFields();
 
   }
-
+  /**
+   *  * @description This function is used to toggle the visibility of the dialog
+   * It updates the __isVisible property to the opposite of its current value.
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'55px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * @description This function is used to maximize the dialog
+   * It updates the size of the dialog to 50% of the screen width
+   * and toggles the visibility state of the dialog.
+   */
   maximize(){
     this.dialogRef.updateSize("50%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * @description This function is used to toggle the full screen mode of the dialog
+   * It updates the size of the dialog to 60% of the screen width
+   * and toggles the visibility state of the dialog.
+   */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * @description This function is used to get the file from the input event
+   * It sets the validators for the file input field based on the mode (M or K)
+   * and updates the value of the file input field with the selected file.
+   * If the file is valid, it reads the file as a data URL and patches the value of the file input field.
+   */
   getFIle(__ev,mode) {
     if(mode == 'M'){
     this.__manualUpdateForm
@@ -220,7 +250,13 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
   }
   }
 
-
+  /**
+   * @description This function is used to get the file for the memo
+   * It sets the validators for the reject memo field based on the mode (K or M)
+   * and updates the value of the reject memo field with the selected file.
+   * If the file is valid, it reads the file as a data URL and patches the value of the reject memo field.
+   * If the file is invalid, it clears the value of the reject memo field.
+   */
   getFIleForMemo(__ev) {
     this.__manualUpdateForm
       .get(['rejected','reject_memo'])
@@ -248,6 +284,11 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
       this.__manualUpdateForm.get(['rejected','reject_memo_scan']).patchValue('');
     }
   }
+  /**
+   * @description This function is used to submit the manual update form
+   * It checks if the form is valid, and if so, it prepares the form data to be submitted.
+   * The form data includes various fields such as tin_no
+   */
   submitManualUpdate(){
     if(this.__manualUpdateForm.invalid){
      this.__utility.showSnackbar('Validation Error!!',0);
@@ -299,6 +340,12 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
        }
     })
   }
+  /**
+   * @description This function is used to prevent non-numeric input in the event
+   * It uses the dates utility to restrict input to numeric values only.
+   * This is typically used for fields that require numeric input, such as dates or amounts.
+   * @param __ev - The event containing the input value to be validated.
+   */
   preventNonumeric(__ev) {
     dates.numberOnly(__ev)
   }

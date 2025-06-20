@@ -9,6 +9,13 @@ export class MenuDropdownDirective {
   constructor(
     @Inject(DOCUMENT) private __document: any
     ) { }
+    /**
+     * @description This method listens for click events on the document.
+     * If the click occurs outside the dropdown button, it hides any open dropdown menus.
+     * 
+     * @param targetElement - The element that was clicked.
+     * It checks if the clicked element is not the dropdown button and hides all dropdowns if they are open.
+     */
   @HostListener('document:click', ['$event.target'])
   public onClick(targetElement): void {
     if (!targetElement) {

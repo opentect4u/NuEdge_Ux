@@ -41,13 +41,23 @@ export class HeaderComponent implements OnInit {
   //     this.__utility.navigate(__items.url);
   //   }
   // }
+  /**
+   * 
+   * @param items - The menu item object containing the URL to navigate to
+   * @description This function is used to navigate to the specified URL when a menu item is clicked.
+   * It uses the utility service to perform the navigation.
+   */
   openSidePannel(items){
     // console.log(items);
      if(items.id == 3){
       this.sidebarVisible = true;
      }
   }
-
+/**
+ * * @description This function retrieves user details from the database and updates the user_dtls property.
+ * It uses the DbIntrService to make an API call to the '/users' endpoint and processes the response.
+ * The user details are then stored in the user_dtls property and passed to the UtiliService for further use.
+ */
    getUserDetails = () =>{
         this.dbIntr.api_call(0,'/users',null)
         .pipe(

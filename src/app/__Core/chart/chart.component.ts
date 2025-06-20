@@ -118,7 +118,11 @@ export class ChartComponent implements OnInit {
     // console.log(this.chartOptions)
   }
   /**** End */
-
+  /**
+   * @description Function for Bar Chart
+   * @param category - Array of categories for the x-axis
+   * @param data - Array of data points for the bar chart
+   */
   barChart(category:string[],data:number[],title:string){
     this.chartOptions={
       chart: {

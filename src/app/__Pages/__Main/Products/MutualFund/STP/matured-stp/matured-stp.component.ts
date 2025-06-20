@@ -81,21 +81,43 @@ export class MaturedStpComponent implements OnInit {
     this.setTitle(data.tabDtls.tab_name);
     this.reset_data = 'Y';
   };
-
+  /**
+   * 
+   * @param title Title to be set for the component
+   * @description This function sets the title for the component based on the provided title parameter.
+   * It is used to update the title dynamically when the tab changes or when a specific action requires a title update.
+   */
   setTitle = (title:string) =>{
     this.__title = title;
   }
-
+  /**
+   * 
+   * @param ev Event object containing form data for searching STP report
+   * @description This function is triggered when the user searches for an STP report.
+   * It retrieves the SIP master data based on the provided form data and updates the component state accordingly.
+   * The function also handles resetting the data if necessary.
+   */
   searchStpReport = (ev): void => {
     console.log(ev);
     this.getSipMasterData(ev);
   };
-
+  /**
+   * 
+   * @param ev Event object containing the value to filter the global search
+   * @description This function filters the global search input for the STP report table.
+   * It retrieves the value from the event object and applies it to the table filter.
+   * The filter type is set to 'contains' to match any part of the string.
+   */
   filterGlobal = (ev) =>{
     let value = ev.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
   }
-
+  /**
+   * @param form_data Form data containing the search criteria for STP report
+   * @description This function retrieves the SIP master data based on the provided form data.
+   * It makes an API call to fetch the data and updates the component state with the retrieved data.
+   * The function also calculates the total amount of matured STP and sets the display state accordingly.
+   */
   getSipMasterData(form_data){
     this.mature_stp = [];
     this.reset_data = 'N';
@@ -116,11 +138,22 @@ export class MaturedStpComponent implements OnInit {
 
     })
   }
-
+  /**
+   * 
+   * @param event Event that triggers the change of display state
+   * @description This function changes the display state of the component based on the event value.
+   * If the event value matches the first display mode, it switches to the second display mode, and vice versa.
+   * This is used to toggle between different views or states in the component.
+   */
   changeState = (event) =>{
     this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
   }
-
+  /**
+   * @description This function exports the matured STP report data to an Excel file.
+   * It formats the data into a structured array and includes a footer with the grand total.
+   * The exported file name is determined based on the sub_type (MM or other).
+   * The function uses the global utility function to handle the export process.
+   */
   exportExcel = () =>{
     const column = this.column.map(el => el.header);
       let dt = [];

@@ -64,6 +64,10 @@ live_stp_rpt:Partial<IliveStp[]> = [];
 constructor(private dbIntr: DbIntrService,private utility:UtiliService,private datePipe:DatePipe) { }
 
 ngOnInit(): void {}
+/**
+ * 
+ * @param formDt Form data to fetch the terminate STP report
+ */
 terminateStpReport = (formDt) =>{
   this.live_stp_rpt = [];
   let dt ={
@@ -89,16 +93,28 @@ terminateStpReport = (formDt) =>{
 searchSipReport = (ev) =>{
 this.terminateStpReport(ev);
 }
-
+/**
+ * 
+ * @param $event Event containing the input value for global filtering.
+ * @description Filters the global data in the PrimeNG table based on the input value.
+ */
 filterGlobal = ($event) => {
   let value = $event.target.value;
   this.primeTbl.filterGlobal(value, 'contains');
 };
-
+/**
+ * 
+ * @param event Event containing the value to change the display state.
+ * @description Toggles the display state between 'expanded' and 'collapsed'.
+ * If the event value matches the first display mode, it switches to the second display mode, and vice versa.
+ */
 changeState = (event) =>{
   this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
 }
-
+/**
+ * Exports the terminate STP report data to an Excel file.
+ * @description This function formats the terminate STP report data and exports it to an Excel file.
+ */
 exportExcel = () =>{
   const column = this.column.map(el => el.header);
     let dt = [];

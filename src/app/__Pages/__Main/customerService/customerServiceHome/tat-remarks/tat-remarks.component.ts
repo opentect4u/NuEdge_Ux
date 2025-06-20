@@ -26,19 +26,38 @@ export class TatRemarksComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * @description This function is used to close the dialog
+   * It updates the size of the dialog to 30% width and 47px height,
+   * and positions it at the bottom right corner of the screen.
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * @description This function is used to maximize the dialog
+   * It updates the size of the dialog to 40% width and toggles the visibility state of the dialog.
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * @description This function is used to toggle the full screen mode of the dialog
+   * It updates the size of the dialog to 60% width and toggles the visibility state of the dialog.
+   */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
 
+  /**
+   * @description This function is used to submit the TAT remarks
+   * It logs the value of the tatRmks form control and makes an API call to save the remarks.
+   * If the API call is successful, it shows a success message and closes the dialog with the response data.
+   * If there is an error, it shows an error message.
+   */
   submitTATS = () =>{
       console.log(this.tatRmks.value);
       this.dbIntr.api_call(1,'/cus_service/addTatRemarks',this.utility.convertFormData(this.tatRmks.value))

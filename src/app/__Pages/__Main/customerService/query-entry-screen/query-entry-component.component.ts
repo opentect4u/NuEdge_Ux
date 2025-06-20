@@ -211,7 +211,11 @@ export class QueryEntryComponentComponent implements OnInit {
     })
   }
 
-
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   * It uses the `pluck` operator to extract the `data` property from the response.
+   */
   fetchHoliday = () =>{
     this.__dbIntr.api_call(0,'/cus_service/holiday',null)
     .pipe(pluck('data'))
@@ -220,12 +224,21 @@ export class QueryEntryComponentComponent implements OnInit {
     })
   }
 
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   */
   checkIfchecked(value){
       return of(!value.map(el => el.isActive).some(item => item)).pipe(
         delay(200)
       );
   }
 
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   * It uses the `pluck` operator to extract the `data` property from the response.
+   */
   checkIfAnyOnItemCheckedOrNot(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors> => {
       return this.checkIfchecked(control.value)
@@ -238,7 +251,11 @@ export class QueryEntryComponentComponent implements OnInit {
     };
   }
 
-  
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   * It uses the `pluck` operator to extract the `data` property from the response.
+   */
   get schemeDtls(): FormArray {
     return this.queryEntryForm.get("scheme_dtls") as FormArray;
   }
@@ -247,6 +264,11 @@ export class QueryEntryComponentComponent implements OnInit {
   //   this.schemeDtls.push(this.createItem());
   // }
 
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   * It uses the `pluck` operator to extract the `data` property from the response.
+   */
   setFormControlValidators = () =>{
       // const first_formControlName = this.productId > 2 ? (this.productId == 3 ? 'policy_no' : 'fdr_no') : 'folio_no';
       const first_formControlName = (this.productId == 1 ||   this.productId == 12) ? 'folio_no' : ((this.productId == 2 ||   this.productId == 4) ? 'fdr_no' : (this.productId == 3 ? 'policy_no' : 'folio_no'))
@@ -264,6 +286,11 @@ export class QueryEntryComponentComponent implements OnInit {
 
   }
 
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   * It uses the `pluck` operator to extract the `data` property from the response.
+   */
   fetchQueryDetails = (query_id:number) =>{
         this.__dbIntr.api_call(1,`/cus_service/queryShow?id=${query_id}`,null)
         .pipe(pluck('data'))
@@ -293,6 +320,11 @@ export class QueryEntryComponentComponent implements OnInit {
         })
   }
 
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   * It uses the `pluck` operator to extract the `data` property from the response.
+   */
   setForm = (data:any | undefined = null) =>{
 
     
@@ -576,6 +608,10 @@ export class QueryEntryComponentComponent implements OnInit {
   }
   /***** END */
 
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   */
   setFormControlValue = (name:string,email:string,mobile) =>{
         this.queryEntryForm.patchValue({
           concern_person_name:(name && name!='null') ? name : '',
@@ -584,6 +620,10 @@ export class QueryEntryComponentComponent implements OnInit {
         })
   }
 
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   */
   fetchLevel = (amc_id:number) =>{
         this.__dbIntr.api_call(0,`/amc?id=${amc_id}`,null)
         .pipe(pluck('data'))
@@ -592,6 +632,10 @@ export class QueryEntryComponentComponent implements OnInit {
         })
   }
 
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   */
   fetchSchemeByFolio = (folio_no:string) =>{
       this.__dbIntr.api_call(0,'/cus_service/getFoliowiseProduct',`folio_no=${folio_no}`)
       .pipe(pluck('data'))
@@ -658,16 +702,30 @@ export class QueryEntryComponentComponent implements OnInit {
       })
   }
 
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   */
   setSelctAllCheckbox(event){
       const isAllSelected = this.schemeDtls.value.map(el => el.isActive).every(item => item);
       this.getIsAllSelected(isAllSelected);
   }
 
+  /**
+   * @description This function sets the value of the 'selectAll' form control
+   * to the provided boolean value without emitting an event.
+   * This is used to update the 'selectAll' checkbox state based on whether all items are selected or not.
+   * @param {boolean} isAllSelected - The boolean value indicating whether all items are selected or not.
+   */
   getIsAllSelected(isAllSelected:boolean){
     this.queryEntryForm.get('selectAll').setValue(isAllSelected,{emitEvent:false});
 
   }
 
+  /**
+   * @description This function is called when the form is submitted.
+   * It checks if the form is valid, and if so, it processes the form data
+   */
   createItem(el): FormGroup {
     return new FormGroup({
       id: new FormControl(el.id),
@@ -681,6 +739,13 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
 
+  /**
+   * @description This function creates a new FormGroup for the scheme details
+   * based on the provided element. It sets the form controls for the scheme details
+   * such as id, scheme_name, and isActive.
+   * @param {any} el - The element containing the scheme details.
+   * @returns {FormGroup} - A new FormGroup with the scheme details.
+   */
   createItem_For_Ins_Fd_Bond(el): FormGroup {
     if(this.productId == 2 || this.productId == 4){
       return new FormGroup({
@@ -699,6 +764,12 @@ export class QueryEntryComponentComponent implements OnInit {
   
   }
 
+  /**
+   * @description This function is used to control the visibility of the search results for investors.
+   * It sets the display mode for the investor search results based on the provided display_mode parameter.
+   * @param {string} display_mode - The display mode to set for the investor search results.
+   * @returns {void}
+   */
   searchResultVisibilityForInvestor(display_mode) {
     // this.__subBrkArn.nativeElement.style.display = display_mode;
     this.displayMode_forClient = display_mode;
@@ -710,6 +781,12 @@ export class QueryEntryComponentComponent implements OnInit {
   //   this.displayMode_forScheme = display_mode;
   // }
 
+  /**
+   * @description This function is called when an item is selected from the parent component.
+   * It updates the form values with the selected item's details such as client code, PAN, email, and mobile.
+   * It also fetches the folios of the investor based on the selected item and updates the form accordingly.
+   * @param {any} ev - The event object containing the selected item details.
+   */
   getSelectedItemsFromParent = (ev) => {
       this.searchResultVisibilityForInvestor('none');
       this.queryEntryForm.patchValue({
@@ -750,6 +827,12 @@ export class QueryEntryComponentComponent implements OnInit {
       // }
   }
 
+  /**
+   * @description This function fetches the folios of an investor based on their name and PAN.
+   * It makes an API call to retrieve the folios and updates the form with the fetched folios.
+   * @param {string} investor_name - The name of the investor.
+   * @param {string} investor_pan - The PAN of the investor.
+   */
   fetchPlanaccordingtoProductId= (id: any | undefined = '') =>{
 
     if(Number(this.productId) == 3 || Number(this.productId) == 4 || Number(this.productId) == 2){
@@ -783,12 +866,24 @@ export class QueryEntryComponentComponent implements OnInit {
   } 
 
 
+  /**
+   * @description This function fetches the query given by details from the server
+   * and updates the `md_QueryGiven_by` array with the response data.
+   * It uses the `pluck` operator to extract the `data` property from the response.
+   * This function is used to fetch the query given by details for the query entry form.
+   */
   fetchGivenByQuery = () =>{
       this.__dbIntr.api_call(0,'/cus_service/queryGivenBy',null).pipe(pluck('data')).subscribe((res:Partial<IQueryGivenByOrReceiveThrough>[]) =>{
           this.md_QueryGiven_by = res;
       })
   }
 
+  /** 
+   * @description This function fetches the query given through details from the server
+   * and updates the `md_QueryGivenReceiveThr` array with the response data.
+   * It uses the `pluck` operator to extract the `data` property from the response.
+   * This function is used to fetch the query given through details for the query entry form.
+   */
   fetchQueryGivenReceiveThr = () =>{
     this.__dbIntr.api_call(0,'/cus_service/queryGivenThrough',null).pipe(pluck('data')).subscribe((res:Partial<IQueryGivenByOrReceiveThrough>[]) =>{
       this.md_QueryGivenReceiveThr = res;
@@ -796,12 +891,26 @@ export class QueryEntryComponentComponent implements OnInit {
     
   }
 
+  /**
+   * @description This function fetches the query type details from the server
+   * and updates the `md_queryType` array with the response data.
+   * It uses the `pluck` operator to extract the `data` property from the response.
+   * This function is used to fetch the query type details for the query entry form.
+   * @returns {void}
+   */
   fetchQueryType = () =>{
       this.__dbIntr.api_call(0,`/cus_service/queryType?product_id=${this.productId}`,null).pipe(pluck('data')).subscribe((res:Partial<IQueryTypeSubType>[]) =>{
           this.md_queryType = res;
       })
   }
 
+  /**
+   * @description This function fetches the query sub-type details based on the selected query type.  
+   * It makes an API call to fetch the sub-types and updates the `md_querySubType` array with the response data.
+   * It also sets the expected close date based on the query TAT if it is not already set.
+   * @param {any} query_type - The selected query type object containing its ID.
+   * @returns {void}
+   */
   fetchQuerySubType = (query_type:any) =>{
       this.__dbIntr.api_call(0,'/cus_service/querySubType',`query_type_id=${query_type.id}`).pipe(pluck('data')).subscribe((res:Partial<IQueryTypeSubType>[]) =>{
         this.md_querySubType = res;
@@ -825,6 +934,15 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
 
+  /**
+   * @description This function calculates the expected close date based on the provided date and query TAT.
+   * It adds the query TAT (in days) to the provided date and checks if the resulting date falls on a holiday or weekend.
+   * If it does, it continues to add the query TAT until a valid date is found.
+   * The final expected close date is then set in the form control 'expected_close_date'.
+   * @param {Date} date - The initial date to which the query TAT will be added.
+   * @param {number} query_tat - The number of days to add to the initial date.
+   * @returns {void}
+   */
   globalFuncForExpectedCloseDate = (date,query_tat) =>{
     let  daysAfteradd;
     if(date){
@@ -852,6 +970,13 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
 
+  /**
+   * @description This function is called when a file is selected for the query entry form.
+   * It checks if any files are selected, and if so, it retrieves the selected files and sets them in the form control 'entry_attachment'.
+   * If no files are selected, it sets the 'entry_attachment' control to an empty array.
+   * @param {any} e - The event object containing the selected files.
+   * @returns {void}
+   */
   onFileSelect(e:any){
     if(e.target.files.length > 0){
       // e.target.files.forEach(el =>{
@@ -868,6 +993,13 @@ export class QueryEntryComponentComponent implements OnInit {
       this.queryEntryForm.get('entry_attachment').setValue([]);
     }
   }
+  /**
+   * @description This function is called when a file is selected for updating the query entry form.
+   * It checks if any files are selected, and if so, it retrieves the selected files and sets them in the form control 'solve_attachment'.
+   * If no files are selected, it sets the 'solve_attachment' control to an empty array.
+   * @param {any} e - The event object containing the selected files.
+   * @returns {void}
+   */
   onFileSelectforUpdate(e:any){
     if(e.target.files.length > 0){
       let files = e.target.files;
@@ -882,24 +1014,47 @@ export class QueryEntryComponentComponent implements OnInit {
     }
   }
 
+  /**
+   * @description This function is called when the component is initialized.
+   * It sets the product ID based on the route parameters and initializes the form.
+   */
   fetchQueryNature = () =>{
       this.__dbIntr.api_call(0,'/cus_service/queryNature',null).pipe(pluck('data')).subscribe((res:Partial<IQueryNature>[]) =>{
           this.md_queryNature = res;
       })
   }
 
+  /**
+   * @description This function fetches the query status from the server
+   * and updates the `md_queryStatus` array with the response data.
+   * It uses the `pluck` operator to extract the `data` property from the response.
+   * This function is used to fetch the query status for the query entry form.
+   */
   fetchQueryStatus = () =>{
       this.__dbIntr.api_call(0,'/cus_service/queryStatus',null).pipe(pluck('data')).subscribe((res:Partial<IQueryStatus>[]) =>{
         this.md_queryStatus = res;
     })
   }
 
+  /**
+   * @description This function fetches the folios of an investor based on their name and PAN.
+   * It makes an API call to retrieve the folios and updates the `md_folio` array with the response data.
+   * If the PAN is not provided, it defaults to an empty string.
+   * @param {string} client_name - The name of the client/investor.
+   * @param {string} client_pan - The PAN of the client/investor (optional).
+   */
   fetchFoliosOfInvestor = (client_name:string,client_pan:string) =>{
       this.__dbIntr.api_call(0,`/cus_service/getFolio`,`client_name=${client_name}&pan_no=${client_pan ? client_pan : ''}`).pipe(pluck('data')).subscribe(res =>{
         this.md_folio = res;
       })
   }
 
+  /**
+   * @description This function is called when the form is submitted.
+   * It checks if the form is valid, and if so, it processes the form data and submits the query.
+   * If the form is not valid, it displays an error message.
+   * @returns {void}
+   */
   submitQuery = () =>{
       const payload = {
         ...this.queryEntryForm.getRawValue(),
@@ -970,6 +1125,13 @@ export class QueryEntryComponentComponent implements OnInit {
       })
   } 
 
+  /**
+   * @description This function compares two objects to check if they are the same based on their IDs.
+   * It returns true if the IDs match, otherwise it returns false.
+   * @param {any} existing - The existing object to compare against.
+   * @param {any} toCheckAgainst - The object to check against the existing object.
+   * @returns {boolean} - Returns true if the IDs match, otherwise false.
+   */
   compareWith(existing, toCheckAgainst) {
     if (!toCheckAgainst) {
       return false;
@@ -977,6 +1139,11 @@ export class QueryEntryComponentComponent implements OnInit {
     return existing.id === toCheckAgainst.id;
   }
 
+  /**
+   * @description This function updates the query status based on the form values.
+   * It constructs a payload object with the necessary data and sends it to the server.
+   * If the query nature is not '3', it includes additional fields in the payload.
+   */
   updateQueryStatus = () =>{
     console.log(this.queryEntryForm);
     let payload =null;
@@ -1026,6 +1193,13 @@ export class QueryEntryComponentComponent implements OnInit {
       })
   }
 
+  /**
+   * @description This function is used to inform the user about the query status through different channels.
+   * It takes a flag as an argument, which indicates the channel through which the user should be informed.
+   * The function constructs a payload object with the query ID and the inform flag, and then makes an API call to inform the user.
+   * If the API call is successful, it updates the form data with the new flags for the respective channel and shows a success message.
+   * @param {string} flag - The channel through which the user should be informed (e.g., 'C' for Call, 'W' for WhatsApp, 'E' for Email, 'S' for SMS).
+   */
   queryInformThrough = (flag:string) =>{
        const payload = {
           query_id:this.queryId,
@@ -1061,6 +1235,12 @@ export class QueryEntryComponentComponent implements OnInit {
        })   
   }
 
+  /**
+   * @description This function is used to change the level name based on the form values.
+   * It retrieves the values of concern_person_name, contact_no, and email_id from the form and logs them to the console.
+   * This function can be used to update the level name in the form based on user input.
+   * @returns {void}
+   */
   changeLevelName = () =>{
         console.log(this.queryEntryForm.get('concern_person_name').value);
         console.log(this.queryEntryForm.get('contact_no').value);

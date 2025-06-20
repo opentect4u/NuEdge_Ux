@@ -32,20 +32,40 @@ export class FinancialyearwiseReportComponent implements OnInit,AfterViewInit {
 
   ngOnInit(): void {
   }
-
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the financial year wise report table.
+   * @description This function is used to get the columns for the financial year wise report table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumns(){
      return this.utility.getColumns(this.long_summary_column)
   }
-
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the financial year wise details table.
+   * @description This function is used to get the columns for the financial year wise details table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumns_for_details_financial_year(){
     return this.utility.getColumns(this.view_complete_details_column)
   }
-
+  /**
+   * 
+   * @param $event This function filters the global search input for the financial year wise report table.
+   * It takes the event object as a parameter and retrieves the value from the input field.
+   */
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.PrimeTable.filterGlobal(value,'contains')
   }
-
+  /**
+   * 
+   * @param $event This function filters the global search input for the financial year wise details table.
+   * It takes the event object as a parameter and retrieves the value from the input field.
+   * The table is then filtered based on the value using the 'contains' filter match mode.
+   * @description This function filters the global search input for the financial year wise details table.
+   */
   filterGlobal_details_financial_year = ($event) =>{
     let value = $event.target.value;
     this.financial__details_yearTable.filterGlobal(value,'contains')

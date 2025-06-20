@@ -16,6 +16,12 @@ export class QueryDtlsComponent implements OnInit {
     this.fetchQueryDetails(this.urlData.snapshot.paramMap.get('query_id'))
   }
 
+  /**
+   * 
+   * @description This function fetches the details of a query based on the provided query_id.
+   * It makes an API call to the backend service to retrieve the query details.
+   * The response is then processed to extract relevant information such as amc_name and scheme_name.
+   */
   fetchQueryDetails = (query_id:string) =>{
       // console.log(query_id)
       // eyJpdiI6IlViYk5XRythYjFwVTltTy9KYnJaZ1E9PSIsInZhbHVlIjoiSUlLMFgyY3prL0kvMktRcC93WVFDUmwzMGxCWDcyTU1qWlY0dUVkbTdzMD0iLCJtYWMiOiIxODczYjBjZDQwOGI5Njc1NGMzY2YyYzg2YWM0NmExZGMxMjRmYzA0ZTAzZjA3YTkzOGY3ZGQ5ODc4ZTAwNjVlIiwidGFnIjoiIn0=

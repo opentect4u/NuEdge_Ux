@@ -197,15 +197,35 @@ export class HomeComponent implements OnInit {
         : '',
     });
   };
+  /**
+   * * For resetting the form
+   * @description This function resets the transaction type form by calling the `populateTrxnTypeinForm` method with a null argument.
+   * It clears all the fields in the form and prepares it for new input.
+   * This is useful when you want to start fresh without any pre-filled data in the form.
+   * @returns void
+   */
   reset = () =>{
      this.populateTrxnTypeinForm(null);
   }
 
+  /**
+   *  * For filtering global search
+   * @description This function filters the global search in the PrimeNG table.
+   * It retrieves the value from the event target and applies a global filter to the table.
+   * @param $event 
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.pTableRef.filterGlobal(value,'contains')
   }
 
+  /**
+   *  * For getting columns for filtering
+   * @description This function retrieves the columns for filtering from the utility service.
+   * It uses the `getColumns` method of the utility service to get the columns defined in `this.columns`.
+   * The columns are expected to be in a specific format that includes field names, headers, and visibility flags.
+   * @returns 
+   */
   getColumns = () =>{
     return this.util.getColumns(this.columns);
   }

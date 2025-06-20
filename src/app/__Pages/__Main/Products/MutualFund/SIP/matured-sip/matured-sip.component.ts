@@ -67,7 +67,13 @@ export class MaturedSIPComponent implements OnInit {
     // const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
     //     this.changeWheelSpeed(el, 0.99);
   }
-
+  /**
+   * Event fired at the time of change sip report
+   * @param ev
+   * @description This function is used to get the sip report data based on the selected tab.
+   * It calls the getSipMasterData function with the event data.
+   * The event data contains the filter criteria for the sip report.
+   */
   searchSipReport(ev){
     this.getSipMasterData(ev);
   }
@@ -82,11 +88,22 @@ export class MaturedSIPComponent implements OnInit {
           this.setTitle(data.tabDtls.tab_name);
           this.reset_data = 'Y';
     }
-
+    /**
+     * Set Title for the component
+     * @param title - The title to be set for the component.
+     * @description This function sets the title for the component.
+     * It updates the __title property with the provided title.
+     */
     setTitle = (title:string) =>{
       this.__title = title;
     }
-
+    /**
+     * Fetches the SIP master data based on the provided form data.
+     * @param form_data - The form data containing the filter criteria for the SIP report.
+     * @description This function retrieves the SIP master data from the server using the provided form data.
+     * It updates the mature_sip array with the retrieved data and calculates the total amount.
+     * It also sets the state based on whether there are any results or not.
+     */
     getSipMasterData(form_data){
       this.mature_sip = [];
       this.reset_data = 'N';
@@ -105,12 +122,22 @@ export class MaturedSIPComponent implements OnInit {
         this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
       })
     }
-
+    /**
+     * Filters the global search input for the table.
+     * @param $event - The event object containing the input value.
+     * @description This function filters the global search input for the table.
+     * It retrieves the value from the input field and applies the filter to the table using the 'contains' match mode.
+     */
     filterGlobal = ($event) => {
       let value = $event.target.value;
       this.primeTbl.filterGlobal(value, 'contains');
     };
-
+    /**
+     * Changes the state of the component based on the provided event.
+     * @param event - The event that triggers the state change.
+     * @description This function toggles the state of the component between two display modes.
+     * If the current state is 'displayMode[0]', it changes to 'displayMode[1]', and vice versa.
+     */
     changeState = (event) =>{
       this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
     }
@@ -122,7 +149,11 @@ export class MaturedSIPComponent implements OnInit {
       }, 500);
 
      }
-
+     /**
+      * Change the scroll speed of the container when mouse wheel is used.
+      * @param container The container element to apply the scroll speed change.
+      * @param speedY The speed factor for vertical scrolling.
+      */
      changeWheelSpeed(container, speedY) {
       var scrollY = 0;
       var handleScrollReset = function() {
@@ -157,7 +188,13 @@ export class MaturedSIPComponent implements OnInit {
           removed = true;
       };
   }
-
+  /**
+   * Exports the matured SIP data to an Excel file.
+   * @description This function exports the matured SIP data to an Excel file.
+   * It formats the data into columns and rows, adds a footer with the total amount,
+   * and uses the global exportExcel function to generate the Excel file.
+   * The file name is determined based on the sub_type (MM or others).
+   */
   exportExcel = () =>{
     const column = this.column.map(el => el.header);
       let dt = [];
@@ -258,7 +295,11 @@ export class MaturedSIPComponent implements OnInit {
         this.disclaimer,column,dt,this.sub_type == 'MM' ? 'MATURED SIP' : 'TO BE MATURED',this.sub_type == 'MM' ? 'MATURED_SIP.xlsx' : 'TOBEMATURED_SIP.xlsx',footerDetails
       )
   }
-
+  /**
+   * Converts a string to an ArrayBuffer.
+   * @param s The string to convert.
+   * @returns An ArrayBuffer representing the string.
+   */
   s2ab(s) {
     var buf = new ArrayBuffer(s.length);
     var view = new Uint8Array(buf);

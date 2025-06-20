@@ -85,6 +85,10 @@ export class AmcrptComponent implements OnInit {
     this.showColumns(2);
     console.log(this.data);
   }
+  /**
+   *  This function is used to set the checkbox of RNT
+   *  @param rntId - RNT id to be checked
+   */
   setRntCheckBox = (rntId) =>{
             if(rntId){
               this.rnt_id.controls.map(item =>
@@ -93,6 +97,10 @@ export class AmcrptComponent implements OnInit {
               });
             }
   }
+  /**
+   * This function is used to get the RNT Master data from the server
+   * and set the RNT checkboxes in the form.
+   */
   getRntMst(){
     this.__dbIntr.api_call(0,'/rnt',null).pipe(pluck('data')).subscribe((res:rnt[]) =>{
           res.forEach((el:rnt) =>{this.rnt_id.push(this.setRNTForm(el))});
@@ -101,10 +109,23 @@ export class AmcrptComponent implements OnInit {
           this.getAmcMst();
     })
   }
+  /**
+   * This function is used to add the RNT checkboxes in the form
+   * @param rnt - RNT object to be added in the form
+   * @returns FormGroup - returns the FormGroup of RNT
+   */
   get rnt_id():FormArray{
       return this.__detalsSummaryForm.get('rnt_id') as FormArray;
   }
 
+  /**
+   * 
+   * @param rnt - RNT object to be added in the form
+   * This function is used to set the RNT form in the form array
+   * It checks if the rnt object is present or not, if not it sets the default values
+   * and returns the FormGroup of RNT.
+   * @returns 
+   */
   setRNTForm(rnt):FormGroup{
     return new FormGroup({
       id:new FormControl(rnt ? rnt?.id : 0),
@@ -113,6 +134,13 @@ export class AmcrptComponent implements OnInit {
     })
   }
 
+  /**
+   * This function is used to get the AMC Master data from the server
+   * and set the AMC data in the table.
+   * It also sets the paginator for the table.
+   * It also exports the data to excel.
+   * @returns void
+   */
    getAmcMst(){
     const __amcSearch = new FormData();
     __amcSearch.append('paginate',this.__pageNumber.value);
@@ -133,11 +161,23 @@ export class AmcrptComponent implements OnInit {
 
    }
 
+   /**
+    *   This function is used to filter the global search in the table
+    *   It takes the event object from the input field and filters the table data based on the value entered.
+    *   It uses the PrimeNG Table filterGlobal method to filter the data.
+    *   The filter is set to 'contains' which means it will filter the data based on the value entered in the input field.
+    *   The filterGlobal method is used to filter the entire table data.
+    * @param $event - The event object from the input field
+    */
    filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
   }
 
+  /**
+   * This function is used to get the AMC Master data for the dropdown
+   * It calls the API to get the AMC data and sets it to the __amcMst variable.
+   */
   private getAMCMasterForDropDown() {
     this.__dbIntr
       .api_call(0, '/amc', null)
@@ -146,14 +186,33 @@ export class AmcrptComponent implements OnInit {
         this.__amcMst = res;
       });
   }
+  /**
+   * 
+   * @param __res - The response data from the API call
+   * This function is used to set the paginator for the table
+   * It takes the response data from the API call and sets it to the __selectAMC variable.
+   * The __selectAMC variable is of type MatTableDataSource which is used to bind the data to the table.
+   * It also sets the paginator for the table.
+   */
   private setPaginator(__res) {
     this.__selectAMC = new MatTableDataSource(__res);
   }
+  /**
+   * 
+   * @param __items - The AMC item to be populated in the table
+   * This function is used to populate the AMC item in the table
+   * It opens the dialog for the AMC modification component and passes the AMC item and its id to the dialog.
+   */
   populateDT(__items: amc) {
     // this.__utility.navigatewithqueryparams('/main/master/amcModify',{queryParams:{id: btoa(__items.id.toString())}})
     this.openDialog(__items, __items.id);
   }
 
+  /**
+   * This function is used to add the RNT checkboxes in the form
+   * It checks if the RNT checkboxes are already present in the form or not.
+   * If not, it adds the RNT checkboxes to the form.
+   */
   ngAfterViewInit(){
     /** Change event occur when all rnt checkbox has been changed  */
     this.__detalsSummaryForm.controls['is_all'].valueChanges.subscribe(res =>{
@@ -173,6 +232,12 @@ export class AmcrptComponent implements OnInit {
 
   }
 
+  /**
+   * 
+   * @param __amc - The AMC object to be passed to the dialog
+   * This function is used to open the dialog for the AMC modification component
+   * @param __amcId 
+   */
   openDialog(__amc: amc,__amcId){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -217,6 +282,14 @@ export class AmcrptComponent implements OnInit {
     }
   }
 
+  /**
+   * 
+   * @param __paginate - The pagination object containing the URL for pagination
+   * This function is used to get the pagination data from the server
+   * It calls the API to get the pagination data and sets it to the __paginate variable.
+   * It also sets the paginator for the table.
+   * @returns void
+   */
   getPaginate(__paginate){
     if (__paginate.url) {
       this.__dbIntr
@@ -236,6 +309,14 @@ export class AmcrptComponent implements OnInit {
     }
   }
 
+  /**
+   * 
+   * @param row_obj - The AMC object to be updated in the table
+   * This function is used to update the AMC row in the table
+   * It filters the __selectAMC data and updates the row with the new values.
+   * It also updates the __export data with the new values.
+   * @returns void
+   */
   updateRow(row_obj: amc) {
     this.__selectAMC.data = this.__selectAMC.data.filter((value: amc, key) => {
       if (value.id == row_obj.id) {
@@ -348,22 +429,48 @@ export class AmcrptComponent implements OnInit {
       return true;
     });
   }
+  /**
+   * 
+   * @param row_obj - The AMC object to be added in the table
+   * This function is used to add the AMC row in the table
+   * It adds the row object to the __selectAMC data and updates the change subscription.
+   * It also updates the __export data with the new row object.
+   * @returns void
+   */
   addRow(row_obj: amc) {
     this.__selectAMC.data.unshift(row_obj);
     this.__selectAMC._updateChangeSubscription();
   }
+  /**
+   * This function is used to submit the form
+   * It gets the form value and calls the getAmcMst function to get the AMC Master data.
+   */
   submit(){
     this.formValue = this.__detalsSummaryForm.value;
     this.getAmcMst();
     this.setColumnsAfterSubmit();
   }
 
+  /**
+   *  This function is used to export the AMC data to excel
+   *  It calls the API to get the AMC data and sets it to the __export variable.
+   *  The __export variable is of type MatTableDataSource which is used to bind the data to the table.
+   *  It also sets the exported columns for the table.
+   *  The exported columns are filtered to remove the edit, delete and logo columns.
+   *  @returns void
+   * @param __amcExport - The AMC object to be exported
+   */
   tableExport(__amcExport){
    this.__dbIntr.api_call(1,'/amcExport',__amcExport).pipe(map((x: any) => x.data)).subscribe((res: amc[]) =>{
       this.__export = new MatTableDataSource(res);
     })
   }
 
+  /**
+   * 
+   * @param res - The response data from the API call
+   * This function is used to show the columns in the table based on the response data
+   */
   showColumns(res){
     const __columnToRemove =  ['edit','delete','logo'];
     this.__columns = [];
@@ -371,24 +478,45 @@ export class AmcrptComponent implements OnInit {
       this.__exportedClmns = this.__columns.map(res => {return res['field']}).filter(item => !__columnToRemove.includes(item));
   }
 
+  /**
+   * This function is used to toggle the full screen mode of the dialog
+   * It removes the panel class 'mat_dialog' and adds the panel class 'full_screen'.
+   * It updates the position of the dialog to the top of the screen.
+   * It also toggles the visibility of the dialog.
+   * @returns void
+   */
   fullScreen(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({top:'0px'});
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * This function is used to minimize the dialog
+   * It removes the panel class 'mat_dialog' and 'full_screen'.
+   * It updates the size of the dialog to 40% width and 47px height.  
+   */
   minimize(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.updateSize("40%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * This function is used to maximize the dialog
+   * It removes the panel class 'full_screen' and adds the panel class 'mat_dialog
+   */
   maximize(){
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
     this.dialogRef.updatePosition({top:'0px'});
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * This function is used to export the AMC data to PDF
+   * It calls the downloadReport function of the RPTService to download the report.
+   * It passes the table id, title, file name, orientation, page size and number of columns to the function.
+   */
   exportPdf(){
     this.__Rpt.downloadReport('#amcRPT',
     {
@@ -400,6 +528,10 @@ export class AmcrptComponent implements OnInit {
       this.__exportedClmns.length
     )
   }
+  /**
+   * This function is used to refresh or advance the filter
+   * It resets the form values to default values and sets the is_all checkbox to false.
+   */
   refreshOrAdvanceFlt(){
     this.__detalsSummaryForm.patchValue({
       options:'2',
@@ -412,10 +544,26 @@ export class AmcrptComponent implements OnInit {
     this.formValue = this.__detalsSummaryForm.value;
     this.getAmcMst();
   }
+  /**
+   * 
+   * @returns This function is used to get the columns for the table
+   * It calls the getColumns function of the utility service to get the columns.
+   * The columns are set in the __columns variable.
+   * @returns column[] - returns the columns for the table
+   */
   getColumns = () =>{
     return this.__utility.getColumns(this.__columns);
   }
 
+  /**
+   * 
+   * @param __el - The AMC object to be deleted from the table
+   * This function is used to delete the AMC row from the table
+   * It opens the dialog for the delete component and passes the AMC object and its index to the dialog.
+   * It also updates the __selectAMC data and __export data after deletion.
+   * @returns void
+   * @param index 
+   */
   delete(__el,index){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -442,6 +590,10 @@ export class AmcrptComponent implements OnInit {
 
     })
   }
+  /**
+   * 
+   * @param __el - The AMC object to be shown in the scheme
+   */
   showCorrospondingScheme(__el){
     console.log(__el);
     // this.__utility.navigatewithqueryparams(
@@ -452,12 +604,33 @@ export class AmcrptComponent implements OnInit {
     // )
 
   }
+  /**
+   * 
+   * @param ev - The event object from the item click
+   * This function is used to refresh or advance the filter when the item is clicked
+   * It calls the refreshOrAdvanceFlt function to reset the form values and get the AMC Master data.
+   * @returns void
+   */
   onItemClick(ev){
     this.refreshOrAdvanceFlt()
   }
+  /**
+   *  * This function is used to select the item from the dropdown
+   *  It calls the getAmcMst function to get the AMC Master data.
+   *  It also sets the is_all checkbox to false.
+   *  @returns void
+   */
   onselectItem(ev){
     this.getAmcMst();
   }
+  /**
+   * 
+   * @param ev - The event object from the sort change
+   * This function is used to sort the table data based on the sort order and field
+   * It updates the sort object with the sort order and field.
+   * It calls the getAmcMst function to get the AMC Master data.
+   * @returns void
+   */
   customSort(ev){
     this.sort.order = ev.sortOrder;
     this.sort.field = ev.sortField;
@@ -465,9 +638,21 @@ export class AmcrptComponent implements OnInit {
     this.getAmcMst();
     }
   }
+  /**
+   * 
+   * @param URL - The URL to be opened in a new tab
+   * This function is used to open the URL in a new tab
+   * It uses the window.open method to open the URL in a new tab.
+   * @returns void
+   */
   openURL(URL){
     window.open(URL,'_blank')
   }
+  /**
+   * This function is used to set the columns after the form is submitted
+   * It filters the __levels based on the selected levels in the form.
+   * It checks if the columns are already present in the __columns array or not.
+   */
   setColumnsAfterSubmit(){
     const clm = ['edit', 'delete','logo'];
     const colmn = this.__levels.filter(x => this.__detalsSummaryForm.value.level.map(item => item.id).includes(x.id))

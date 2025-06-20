@@ -27,6 +27,11 @@ export class NetworkInterceptor implements HttpInterceptor {
     private __dialog: MatDialog,
     private dbIntr:DbIntrService
     ) {}
+    /**
+     * @description This method intercepts HTTP requests and adds an Authorization header
+     * with a token from local storage. It also shows a spinner while the request is being processed.
+     * If the request fails, it handles different error statuses and displays appropriate messages. 
+     */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<unknown>> {
       // const ipApi = fetch("https://api.ipify.org?format=json").then(response => response.json())
       // console.log(ipApi)

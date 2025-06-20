@@ -156,7 +156,11 @@ export class RelcapitalgainComponent implements OnInit {
     this.financial_year = global.getAllFinancialYears();
     this.released_capital_gain_form.get('fin_year').setValue(this.financial_year.length > 0 ? this.financial_year[0] : '');
   }
-
+  /**
+   * * @param $event This function is used to filter the client details based on the input value.
+   * * It takes the event object as a parameter and retrieves the value from the input field.
+   * * The client details are then filtered based on the value using the 'contains' filter match mode.  
+   */
   getReleasedCapitalGainLoss = () => {
     this.selected_index = 0;
     this.selected_parent_index = 0;
@@ -306,12 +310,20 @@ export class RelcapitalgainComponent implements OnInit {
     }
   }
   /** End */
-
+  /**
+   * * @description This function is used to set the date range in the client details card based on the selected date type.
+   * * It takes the date type as a parameter and returns the formatted date range.
+   * @param date_type The type of date selected, which can be 'F' for financial year or 'D' for date range.
+   */
   setDisclaimer = (disclaimer:Partial<IDisclaimer>) =>{
     console.log(disclaimer)
       this.disclaimer = disclaimer;
   }
-
+  /**
+   * * @param date_type The type of date selected, which can be 'F' for financial year or 'D' for date range.
+   * * @returns {Date} The formatted date range based on the selected date type.
+   * * If the date type is 'F', it returns the start date of the financial year.
+   */
   populateAsPerITD = (res) =>{
     console.log(res)
     this.asPerItd = [];
@@ -629,7 +641,12 @@ export class RelcapitalgainComponent implements OnInit {
       }
     )
   }
-
+  /**
+   * * This function is used to set the date range in the client details card based on the selected date type.
+   * * It takes the date type as a parameter and returns the formatted date range.
+   * * @param date_type The type of date selected, which can be 'F' for financial year or 'D' for date range.
+   * * @returns {Date} The formatted date range based on the selected date type.
+   */
   getSTCGAccordingToMonth_for_full__Non_Equity(data,title,parent_title,as_per_itd_data){
         let firstQuarter = as_per_itd_data['01/04_15/06']; 
         let secondQurter = as_per_itd_data['16/06_15/09'];
@@ -694,7 +711,12 @@ export class RelcapitalgainComponent implements OnInit {
         }
 
   }
-
+  /**
+   * * This function is used to calculate the short-term capital gain according to the month for full equity.
+   * * It takes the short-term capital gain data, title, and parent title as parameters.
+   * * It returns an object containing the title and the calculated values for each month.
+   * @param short_term_capital_gain The short-term capital gain data.
+   */
   getSTCGAccordingToMonth_for_full_Equity(short_term_capital_gain,title,parent_title){
       let firstQuarter = 0; 
       let secondQurter = 0;
@@ -786,7 +808,13 @@ export class RelcapitalgainComponent implements OnInit {
     }
   }
   /*** End */
-
+  /**
+   * * * This function is used to segregate financial year-wise details report.
+   * * It takes an array of data as input and groups it by tax type and scheme name.
+   * * It calculates the total amount, stamp duty, gross amount, TDS, and units for each group.
+   * * The final result is stored in the financial_year_wise_detail_report array.
+   * @param arr The array of data to be segregated.
+   */
   segregrateFinancialYearWiseDetailsReport = (arr) =>{
     // console.log(arr)
     this.final_footer_for_detail = null;
@@ -846,7 +874,11 @@ export class RelcapitalgainComponent implements OnInit {
     })
    
   }
-
+  /**
+   * * @description This function calculates the total financial year-wise summary report.
+   * * It iterates through the financial year-wise transaction report and sums up the inflow, outflow, IDCW reinvestment, IDCWP, and net flow.
+   * * The result is stored in the total_financial_wise_report object.
+   */
   calculate_total_financial_year_wise_summary_report = () =>{
       this.total_financial_wise_report = {
               scheme_name:'GRAND TOTAL',
@@ -860,7 +892,11 @@ export class RelcapitalgainComponent implements OnInit {
       }
 
   }
-
+  /**
+   * * * This function segregates the financial year-wise report based on the scheme name.
+   * * It groups the data by scheme name and calculates the inflow, outflow, IDCW reinvestment, IDCWP, and net flow for each scheme.
+   * * The result is stored in the financial_year
+   */
   segregrateFinancialYearWiseReport(arr){
     let count = 0;
 
@@ -897,6 +933,13 @@ export class RelcapitalgainComponent implements OnInit {
     })
     this.calculate_total_financial_year_wise_summary_report();
   }
+  /**
+   * * This function calculates the grand summary total for the given summary data.
+   * * It sums up the values of various fields such as TDS, short-term gain, long-term gain, short-term loss, long-term loss, net short-term gain/loss, net long-term gain/loss, STT, and total gain/loss.
+   * * The result is returned as an object containing the total values for each field.
+   * @param summary_data An array of partial summary report objects.
+   * @returns {Partial<IsummaryReport>} An object containing the grand total values for the summary report.
+   */
   getGrandSummaryTotal = (summary_data: Partial<IsummaryReport>[]): Partial<IsummaryReport> => {
     return {
       tds: global.Total__Count(summary_data, (item: Partial<IsummaryReport>) => Number(item.tds)),
@@ -910,7 +953,13 @@ export class RelcapitalgainComponent implements OnInit {
       total_gain_loss: global.Total__Count(summary_data, (item: Partial<IsummaryReport>) => Number(item.total_gain_loss)),
     }
   }
-
+  /**
+   * * This function calculates the grand total for the given array of objects.
+   * * It sums up the values of various fields such as tot_amount, pur_price, tot_units, nav_as_on_31_01_2018, amount_as_on_31_01_2018, sell_nav, redemp_amount, tot_tds, stt, net_sell_proceed, div_amount, index_ltcg, stcg, and ltcg.
+   * * The result is returned as an object containing the total values for each field.
+   * @param arr An array of objects containing financial data.
+   * @returns {Object} An object containing the grand total values for the specified fields.
+   */
   getGrandTotal = (arr) => {
     return {
       tot_amount: global.Total__Count(arr, (item: any) => Number(item.tot_amount)),
@@ -931,7 +980,13 @@ export class RelcapitalgainComponent implements OnInit {
     }
   }
 
-
+  /**
+   * * This function sets the date range in the client details card based on the selected date type.
+   * * It calculates the start and end dates based on the financial year or the selected date range.
+   * * The formatted date range is returned as a string.
+   * @param date_type The type of date selected, which can be 'F' for financial year or 'D' for date range.
+   * @returns {string} The formatted date range based on the selected date type.
+   */
   setDateInClientDetailsCard(date_type: string) {
     let date_rng;
     let start_date, end_date;
@@ -1058,16 +1113,30 @@ export class RelcapitalgainComponent implements OnInit {
     // })
     /*** End */
   }
-
+  /**
+   * * This function is used to get the columns for the realised capital gain summary table.
+   * * It returns an array of column definitions based on the `relised_capital_gain_summary_column` property.
+   * @returns {Array} An array of column definitions for the realised capital gain summary table.
+   */
   getColumns = () => {
     return this.utility.getColumns(this.relised_capital_gain_summary_column);
   }
-
+  /**
+   * * * This function is used to filter the global search in the primary table.
+   * * It takes an event as a parameter and retrieves the value from the event target.
+   * * The primary table is then filtered globally based on the value using the 'contains' filter type.
+   * @param $event The event object containing the search value.
+   */
   filterGlobal_secondary = ($event) => {
     let value = $event.target.value;
     this.primaryTbl.filterGlobal(value, 'contains')
   }
-
+  /**
+   * * * This function is triggered when a tab is selected in the application.
+   * * It updates the parent tab ID, realised capital gain sub-tab, and selected parent index based on the event data.
+   * * Depending on the parent tab ID, it fetches the IDCW history or financial-wise report and sets the sub-tab ID.
+   * @param ev The event object containing tab details and index.
+   */
   TabDetails =(ev) =>{
       this.parent_tab_id = ev?.tabDtls?.flag; 
       this.realised_capital_gain_sub_tab = ev?.tabDtls?.sub_menu;
@@ -1078,19 +1147,32 @@ export class RelcapitalgainComponent implements OnInit {
         default: break;
       }
   }
-
+  /**
+   * * * This function sets the sub-tab ID based on the selected parent ID.
+   * * It checks if the sub-menu contains the current sub-tab ID and updates it accordingly.
+   * * If the sub-menu is empty, it sets the sub-tab ID to an empty string and resets the selected index to 0.
+   * @param sub_menu The array of sub-menu items to check against the current sub-tab ID.
+   */
   setSubTabIdOnSelectParentId = (sub_menu) =>{
     if(sub_menu.filter(el => el.flag == this.sub_tab_id).length > 0){}
     else{this.sub_tab_id = sub_menu.length > 0 ? sub_menu[0].flag : '';this.selected_index = 0;}
   }
-
+  /**
+   * * * This function is triggered when a sub-tab is selected in the application.
+   * * It updates the sub-tab ID and selected index based on the event data.
+   * * The sub-tab ID is set to the flag of the selected tab details, and the selected index is updated accordingly.
+   * @param ev The event object containing tab details and index.
+   */
   subTabDetails = (ev) =>{
     this.sub_tab_id = '';
       console.log(ev)
       this.sub_tab_id = ev.tabDtls.flag;
       this.selected_index = ev.index;
   }
-
+  /**
+   * * * This function converts a string to an ArrayBuffer.
+   * * It takes a string as input and returns an ArrayBuffer representation of that string.
+   */
   letter(i){
     try{
       return String.fromCharCode(65+i);
@@ -1100,7 +1182,10 @@ export class RelcapitalgainComponent implements OnInit {
       return '';
     }
   }
-  
+  /**
+   * * * This function converts a string to an ArrayBuffer.
+   * * It takes a string as input and returns an ArrayBuffer representation of that string.
+   */
   exportAs(event){
     if(this.parent_tab_id == 'R'){
       if(event.export_type == 'xlsx'){
@@ -1191,7 +1276,12 @@ export class RelcapitalgainComponent implements OnInit {
         }
     }
   }
-
+  /**
+   * * * This function exports the realised capital gain as a PDF document.
+   * * It uses the jsPDF library to generate the PDF and autoTable to format the table.
+   * * The PDF includes the realised capital gain summary and a disclaimer.
+   * @param event The event object containing export type and other details.
+   */
   exportRealisedCapitalGainAsPerITDAsPDF = (event) =>{
     console.log(event);
     var pdf = new jsPDF('l','pt','a4',true);
@@ -1298,14 +1388,24 @@ export class RelcapitalgainComponent implements OnInit {
     );
   }
   
-
+  /**
+   * * * This function exports the realised capital gain as a PDF document.
+   * * It uses the jsPDF library to generate the PDF and autoTable to format the table.
+   * * The PDF includes the realised capital gain summary and a disclaimer.
+   * @param event The event object containing export type and other details.
+   */
   s2ab(s) {
     var buf = new ArrayBuffer(s.length);
     var view = new Uint8Array(buf);
     for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
     return buf;
   }
-
+  /**
+   * * * This function exports the realised capital gain as a PDF document.
+   * * It uses the jsPDF library to generate the PDF and autoTable to format the table.
+   * * The PDF includes the realised capital gain summary and a disclaimer.
+   * @param event The event object containing export type and other details.
+   */
   exportFinancialYearAsPdf(event){
     console.log(event);
     var pdf = new jsPDF('l','pt','a4',true);
@@ -1475,7 +1575,12 @@ export class RelcapitalgainComponent implements OnInit {
       }
     );
   }
-
+  /**
+   * * * This function exports the realised capital gain as a PDF document.
+   * * It uses the jsPDF library to generate the PDF and autoTable to format the table.
+   * * The PDF includes the realised capital gain summary and a disclaimer.
+   * @param event The event object containing export type and other details.
+   */
   exportRealisedCapitalGainAsPDF(event){
     const table = this.primaryTbl?.el.nativeElement.querySelector('table');
     table.setAttribute('id', 'summary');
@@ -1650,6 +1755,12 @@ export class RelcapitalgainComponent implements OnInit {
       }
     );
   }
+  /**
+   * * * This function exports the dividend table as a PDF document.
+   * * It uses the jsPDF library to generate the PDF and autoTable to format the table.
+   * * The PDF includes the dividend table and a disclaimer.
+   * @param event The event object containing export type and other details.
+   */
   exportDividendTableAsPDF(event){
     console.log(event);
     var pdf = new jsPDF('l','pt','a4',true);

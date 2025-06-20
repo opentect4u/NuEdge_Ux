@@ -59,7 +59,13 @@ export class TerminateSIPComponent implements OnInit {
   constructor(private dbIntr: DbIntrService, private utility: UtiliService,private datePipe:DatePipe) {}
 
   ngOnInit(): void {}
-
+  /**
+   * Fetch Live SIP Report
+   * @param formDt - Form data containing filter criteria for the report
+   * @description This function fetches the live SIP report based on the provided form data.
+   * It makes an API call to retrieve the report data and updates the component state accordingly.
+   * The report type is set based on the `report_type` input property.
+   */
   LiveSipReport = (formDt) => {
     this.live_sip_rpt = [];
     let dt ={
@@ -84,12 +90,21 @@ export class TerminateSIPComponent implements OnInit {
   searchSipReport = (ev) => {
     this.LiveSipReport({ ...ev, sip_type: this.sipType });
   };
-
+  /**
+   * 
+   * @param $event This function filters the global search input for the live SIP report table.
+   * It retrieves the value from the event target and applies a global filter to the table.
+   * The filter type is set to 'contains', meaning it will match any part of the string.
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
   };
-
+  /**
+   * 
+   * @param event - The event that triggers the state change.
+   * @description This function toggles the display state between 'expanded' and 'collapsed'.
+   */
   changeState = (event) => {
     this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
   };
@@ -99,7 +114,16 @@ export class TerminateSIPComponent implements OnInit {
       this.changeWheelSpeed(el, 0.99);
     }, 500);
    }
-
+   /**
+    * 
+    * @param container - The container element that will be scrolled.
+    * @param speedY - The speed at which the wheel scrolls.
+    * @description This function changes the scroll speed of the container when the mouse wheel is used.
+    * @param speedY - The speed at which the wheel scrolls.
+    * @description This function changes the scroll speed of the container when the mouse wheel is used.
+    * It adds event listeners for mouse wheel events and adjusts the scroll position based on the speed factor.
+    * @returns 
+    */
    changeWheelSpeed(container, speedY) {
     var scrollY = 0;
     var handleScrollReset = function() {
@@ -134,7 +158,11 @@ export class TerminateSIPComponent implements OnInit {
         removed = true;
     };
 }
-
+/**
+ * Export the live SIP report data to an Excel file.
+ * @description This function exports the live SIP report data to an Excel file with a specified format.
+ * It formats the data, including headers and footers, and uses the global exportExcel utility function to generate the file. 
+ */
 exportExcel = () =>{
   const column = this.column.map(el => el.header);
     let dt = [];
@@ -204,6 +232,12 @@ exportExcel = () =>{
       this.disclaimer,column,dt,'TERMINATE SIP','TERMINATE_SIP.xlsx',footerDetails
     )
 }
+/**
+ * Convert a string to an ArrayBuffer.
+ * @param s The string to convert.
+ * @returns An ArrayBuffer representing the string.
+ * @description This function converts a string into an ArrayBuffer, which is useful for binary data manipulation.
+ */
 s2ab(s) {
   var buf = new ArrayBuffer(s.length);
   var view = new Uint8Array(buf);

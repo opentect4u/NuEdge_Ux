@@ -148,6 +148,11 @@ export class TransactionQueryComponent implements OnInit {
   /**End */
   }
 
+  /**
+   * @description This function is used to search transaction report based on folio number.
+   * It resets the transaction_query_dataSource array and makes an API call to fetch the data.
+   * The response is processed to filter and modify the data, including calculating XIRR and other values.
+   */
   searchTrxnReport = () =>{
       this.transaction_query_dataSource = [];
 
@@ -242,7 +247,10 @@ export class TransactionQueryComponent implements OnInit {
   };
 
   /**
-   *
+   * @description This function fetches family members according to the family head ID.
+   * If an ID is provided, it makes an API call to fetch family details based on the family head ID and view type.
+   * If no ID is provided, it resets the family members and sets the family members form control to an empty array.
+   * @param {number | undefined} id - The ID of the family head. If undefined, it resets the family members.
    */
   getFamilymemberAccordingToFamilyHead_Id = (id:number | undefined = undefined) =>{
     if(id){
@@ -261,6 +269,13 @@ export class TransactionQueryComponent implements OnInit {
    }
  }
 
+ /**
+  * @description This function is used to get the row details of a transaction.
+  * It takes a row object as an argument and constructs a payload with the necessary information.
+  * It then makes an API call to the server to toggle the portfolio show flag for the transaction.
+  * After the API call, it updates the transaction_query_dataSource array to reflect the changes in the portfolio show flag.
+  * Finally, it displays a success message using the utility service.
+  */
  getRowDtls =(row) =>{
 
     console.log(row);
@@ -284,6 +299,11 @@ export class TransactionQueryComponent implements OnInit {
     })
  }
 
+ /** * @description This function is used to set the parent table footer for client details.
+ * It calculates the total values for various properties of the client portfolio and sets them in the parentLiveMfPortFolio object.
+ * It also calculates the XIRR value based on the amounts and dates from the client portfolio data.
+ * @param {ILivePortFolio[]} arr - An array of ILivePortFolio objects representing the client portfolio data.
+ */
  setParentTableFooter_ClientDtls(arr:ILivePortFolio[]){
   if(arr.length > 0){
     let total_amt = [];
@@ -315,6 +335,12 @@ export class TransactionQueryComponent implements OnInit {
   }
 }
 
+/**
+ * @description This function is triggered when a row in the table is expanded.
+ * It resets the subLiveMfPortFolio to null and sets the truncated_val to 0.
+ * It then calculates the total value for the table footer based on the data of the expanded row.
+ * @param {Object} ev - The event object containing information about the expanded row.
+ */
 onRowExpand = (ev:{originalEvent:Partial<PointerEvent>,data:ILivePortFolio}) =>{
   try{
       this.subLiveMfPortFolio = null;
@@ -327,6 +353,11 @@ onRowExpand = (ev:{originalEvent:Partial<PointerEvent>,data:ILivePortFolio}) =>{
 }
 
 
+/**
+ * @description This function calculates the total value for the table footer.
+ * It filters the input array to exclude rows with a transaction type that includes 'redemption' and where cumml_units is greater than 0.
+ * It then calculates the total amounts, TDS, stamp duty, purchase price, total units, current value, gain/loss, absolute return, cumulative units, XIRR, and gross amount.
+ */
  calculat_Total_Value_For_Table_Footer(arr:Partial<ISubDataSource>[],final_arr){
   var tot_arr = arr.filter(row => (!row.transaction_type.toLowerCase().includes('redemption') && row.cumml_units > 0));
   try{
@@ -352,6 +383,9 @@ onRowExpand = (ev:{originalEvent:Partial<PointerEvent>,data:ILivePortFolio}) =>{
   }
 }
 
+/**
+ * @description This function is triggered when the user scrolls to the end of the table.
+ */
  loadInvestorOnScrollToEnd = (ev) =>{
   // if(this.misTrxnRpt.value.client_name == ''){
   //   this.paginate+=1;
@@ -359,11 +393,18 @@ onRowExpand = (ev:{originalEvent:Partial<PointerEvent>,data:ILivePortFolio}) =>{
   // }
  }
 
+ /***
+  * @description This function is used to get the columns for the details of the transaction query.
+  */
  getColumnsForDetails = () =>{
   return [...this.utility.getColumns(this.parent_column),'isin_no','folio_no','custom_trans_type'];
 }
 
-
+/**
+ * @description This function is used to filter the global search in the PrimeNG table.
+ * It takes an event object as an argument, retrieves the value from the event target,
+ * and applies the filterGlobal method of the PrimeNG table to filter the data based on the value.
+ */
 filterGlobal = ($event) => {
   let value = $event.target.value;
   this.primeTbl.filterGlobal(value,'contains')

@@ -464,27 +464,65 @@ mappings between `act_value` and `value` for transition durations. */
         date_range: [dt,this.max_date]
       })
     }
-
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the table.
+   */
   funds() : FormArray {
     return this.filter_criteria.get("funds") as FormArray
   }
-
+  /**
+   * 
+   * @param cat_index index of the category in the funds array
+   * @description This function retrieves the subcategory FormArray for a given category index.
+   * It is used to access the subcategories of a specific fund category in the form.
+   * @returns 
+   */
   subcategory(cat_index:number){
     return this.funds().at(cat_index).get('sub_menu') as FormArray
   }
-
+  /**
+   * 
+   * @param index index of the category in the funds array
+   * @param dtls details of the subcategory to be added
+   * @description This function adds a new subcategory to the specified category in the funds array.
+   * It creates a new FormGroup for the subcategory and pushes it into the sub_menu FormArray of the specified category.
+   * @param dtls 
+   */
   addSubCategory = (index:number,dtls:any) =>{
     this.subcategory(index).push(this.newSubCategory(dtls))
   }
-
+  /**
+   * 
+   * @param cat_index index of the category in the funds array
+   * @param sub_cat_index index of the subcategory in the sub_menu array
+   * @description This function retrieves the scheme FormArray for a given category and subcategory index.
+   * @param sub_cat_index 
+   * @returns 
+   */
   scheme(cat_index:number,sub_cat_index:number){
     return this.subcategory(cat_index).at(sub_cat_index).get('sub_menu') as FormArray
   }
-
+  /**
+   * 
+   * @param cat_index index of the category in the funds array
+   * @param sub_cat_index index of the subcategory in the sub_menu array
+   * @description This function adds a new scheme to the specified category and subcategory in the funds array.
+   * It creates a new FormGroup for the scheme and pushes it into the sub_menu FormArray of the specified subcategory.
+   * @returns
+   * @param sub_cat_index 
+   * @param sub_dtls 
+   */
   addScheme  (cat_index:number,sub_cat_index:number,sub_dtls:any){
     this.scheme(cat_index,sub_cat_index).push(this.newScheme(sub_dtls))
   }
-
+  /**
+   * 
+   * @param fund_dtls details of the fund category to be added
+   * @description This function creates a new FormGroup for a fund category.
+   * It initializes the form with the provided fund details and sets default values for is_checked and sub_menu.
+   * @returns 
+   */
   newFunds(fund_dtls:any): FormGroup {
       return  this.fb.group({
       id:fund_dtls?.cat_id,
@@ -493,7 +531,14 @@ mappings between `act_value` and `value` for transition durations. */
       sub_menu: this.fb.array([])
       })
   }
-
+  /**
+   * 
+   * @param subCatDtls details of the subcategory to be added
+   * @description This function creates a new FormGroup for a subcategory.
+   * It initializes the form with the provided subcategory details and sets default values for is_checked and sub_menu.
+   * @param subCatDtls
+   * @returns 
+   */
   newSubCategory(subCatDtls:any): FormGroup{
     return  this.fb.group({
       id:subCatDtls?.subcat_id,
@@ -503,7 +548,15 @@ mappings between `act_value` and `value` for transition durations. */
     })
    }
 
-
+   /**
+    * 
+    * @param scheme_dtls details of the scheme to be added
+    * @description This function creates a new FormGroup for a scheme.
+    * It initializes the form with the provided scheme details and sets default values for is_checked.
+    * The form includes fields for rnt_id, scheme_name, product_code, folio_no, and isin_no.
+    * @param scheme_dtls
+    * @returns 
+    */
   newScheme(scheme_dtls:any){
     return  this.fb.group({
       rnt_id:scheme_dtls?.rnt_id,
@@ -574,7 +627,10 @@ mappings between `act_value` and `value` for transition durations. */
     }
 
   }
-
+  /**
+   * * @description This function is used to show the report based on the filter criteria.
+   * * It retrieves the filter criteria from the form and makes an API call to fetch the
+   */
   getwindowresizeEVent = () =>{
     this.resizeObservable$ = fromEvent(window, 'resize');
     this.resizeSubscription$ = this.resizeObservable$.subscribe(e => {
@@ -614,7 +670,14 @@ mappings between `act_value` and `value` for transition durations. */
         })
     })
   }
-
+  /**
+   * 
+   * @param object Object containing categories and their respective funds.
+   * @description This function converts the selected types from the object into a structured array.
+   * It processes each category and its funds, ensuring that each category is unique and that subcategories are grouped correctly.
+   * The resulting array contains objects with category names, subcategories, and their respective funds.
+   * @returns 
+   */
   convertSelectedTypes(object){
     let dtls = [];
     Object.keys(object).forEach(el =>{
@@ -641,7 +704,12 @@ mappings between `act_value` and `value` for transition durations. */
     return dtls;
   }
 
- 
+  /**
+   * 
+   * @param arr - Array of objects representing funds with their details.
+   * @description This function sets the footer of the P&L transaction table by calculating various
+   * @param pl_folio_type 
+   */
   setFooterOfPlTransaction(arr:Partial<IPLTrxn>[],pl_folio_type:string){
     const filterPipe = new plFilterPipe();
     let array_without_negative_curr_val = filterPipe.transform(arr,pl_folio_type)
@@ -676,7 +744,15 @@ mappings between `act_value` and `value` for transition durations. */
   // setTableFooterForPL(array_without_negative_curr_val:Partial<IPLTrxn>[],total_amount,total_date){
 
   // }
-
+  /**
+   * 
+   * @param arr - Array of objects representing P&L transactions.
+   * @param pl_folio_type - Type of P&L folio (e.g., 'realised', 'unrealised').
+   * @description This function sets the footer of the P&L transaction table for unrealised transactions.
+   * It filters the array to exclude negative current values, calculates totals for various fields,
+   * and computes the XIRR (Extended Internal Rate of Return) based on the total amounts and dates.
+   * The results are stored in the `PLSummary_realised_unrealised` property.
+   */
   setFooterOfPlTransaction_forUnrealised(arr:Partial<IPLTrxn>[],pl_folio_type:string){
     const filterPipe = new plFilterPipe();
     let array_without_negative_curr_val = filterPipe.transform(arr,pl_folio_type)
@@ -926,7 +1002,14 @@ mappings between `act_value` and `value` for transition durations. */
             this.getFamilyMembers(searchRlt.item.client_id)
     }
   };
-
+  /**
+   * 
+   * @param id - Client ID to fetch family members for.
+   * @description This function retrieves family members for a given client ID.
+   * If an ID is provided, it makes an API call to fetch family details based on the client ID and view type.
+   * The results are stored in the `family_members` array and the form control for family members is updated accordingly.
+   * If no ID is provided, it clears the `family_members` array and resets the form control.
+   */
   getFamilyMembers = (id:number | undefined = undefined) =>{
     if(id){
        this.__dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=${this.filter_criteria.value.view_type}`)
@@ -942,7 +1025,13 @@ mappings between `act_value` and `value` for transition durations. */
 
     }
   }
-
+  /**
+   * * @param column_to_be_set_on_tble - Array of columns to be set on the table.
+   * * @description This function sets the visibility of columns based on the current filter criteria.
+   * It compares the existing columns with the columns to be set and updates their visibility accordingly.
+   * The function filters out columns that are not visible and returns an array of visible columns.
+   * @returns {Array} An array of columns with updated visibility.
+   */
   setcolumns = (column_to_be_set_on_tble:column[]) =>{
     const act_column =this.__portfolioFiter?.clm_chooser.map(column => column.flag);
     const act_column_to_be_set = this.filter_criteria.value.clmn_chooser.map(column => column.flag);
@@ -957,7 +1046,11 @@ mappings between `act_value` and `value` for transition durations. */
     });
     return dt;
   }
-
+  /**
+   * * @description This function is triggered to show the report based on the filter criteria.
+   * * It checks if the necessary fields are filled in the filter criteria form.
+   * * If the criteria are met, it sets the columns for the portfolio table and initializes various properties related to the report.
+   */
   showReport = () =>{
     this.parent_column = this.setcolumns(LiveMFPortFolioColumn.column);
     if(this.__selectedRow){
@@ -1090,7 +1183,10 @@ mappings between `act_value` and `value` for transition durations. */
     }
 
   }
-
+  /**
+   * * @param selected_id - ID of the selected tab.
+   * * @param data - Data to be passed to the API call.
+   */
   getLiveMfPortFolioByMfReportWise(data,mf_report){
     this.__dataSource_for_mf_report_segregrated = [];
       const key = mf_report?.cat_wise ? 'cat_name' : 'subcat_name';
@@ -1127,7 +1223,14 @@ mappings between `act_value` and `value` for transition durations. */
       )  
     })
   }
-
+  /**
+   * * @param selected_id - ID of the selected tab.
+   * * @param data - Data to be passed to the API call.
+   * * @description This function calls the corresponding API based on the selected tab ID and data.
+   * It checks the selected ID and calls the appropriate API method to fetch data for the selected tab.
+   * If the selected ID is 0, it fetches the entire portfolio; otherwise, it fetches data for the specific tab.
+   * @returns {void}
+   */
   call_func_tab_change = () =>{
     if(this.__selectedRow){
       this.primeTbl?.toggleRow(this.__selectedRow);
@@ -1136,7 +1239,14 @@ mappings between `act_value` and `value` for transition durations. */
     this.call_corrosponding_api(this.selected_id,this.main_frm_dt);
   }
 
-
+  /**
+   * * @param selected_id - ID of the selected tab.
+   * * @param data - Data to be passed to the API call.
+   * * @description This function calls the corresponding API based on the selected tab ID and data.
+   * It checks the selected ID and calls the appropriate API method to fetch data for the selected tab.
+   * If the selected ID is 0, it fetches the entire portfolio; otherwise, it fetches data for the specific tab.
+   * @returns {void}
+   */
   onRowExpand = (ev:{originalEvent:Partial<PointerEvent>,data:ILivePortFolio}) =>{
     try{
     this.subLiveMfPortFolio = null;
@@ -1177,7 +1287,12 @@ mappings between `act_value` and `value` for transition durations. */
     catch(ex){
     }
   }
-
+  /**
+   * * @param selected_id - ID of the selected tab.
+   * * @param data - Data to be passed to the API call. 
+   * * @description This function calls the corresponding API based on the selected tab ID and data.
+   * It checks the selected ID and calls the appropriate API method to fetch data for the selected tab. 
+   */
   calculateTransaction = (redem_arr:ISubDataSource[],with_out_redem_arr:ISubDataSource[],index:number) =>{
         redem_arr.forEach((el,i) =>{
           let pur_price = el.pur_price;
@@ -1207,7 +1322,13 @@ mappings between `act_value` and `value` for transition durations. */
         this.dataSource[index].data = this.filterTransactions(with_out_redem_arr.length > 0 ? with_out_redem_arr.filter(item => Number(item.pur_price) > 0) : with_out_redem_arr);
         this.show_more('M',index);
   }
-
+  /**
+   * * @param selected_id - ID of the selected tab.
+   * * @param data - Data to be passed to the API call.
+   *  * @description This function calls the corresponding API based on the selected tab ID and data.
+   * It checks the selected ID and calls the appropriate API method to fetch data for the selected tab.
+   * If the selected ID is 0, it fetches the entire portfolio; otherwise, it fetches data for the specific tab.
+   */
   filterTransactions = (liveMFPortFolio:ISubDataSource[]): ISubDataSource[] => {
       // let getLastpositiveCummlDigitDtlsIndex = liveMFPortFolio.findIndex(el => el.cumml_units >= 0);
       let nper = 0;
@@ -1229,7 +1350,13 @@ mappings between `act_value` and `value` for transition durations. */
       // this.calculat_Total_Value_For_Table_Footer(FinalTransactions);
       return FinalTransactions;
   }
-
+  /**
+   * * @param selected_id - ID of the selected tab.
+   * * @param data - Data to be passed to the API call.
+   * * @description This function calls the corresponding API based on the selected tab ID and data.
+   * It checks the selected ID and calls the appropriate API method to fetch data for the selected tab.
+   * If the selected ID is 0, it fetches the entire portfolio; otherwise, it fetches data for the specific tab.
+   */
   calculat_Total_Value_For_Table_Footer(arr:Partial<ISubDataSource>[],final_arr){
           var tot_arr = arr.filter(row => (!row.transaction_type.toLowerCase().includes('redemption') && row.cumml_units > 0));
           try{
@@ -1276,27 +1403,66 @@ mappings between `act_value` and `value` for transition durations. */
     return arr.reduce((prev, curr, idx) => prev + (predicate(curr, idx)), 0)
     }
 
+    /**
+     * * @param $event
+     * * @description This function filters the global data based on the input value.
+     * It retrieves the value from the event target and applies a global filter to the `primeTbl` table.
+     * The filter is applied using the 'contains' match mode.
+     * @returns {void}
+     */
   filterGlobal($event){
       let value = $event.target.value;
       this.primeTbl.filterGlobal(value,'contains')
   }
+  /** * * @param $event
+   * * @description This function filters the secondary table data based
+   * on the input value.
+   * It retrieves the value from the event target and applies a global filter to the `secondaryTbl` table.
+   * The filter is applied using the 'contains' match mode.
+   * @returns {void}
+   */
   filterGlobal_dialogBox($event){
     let value = $event.target.value;
     this.TableRef.filterGlobal(value,'contains')
   }
+  /**
+   * * * @param $event
+   * * @description This function filters the secondary table data based on the input value.
+   * It retrieves the value from the event target and applies a global filter to the `secondaryTbl` table.
+   * The filter is applied using the 'contains' match mode.
+   * @returns {void}
+   */
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.secondaryTbl.filterGlobal(value,'contains')
   }
 
+  /**
+   * * @description This function retrieves the columns for the main table.
+   * It uses the utility service to get the columns based on the `detailedColumn` property.
+   * The function returns an array of columns that will be displayed in the main table.
+   * @returns {Array} An array of columns for the main table.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.detailedColumn);
   }
+  /**
+   *  * @description This function retrieves the columns for the details table.
+   * It combines the columns from the `detailedColumn` and `parent_column` properties,
+   * along with additional columns like 'isin_no', 'folio_no', and ' 
+   */
   getColumnsForDetails = () =>{
     return [...this.utility.getColumns(this.detailedColumn),
       ...this.utility.getColumns(this.parent_column),'isin_no','folio_no','custom_trans_type'];
   }
 
+  /**
+   * * * @param liveMFPortFolio - The live mutual fund portfolio object.
+   * * @description This function opens a dialog to display the details of a live mutual fund portfolio.
+   * It resets the secondary table, sets the modal display flag, and fetches transaction details from the API.
+   * The fetched data is then processed and stored in the `details__transaction_details` array.
+   * @returns {void}
+   */
   OpenDialog = (liveMFPortFolio) => {
     // this.searchTrans.
     this.secondaryTbl?.reset();
@@ -1319,7 +1485,15 @@ mappings between `act_value` and `value` for transition durations. */
     })
   }
 
-
+  /**
+   * * * @param mode - The mode of operation ('A' for all, 'M' for more).
+   * * @param index - The index of the data source.
+   * * @description This function is triggered to show more data based on the mode and index.
+   * It updates the `truncated_val` based on the mode and index, and shows a spinner while processing.
+   * If the mode is 'A', it sets the `truncated_val` to the length of the data source at the specified index.
+   * If the mode is 'M', it increments the `truncated_val` by 10 or sets it to the length of the data source if it exceeds that length.
+   * @returns {void}
+   */
   show_more = (mode:string,index:number) =>{
             this.spinner.show()
               if(mode == 'A'){
@@ -1337,18 +1511,34 @@ mappings between `act_value` and `value` for transition durations. */
             this.spinner.hide();
 
   }
-
+  /**
+   * * * @param length_of_actual_array - The length of the actual array.
+   * * @description This function sets the `truncated_val` property to the specified length of the actual array.
+   * It is used to control the number of items displayed in the table.
+   * @returns {void}
+   */
   setTrancated_val = (length_of_actual_array:number) => {
     this.truncated_val = length_of_actual_array
   }
-
+  /**
+   * * * @param tabs - The tabs object containing items.
+   * * @description This function is triggered when the tabs details are retrieved.
+   * It checks if the items in the tabs are empty and calls the `seleActivaTab` function to select the active tab.
+   * After that, it calls the `call_func_tab_change` function to handle any changes in the tab selection.
+   * @returns {void}
+   */
   getTabsDtls = (tabs) => {
         if(tabs.items.length == 0){
           this.seleActivaTab(tabs);
         }
         this.call_func_tab_change()
   }
-
+  /**
+   * * * @param tabs - The tabs object containing items.
+   * * @description This function is triggered when the active tab is selected.
+   * It checks if the items in the tabs are empty and calls the `call_func_tab_change` function to handle any changes in the tab selection.
+   * @returns {void}
+   */
   call_api_for_summary_func(){
     if(this.fundHouse.length == 0 && 
       this.categoryWiseSummary.length === 0 && 
@@ -1359,7 +1549,12 @@ mappings between `act_value` and `value` for transition durations. */
       this.setSubcategoryWiseData(this.dataSource);
     }
   }
-
+  /**
+   * * * @param tabs - The tabs object containing items.
+   * * @description This function is triggered when the active tab is selected.
+   * It checks if the items in the tabs are empty and calls the `call_func_tab_change` function to handle any changes in the tab selection.
+   * @returns {void}
+   */
   setCategoryWiseData(arr:Partial<ILivePortFolio>[]){
     this.categoryWiseSummary = [];
     from(arr)
@@ -1389,7 +1584,13 @@ mappings between `act_value` and `value` for transition durations. */
         )
     })
   }
-
+  /**
+   * * * @param arr - An array of live portfolio data.
+   * * @description This function processes the array of live portfolio data and sets the subcategory-wise data.
+   * It groups the data by subcategory name and calculates various financial metrics such as investment cost, current value, gain/loss, etc.
+   * The results are stored in the `subCategoryWise` property.
+   * @returns {void}
+   */
   setSubcategoryWiseData(arr:Partial<ILivePortFolio>[]){
     this.subCategoryWise = [];
     from(arr)
@@ -1419,7 +1620,13 @@ mappings between `act_value` and `value` for transition durations. */
         )
     })
   }
-
+  /**
+   * * * @param arr - An array of live portfolio data.
+   * * @description This function processes the array of live portfolio data and sets the fund-wise data.
+   * It groups the data by fund house name and calculates various financial metrics such as investment cost, current value, gain/loss, etc.
+   * The results are stored in the `fundHouse` property.
+   * @returns {void}
+   */
   setFundWiseData(arr:Partial<ILivePortFolio>[]){
     this.fundHouse =[];
     from(arr)
@@ -1453,7 +1660,14 @@ mappings between `act_value` and `value` for transition durations. */
         )
     })
   }
-
+  /**
+   * * * @param id - The ID of the API to be called.
+   * * @param fb - The form data to be passed to the API.
+   * * @description This function calls the corresponding API based on the provided ID and form data.
+   * It checks the ID and calls the appropriate API method to fetch data for the selected tab.
+   * The function handles different cases based on the ID and performs the necessary API calls.
+   * @returns {void}
+   */
   call_corrosponding_api = (id:number,fb) =>{
 
         const pay_load = this.main_frm_dt?.view_type == 'C' ? fb : this.getPayLoadForFamily(this.main_frm_dt)
@@ -1501,7 +1715,10 @@ mappings between `act_value` and `value` for transition durations. */
       }
 
   }
-
+  /**
+   * * * @param formData - The form data to be passed to the API.
+   * * @description This function calls the API for detailed summary based on the provided form data
+   */
   call_api_for_reject_transactions = (formData) =>{
         if(this.rejectTrxn.length == 0){
           this.__dbIntr.api_call(1,'/clients/liveMFRejectTrans',this.utility.convertFormData(formData))
@@ -1522,7 +1739,14 @@ mappings between `act_value` and `value` for transition durations. */
           })
         }
   }
-
+  /**
+   * * * @param formData - The form data to be passed to the API.
+   * * @description This function calls the API for systematic missed transactions based on the provided form data.
+   * It checks if the `systematicMissedTrxn` array is empty, and if so, it makes an API call to fetch the data.
+   * The fetched data is then processed and stored in the `systematicMissedTrxn` array.
+   * The function also sets the client details based on the response from the API.
+   * @returns {void}
+   */
   call_api_for_systematicMissedTransaction = (formData) =>{
       if(this.systematicMissedTrxn.length == 0){
         this.__dbIntr.api_call(1,'/clients/liveMFRejectTrans',this.utility.convertFormData({...formData,flow_type:''}))
@@ -1546,11 +1770,17 @@ mappings between `act_value` and `value` for transition durations. */
         })
       }
   }
-
+  /**
+   * * * @param formData - The form data to be passed to the API.
+   * * @description This function calls the API for detailed summary based on the provided form data 
+   */
   setDisclaimer = (res:Partial<IDisclaimer>) => {
     this.disclaimer = res;
   }
-
+  /**
+   * * * @param formData - The form data to be passed to the API.
+   * * @description This function calls the API for detailed summary based on the provided form data  
+   */
   call_api_for_family_summary(formData){
       if(this.family_summary.length == 0){
         this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
@@ -1626,7 +1856,13 @@ mappings between `act_value` and `value` for transition durations. */
         })
       }
   }
-
+  /**
+   * * * @param x - The data object containing client details, disclaimer, and data.
+   * * @param valuation_with - An array of valuation criteria to filter the data.
+   * * @description This function maps the data object to a new structure, filtering the data based on the valuation criteria.
+   * It returns an object containing client details, disclaimer, and filtered data.
+   * @returns {Object} An object containing client details, disclaimer, and filtered data.
+   */
   mappedData = (x,valuation_with) =>{
     console.log(x)
     return {
@@ -1648,7 +1884,10 @@ mappings between `act_value` and `value` for transition durations. */
 
     }
   }
-
+  /**
+   * * * @param formData - The form data to be passed to the API.
+   * * @description This function calls the API for detailed summary based on the provided form data  
+   */
   call_api_for_detail_summary_func(formData) {
     console.log("call_api_for_detail_summary_func Call")
     if(this.dataSource.length == 0 && this.__dataSource_for_mf_report_segregrated.length == 0){
@@ -1775,7 +2014,10 @@ mappings between `act_value` and `value` for transition durations. */
       }
     }
     }
-
+    /**
+     * * * @param arr - An array of live portfolio data.
+     * * @param mf_report - An object containing the filter criteria for mutual fund reports.
+     */
     setParentTableFooter_ClientDtls(arr:ILivePortFolio[]){
       console.log(arr)
       if(arr.length > 0){
@@ -2071,7 +2313,14 @@ mappings between `act_value` and `value` for transition durations. */
       this.recent_trxn_frm.get('trxn_sub_type_id').setValue([]);
     }
   };
-
+  /**
+   * * * @param trxnType - An array of transaction types.
+   * * @description This function retrieves the transaction subtypes for upcoming transactions based on the provided transaction types.
+   * It checks if the `trxnType` array is not empty, and if so, it makes an API call to fetch the transaction subtypes.
+   * The fetched data is then stored in the `UpComming_trxnSubTypeMst` variable.
+   * If the `trxnType` array is empty, it resets the `UpComming_trxnSubTypeMst` and sets the value of `trxn_sub_type_id` in the `upcomming_trxn_frm` form to an empty array.
+   * @returns {void}
+   */
   getTrxnSubTypeMstForUpcomming = <T extends rntTrxnType[]>(trxnType: T) => {
     if(trxnType.length > 0){
       this.__dbIntr
@@ -2090,12 +2339,21 @@ mappings between `act_value` and `value` for transition durations. */
       this.upcomming_trxn_frm.get('trxn_sub_type_id').setValue([]);
     }
   };
-
+  /**
+   * * * @param formData - The form data to be passed to the API.
+   * * @description This function calls the API for recent transactions based on the provided form data
+   */
   searchRecentTrxn =() =>{
     this.recent_trxn = [];
     this.call_api_for_recent_trxn_func()
   }
-
+  /**
+   * * * @description This function searches for upcoming transactions based on the provided form data.
+   * It retrieves the payload for the family view if applicable, and then makes an API call to fetch the upcoming transactions.
+   * The results are processed and mapped to the `upcomming_trxn` array, which is then sorted and formatted.
+   * @returns {void}
+   * @memberof MfPortfolioComponent
+   */
   searchUpcommingTrxn = () =>{
     const pay_load = this.main_frm_dt?.view_type == 'F' ? this.getPayLoadForFamily(this.main_frm_dt) : this.main_frm_dt
       this.__dbIntr.api_call(1,'/clients/liveMFUpcoming',
@@ -2150,17 +2408,34 @@ mappings between `act_value` and `value` for transition durations. */
             }
          })
   }
-
+  /**
+   * * * @param date - The date to be set in the upcoming transaction.
+   * * @param valuation_as_on_date - The valuation date to compare with.
+   * * @param currDate - The current date object to be modified.
+   */
   setDateinUpcommingTrxn = (date,valuation_as_on_date,currDate) =>{
         currDate.setDate(date);
         currDate.setMonth(valuation_as_on_date > Number(date) ? (currDate.getMonth() + 1) : currDate.getMonth());
         return currDate
   }
-
+  /**
+   * * * @param tabs - An array of tab objects.
+   * * @description This function retrieves the details of a specific sub-tab based on the provided
+   * tabs array.
+   * It calls the `seleActivaTab` function to set the selected tab ID.
+   * @returns {void}
+   * @memberof MfPortfolioComponent
+   */
   getSubTabDtls = (tabs) =>{
     this.seleActivaTab(tabs);
   }
-
+  /**
+   * * * @param tabs - An object representing the selected tab.
+   * * @description This function sets the selected tab ID to the `selected_id` property.
+   * It is used to highlight the active tab in the UI.
+   * @returns {void}
+   * @memberof MfPortfolioComponent
+   */
   seleActivaTab = (tabs) =>{
     this.selected_id = tabs.id
   }
@@ -2186,11 +2461,21 @@ mappings between `act_value` and `value` for transition durations. */
   //     document.getElementById('matCard').style.borderRadius = '4px';
   //   }
   // }
+  /**
+   * * * @param byX - The number of pixels to scroll horizontally.
+   * * @description This function scrolls the navigation element horizontally by the specified number of pixels.
+   * It is used to navigate through the tabs in the UI.
+   * @returns {void}
+   * @memberof MfPortfolioComponent
+   */
   moveNavigation(byX) {
     var navigation= document.getElementsByClassName("cus__tab")[0];
     navigation.scrollLeft= navigation.scrollLeft + byX;
   }
-
+  /**
+   * * * @param ev - The event object containing the checkbox change event.
+   * * @param cat_index - The index of the category.
+   */
   categoryChange = (ev:MatCheckboxChange,cat_index:number) =>{
     // console.log(ev)
     this.subcategory(cat_index).controls.map((el,index) =>{
@@ -2208,6 +2493,16 @@ mappings between `act_value` and `value` for transition durations. */
   //   const is_all_subcategory_chacked = this.subcategory(cat_index).controls.length == this.subcategory(cat_index).controls.filter(el => el.get('is_checked')?.value).length
   //   this.funds().at(cat_index).get('is_checked')?.setValue(is_all_subcategory_chacked)
   //  }
+  /**
+   *  * * @param ev - The event object containing the checkbox change event.
+   *  * @param cat_index - The index of the category.
+   *  *  * @param sub_cat_index - The index of the subcategory.
+   * *  * @description This function handles the change event of a subcategory checkbox.
+   * It updates the `is_checked` value of all schemes within the subcategory based on the checkbox state.
+   * It also checks if all subcategories are checked and updates the category checkbox accordingly.
+   * @returns {void}
+   * @memberof MfPortfolioComponent
+   */
   subcategoryChange(ev:MatCheckboxChange,cat_index:number,sub_cat_index:number){
     this.scheme(cat_index,sub_cat_index).controls.forEach(item =>{
         item.get('is_checked')?.setValue(ev.checked);
@@ -2221,7 +2516,17 @@ mappings between `act_value` and `value` for transition durations. */
   //         const check_cat_cond = this.subcategory(cat_index).controls.filter(el => el.get('is_checked')?.value).length ==  this.subcategory(cat_index).controls.length;
   //         this.funds().at(cat_index).get('is_checked')?.setValue(check_cat_cond);
   // }
-
+   /**
+    * * * @param ev - The event object containing the checkbox change event.
+    * * @param cat_index - The index of the category.
+    * * @param sub_cat_index - The index of the subcategory.
+    * * @param fund_index - The index of the fund.
+    * * @description This function handles the change event of a fund checkbox.
+    * It updates the `is_checked` value of the subcategory checkbox based on whether all schemes within the subcategory are checked.
+    * It also checks if all subcategories are checked and updates the category checkbox accordingly.
+    * @returns {void}
+    * @memberof MfPortfolioComponent
+    */
   FundChange(ev:MatCheckboxChange,cat_index:number,sub_cat_index:number,fund_index:number){
     const check_cond = this.scheme(cat_index,sub_cat_index).controls.filter(el => el.get('is_checked')?.value).length == this.scheme(cat_index,sub_cat_index).controls.length;
     this.subcategory(cat_index).at(sub_cat_index).get('is_checked')?.setValue(check_cond);
@@ -2229,7 +2534,10 @@ mappings between `act_value` and `value` for transition durations. */
     this.funds().at(cat_index).get('is_checked')?.setValue(check_cat_cond);
   }
 
-
+  /**
+   * * * @param ev - The event object containing the tab change event.
+   * * @description This function handles the tab change event for the family details.
+   */
   TabDetails = (ev) =>{
     if(ev.index > 0){
           this.selected_tab_dtls = ev.tabDtls;
@@ -2259,7 +2567,11 @@ mappings between `act_value` and `value` for transition durations. */
           this.selected_tab_index_for_family = ev.index;
         }
   }
-
+  /**
+   * * * @param formData - The form data to be passed to the API.
+   * * @param index - The index of the selected tab.
+   * * @description This function calls the API for detailed summary based on the provided form data and index.
+   */
   call_api_for_detail_summary_func_as_promise(formData,index) {
       console.log('call_api_for_detail_summary_func_as_promise Called')
       // if(this.dataSource.length == 0){
@@ -2361,7 +2673,11 @@ mappings between `act_value` and `value` for transition durations. */
         })
       // }
   }
-
+  /**
+   * * * @param mf_report - The mutual fund report object containing category-wise and subcategory-wise flags.
+   * * @param modify_dt - The modified data array containing mutual fund portfolio details.
+   * * @description This function processes the mutual fund portfolio data based on the mutual fund report flags.
+   */
   letter(i){
     try{
       return String.fromCharCode(65+i);
@@ -2371,7 +2687,10 @@ mappings between `act_value` and `value` for transition durations. */
       return '';
     }
   }
-  
+  /**
+   * * * @param modify_dt - The modified data array containing mutual fund portfolio details.
+   * * @param mf_report - The mutual fund report object containing category-wise and subcategory
+   */
   exportAs(exportDtls){
     this.export__mode = exportDtls.mode
     let mode = exportDtls.export_type;
@@ -2454,6 +2773,10 @@ mappings between `act_value` and `value` for transition durations. */
       // })
     }
   }
+  /**
+   * * * @param mf_report - The mutual fund report object containing category-wise and subcategory-wise flags.
+   * * @param modify_dt - The modified data array containing mutual fund portfolio details.
+   */
   SentDocuments(){
       if(!this.clientDtls){
         this.utility.showSnackbar('Please select a client',2);
@@ -2509,7 +2832,19 @@ mappings between `act_value` and `value` for transition durations. */
       // console.log('sasasasaas')
     
   }
-
+  /**
+   * * * @param file - The file to be sent in the email.
+   * * @param email - The email address to which the file will be sent.
+   * * @param mobile - The mobile number to which the file will be sent.
+   * * @param outputIn - The output format for the email.
+   * * @param dob - The date of birth of the client.
+   * * * @param pan_no - The PAN number of the client.
+   * * @description This function sends the file in an email with a link to the client.
+   * It creates a FormData object, appends the necessary data, and makes an API call to send the email.
+   * If the output format is not 'We', it shows a success snackbar message.
+   * @returns {void}
+   * @memberof MfPortfolioComponent
+   */
   sentInEmail(file,email,mobile,outputIn,dob,pan_no){
       const fb = new FormData();
       fb.append('file',file)
@@ -2534,11 +2869,20 @@ mappings between `act_value` and `value` for transition durations. */
     }
     )
   }
-
+  /**
+   * * * @param modify_dt - The modified data array containing mutual fund portfolio details.
+   * * @param mf_report - The mutual fund report object containing category-wise and subcategory-wise flags.
+   * * @description This function processes the mutual fund portfolio data based on the mutual fund report flags.
+   */
   getCharacter(index) {
     return this.hexCharacters[index]
   }
-
+  /**
+   * * * @description This function generates a new random color in hexadecimal format.
+   * It creates a string starting with '#' and appends six random characters from the hexCharacters array.
+   * @returns {string} - The generated hexadecimal color representation.
+   * @memberof MfPortfolioComponent
+   */
   generateNewColor() {
     let hexColorRep = "#"
     for (let index = 0; index < 6; index++){
@@ -2548,7 +2892,11 @@ mappings between `act_value` and `value` for transition durations. */
     return hexColorRep
 }
 
-
+  /**
+   * * * @param modify_dt - The modified data array containing mutual fund portfolio details.
+   * * @param mf_report - The mutual fund report object containing category-wise and subcategory wise flags.
+   * * @description This function processes the mutual fund portfolio data based on the mutual fund report
+   */
   getPayLoadForFamily(formData){
     const pay_load =Object.assign({},{
       ...formData,

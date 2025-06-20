@@ -67,7 +67,11 @@ export class LiveSwpComponent implements OnInit {
 
  ngOnInit(): void {
  }
-
+ /**
+  * 
+  * @param formDt Form data to fetch the live SWP report
+  * @description Fetches the live SWP report based on the provided form data and updates the component state.
+  */
  LiveSwpReport = (formDt) =>{
   this.live_swp_rpt = [];
   let dt ={
@@ -94,15 +98,30 @@ searchSwpReport = (ev) =>{
   // console.log(ev);
   this.LiveSwpReport({...ev,swp_type:this.swp_type});
  }
-
+ /**
+  * 
+  * @param ev Event containing the value to filter the global search
+  * @description This function filters the global search input for the live SWP report table.
+  * It uses the value from the event to filter the table based on the 'contains' match mode.
+  */
  filterGlobal = (ev):void =>{
   let value = ev.target.value;
   this.primeTbl.filterGlobal(value, 'contains');
  }
+ /**
+  * 
+  * @param event Event containing the value to change the display state.
+  * @description This function toggles the display state between 'expanded' and 'collapsed'.
+  * It checks the current state and switches it to the opposite mode.
+  */
  changeState = (event) =>{
   this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
 }
-
+/**
+ * Exports the live SWP report data to an Excel file.
+ * @description This function formats the live SWP report data and exports it to an Excel file.
+ * It includes a disclaimer, column headers, and footer details for the exported file.
+ */
 exportExcel = () =>{
   const column = this.column.map(el => el.header);
   let dt = [];

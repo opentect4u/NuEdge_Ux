@@ -56,11 +56,21 @@ export class SystematicMissedTrxnComponent implements OnInit {
   constructor(private utility:UtiliService) { }
 
   ngOnInit(): void {}
-
+  /**
+   * * @description This function filters the global search input for the systematic missed transaction table.
+   * * It takes the event object as a parameter and retrieves the value from the input field.
+   * * The table is then filtered based on the value using the 'contains' filter match mode.
+   * @param $event This function filters the global search input for the systematic missed transaction table.
+   */
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.primaryTbl.filterGlobal(value,'contains')
   }
+  /**
+   * * @returns {Array} An array of columns formatted for the table.
+   * @description This function is used to get the columns for the systematic missed transaction table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.columns);
   }

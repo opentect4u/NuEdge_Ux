@@ -12,6 +12,11 @@ constructor(
   @Inject(DOCUMENT) private doc: Document
 ) { }
 
+/**
+ * @description This function is used to download a report in PDF format.
+ * It takes the table name, data, document name, PDF orientation, page width, and 
+ * divide by value as parameters.
+ */
 downloadReport(__tblName,dt,
   _doc_name,
   pdf_orientantion?: "p" | "portrait" | "l" | "landscape",
@@ -60,6 +65,10 @@ downloadReport(__tblName,dt,
   pdf.save(_doc_name);
 }
 
+/**
+ * @description This function is used to print a report by opening a new window
+ * and writing the report content into it. It includes styles for printing and a footer.
+ */
 printRPT(__id){
   let WindowObject ;
   const divToPrint = document.getElementById(__id);
@@ -97,6 +106,13 @@ printRPT(__id){
   }, 100);
 }
 
+/**
+ * @description This function exports data to an Excel file.
+ * It uses the xlsx library to convert JSON data into a worksheet,
+ * adds headers, and creates a Blob object for downloading.
+ * @param {Array} __dt - The data to be exported.
+ * @param {Array} excelHeaders - The headers for the Excel file.
+ */
 exportExl(__dt,excelHeaders){
   console.log(__dt);
 

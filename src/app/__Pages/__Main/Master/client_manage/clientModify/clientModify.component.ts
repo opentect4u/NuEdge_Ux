@@ -84,6 +84,14 @@ export class ClientModifyComponent implements OnInit {
     }
 
   }
+  /**
+   *  @description This function is used to prevent non-numeric input in the form fields
+   *  It uses the `dates.numberOnly` utility function to restrict input to numeric values only.
+   *  This is typically used in form controls where only numbers are expected, such as phone numbers or pincode fields.
+   *  @param __ev - The event object that contains information about the input event.
+   *  It is passed to the `dates.numberOnly` function to handle the input validation.
+   * @param __ev 
+   */
   preventNonumeric(__ev) {
     dates.numberOnly(__ev)
   }
@@ -111,16 +119,32 @@ export class ClientModifyComponent implements OnInit {
     /**End */
 
   }
+  /**
+   *  @description This function is used to get the list of districts based on the selected state.
+   *  It makes an API call to fetch the districts and updates the `__district` property with the response data.
+   *  This function is typically used to populate a dropdown or select input with districts based on the selected state.
+   * @param __state_id 
+   */
   getDistrict(__state_id) {
     this.__dbIntr.api_call(0, '/districts', 'state_id=' + __state_id).pipe(map((x: responseDT) => x.data)).subscribe(res => {
       this.__district = res;
     })
   }
+  /**
+   * 
+   * @param __district_id - This function is used to get the list of cities based on the selected district.
+   * It makes an API call to fetch the cities and updates the `__city` property with the response data.
+   * This function is typically used to populate a dropdown or select input with cities based on the selected district.
+   */
   getCity(__district_id) {
     this.__dbIntr.api_call(0, '/city', 'district_id=' + __district_id).pipe(map((x: responseDT) => x.data)).subscribe(res => {
       this.__city = res;
     })
   }
+  /**
+   * 
+   * @returns This function is used to submit the client modification form.
+   */
   submit() {
     console.log(this.__clientForm.value);
 
@@ -176,11 +200,23 @@ export class ClientModifyComponent implements OnInit {
       }
     })
   }
+  /**
+   * @description This function is used to fetch the list of states from the server.
+   * It makes an API call to the '/states' endpoint and updates the `__stateMaster` property with the response data.
+   * This function is typically called during component initialization to populate a dropdown or select input with states.
+   */
   getStateMaster() {
     this.__dbIntr.api_call(0, '/states', null).pipe(map((x: responseDT) => x.data)).subscribe(res => {
       this.__stateMaster = res;
     })
   }
+  /**
+   *  @description This function is used to populate the client form with the provided client data.
+   *  It clears the existing document controls, sets the client ID and type, and updates the form controls with the client data.
+   *  If the client type is 'E', it sets the form validators accordingly.
+   *  This function is typically called when editing an existing client or when initializing a new client form.
+   * @param __items 
+   */
   populateDT(__items: client) {
     this.__docs.controls.length = 0;
     this.setRNT(__items);
@@ -190,6 +226,13 @@ export class ClientModifyComponent implements OnInit {
       this.setfrmCtrlValidatior();
     }
   }
+  /**
+   * 
+   * @param __items - This function is used to set the client form with the provided client data.
+   * It updates the form controls with the client details such as name, date of birth, PAN, mobile numbers, email addresses, address lines, city, district, state, pincode, guardian's PAN and name, and relation.
+   * It also populates the document details if available.
+   * This function is typically called when editing an existing client or when initializing a new client form with pre-filled data.
+   */
   setRNT(__items: client) {
     console.log(__items);
     this.__clientForm.patchValue({
@@ -222,6 +265,12 @@ export class ClientModifyComponent implements OnInit {
     }
   }
 
+  /**
+   * @description This function is used to preview the latest client entry based on the query parameter 'flag'.
+   * It makes an API call to fetch the client data and populates the client master table with the response.
+   * If the 'flag' query parameter is not present, it does nothing.
+   * This function is typically called when the component is initialized to display the latest client entries.
+   */
   previewlatestClientEntry() {
     if (this.__route.snapshot.queryParamMap.get('flag') != null) {
       this.__dbIntr.api_call(0, '/client', 'client_type=' + atob(this.__route.snapshot.queryParamMap.get('flag'))).pipe((map((x: any) => x.data))).subscribe((res: client[]) => {
@@ -230,6 +279,10 @@ export class ClientModifyComponent implements OnInit {
     }
 
   }
+  /**
+   * 
+   * @param Client - This function is used to populate the client master table with the provided client data.
+   */
   poulateClientMst(Client: client[]) {
     this.__selectClient = new MatTableDataSource(Client);
     console.log(this.__selectClient);
@@ -237,6 +290,10 @@ export class ClientModifyComponent implements OnInit {
     this.__selectClient._updateChangeSubscription();
     this.__selectClient.paginator = this.paginator;
   }
+  /**
+   * @description This function is used to delete a client entry from the client master table.
+   * It takes the client ID as a parameter, filters the client data to remove the entry
+   */
   reset() {
     this.__clientForm.reset();
     this.__clientForm.patchValue({
@@ -254,6 +311,12 @@ export class ClientModifyComponent implements OnInit {
       return true;
     });
   }
+  /**
+   * @description This function is used to set the form control validators based on the client type.
+   * It checks the client type and applies the appropriate validators to the form controls.
+   * For example, if the client type is 'M', it removes the PAN validator, and if it is 'N', it removes multiple validators.
+   * This function is typically called when initializing or updating the client form to ensure that the correct validation rules are applied.
+   */
   setfrmCtrlValidatior() {
     switch (this.__cl_type) {
       case 'M': this.removeValidators(['pan']); break;
@@ -299,6 +362,13 @@ export class ClientModifyComponent implements OnInit {
       default: break;
     }
   }
+  /**
+   * 
+   * @param __frmCtrl - This function is used to set validators for the specified form controls in the client form.
+   * It iterates over the provided form control names and applies the specified validators to each control.
+   * After setting the validators, it updates the value and validity of each control.
+   * This function is typically called when initializing or updating the client form to ensure that the correct validation rules are applied.
+   */
   setValidators(__frmCtrl) {
     __frmCtrl.forEach(element => {
       console.log(element);
@@ -309,12 +379,25 @@ export class ClientModifyComponent implements OnInit {
     console.log(this.__clientForm.status);
 
   }
+  /**
+   * 
+   * @param __frmCtrl - This function is used to remove validators from the specified form controls in the client form.
+   * It iterates over the provided form control names and clears the validators for each control.
+   * After removing the validators, it updates the value and validity of each control.
+   * This function is typically called when resetting or modifying the client form to remove unnecessary validation rules.
+   */
   removeValidators(__frmCtrl) {
     __frmCtrl.forEach(element => {
       this.__clientForm.get(element).clearValidators();
       this.__clientForm.get(element).updateValueAndValidity();
     });
   }
+  /**
+   * @description This function is used to add a new item (document) to the client form.
+   * It pushes a new FormGroup item to the `doc_dtls` FormArray in the client form.
+   * If there is more than one document, it scrolls to the bottom of the document list smoothly after a short delay.
+   * This function is typically called when the user wants to add a new document entry in the client form.
+   */
   addItem(): void {
     this.__docs.push(this.createItem());
     if (this.__docs.length > 1) {
@@ -327,6 +410,13 @@ export class ClientModifyComponent implements OnInit {
       }, 50);
     }
   }
+  /**
+   * 
+   * @returns This function is used to create a new FormGroup item for the document details in the client form.
+   * It initializes the FormGroup with default values for the document ID, document type ID, document name, file preview, and file.
+   * This function is typically called when adding a new document entry in the client form.
+   * The `doc_name` control has a file extension validator applied to ensure that only allowed file types are accepted.
+   */
   createItem(): FormGroup {
     return new FormGroup({
       id: new FormControl(0),
@@ -336,12 +426,32 @@ export class ClientModifyComponent implements OnInit {
       file: new FormControl('')
     });
   }
+  /**
+   * 
+   * @param __index - This function is used to remove a document from the client form.
+   * It takes the index of the document to be removed as a parameter and removes the corresponding FormGroup item from the `doc_dtls` FormArray.
+   * This function is typically called when the user wants to delete a document entry in the client form.
+   */
   removeDocument(__index) {
     this.__docs.removeAt(__index);
   }
+  /**
+   * @description This getter function is used to access the `doc_dtls` FormArray from the client form.
+   * It allows easy access to the array of document details in the client form.
+   * This function is typically used to manipulate or retrieve document details in the client form.
+   * @returns The `doc_dtls` FormArray from the client form.
+   */
   get __docs(): FormArray {
     return this.__clientForm.get("doc_dtls") as FormArray;
   }
+  /**
+   * 
+   * @param id - This function is used to set a specific item (document) in the client form.
+   * @param type_id 
+   * @param doc 
+   * @param cl_id 
+   * @returns 
+   */
   setItem(id, type_id, doc, cl_id) {
     return new FormGroup({
       id: new FormControl(id),
@@ -351,6 +461,10 @@ export class ClientModifyComponent implements OnInit {
       file: new FormControl(`${environment.clientdocUrl}` + cl_id + '/' + doc)
     });
   }
+  /**
+   * @description This function is used to handle file selection for a specific document in the client form.
+   * It sets validators for the document name control based on the selected file, including file size
+   */
   getFiles(__ev, index, __type_id) {
     this.__docs.controls[index].get('doc_name').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
     this.__docs.controls[index].get('doc_name').updateValueAndValidity();
@@ -365,15 +479,33 @@ export class ClientModifyComponent implements OnInit {
       this.setFileValue(index)
     }
   }
+  /**
+   * @description This function is used to reset the file value for a specific document in the client form.
+   * It clears the file preview and file controls for the specified document index.
+   * This function is typically called when the user wants to remove or reset the file selection for a document.
+   * @param index - The index of the document in the `doc_dtls` FormArray to be reset.
+   */
   setFileValue(index) {
     this.__docs.controls[index].get('file_preview')?.reset();
     this.__docs.controls[index].get('file')?.reset();
   }
+  /**
+   * @description This function is used to fetch the document type master data from the server.
+   * It makes an API call to the '/documenttype' endpoint and updates the `__docTypeMaster` property with the response data.
+   * This function is typically called during component initialization to populate a dropdown or select input with document types.
+   */
   getDocumnetTypeMaster() {
     this.__dbIntr.api_call(0, '/documenttype', null).pipe(map((x: responseDT) => x.data)).subscribe((res: docType[]) => {
       this.__docTypeMaster = res;
     })
   }
+  /**
+   * @description This function is used to check if a PAN number already exists in the database.
+   * It makes an API call to the '/client' endpoint with the provided PAN number as a query parameter.
+   * If the response contains any data, it shows a snackbar message indicating that the PAN number already exists.
+   * This function is typically called when the user enters a PAN number in the form to validate its uniqueness.
+   * @param _pan - The event object containing the target value (PAN number) to be checked.
+   */
   checkPanExistornot(_pan){
     if(_pan.target.value != ''){
       this.__dbIntr.api_call(0,'/client','pan='+_pan.target.value).subscribe((res: responseDT) =>{

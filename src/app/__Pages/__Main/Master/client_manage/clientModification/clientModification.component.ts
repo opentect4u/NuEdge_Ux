@@ -1,3 +1,9 @@
+/**
+ * Client Modification Component
+ * This component is used to modify client details.
+ * It includes a form for client information and handles submission to the server.
+ */
+
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -62,6 +68,10 @@ export class ClientModificationComponent implements OnInit {
   ngOnInit() {
     this.getStateMaster();
   }
+  /**
+    * @description This function is used to submit the client modification form.
+    * It checks if the form is valid, and if so, it prepares the client data
+   */
   submit() {
     if (this.__clientForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error',0);
@@ -89,9 +99,18 @@ export class ClientModificationComponent implements OnInit {
       }
     })
   }
+  /**
+    * @description This function is used to prevent non-numeric input in the date field.
+    * It uses the dates utility to restrict input to numeric values only.
+   */
   preventNonumeric(__ev){
     dates.numberOnly(__ev);
   }
+  /**
+   * @description This function is used to get State Master data from the server.
+   * It makes an API call to fetch the state data and stores it in the __stateMaster variable.
+   * The data is then used to populate the state dropdown in the client modification form.
+   */
   getStateMaster(){
     this.__dbIntr.api_call(0,'/states',null).pipe(map((x: responseDT) => x.data)).subscribe(res =>{
       this.__stateMaster = res;

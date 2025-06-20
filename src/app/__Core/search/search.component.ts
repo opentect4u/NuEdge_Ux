@@ -72,7 +72,12 @@ export class SearchComponent implements OnInit {
         error: (err) => console.log(err),
       });
   }
-
+  /**
+   * @description This function is used to get the selected item from the search result
+   * @param __items - The selected item from the search result
+   * It resets the searchItem control with the selected item's details and emits the data to the parent component.
+   * It also hides the search result dropdown.
+   */
   getItems(__items) {
     this.__SearchForm.controls['searchItem'].reset(
       this.getSelectItemFromSearchList(__items),
@@ -81,21 +86,47 @@ export class SearchComponent implements OnInit {
     this.generateData(__items.id, 'F', __items);
     this.searchResultVisibility('none');
   }
+  /**
+   * @description This function is triggered when the user clicks outside the search result dropdown.
+   * It hides the search result dropdown.
+   * @param __ev - The event object containing the click event details
+   * It checks if the event is defined and then calls the searchResultVisibility method to hide the dropdown.
+   */
   outsideClick(__ev) {
     if (__ev) {
       this.searchResultVisibility('none');
     }
   }
+  /**
+   * @description This function is used to control the visibility of the search result dropdown.
+   * @param display_mode - The display mode to set for the search result dropdown (e.g., 'block', 'none')
+   * It sets the display style of the search result element based on the provided display_mode parameter.
+   */
   searchResultVisibility(display_mode) {
     this.__searchRlt.nativeElement.style.display = display_mode;
   }
+  /**
+   * @description This function is used to navigate back to the previous page.
+   * It uses the Location service to go back in the browser history.
+   * It is typically called when the user clicks a back button or wants to return to the previous page.
+   */
   navigate() {
     this.__loc.back();
   }
+  /**
+   * @description This function is used to add masters based on the provided ID.
+   * @param __id - The ID of the master to be added
+   * It generates data with the specified ID, flag 'A', and an empty item string.
+   * The generated data is then emitted through the __searchItem EventEmitter.
+   */
   addMasters(__id: number) {
     this.generateData(__id, 'A', '');
     console.log(__id);
   }
+  /**
+   * @description This function is used to generate data for the search item.
+   * @param _id - The ID of the item
+   */
   generateData(_id: number, __flag: string, __items) {
     var dt = {
       id: _id,
@@ -104,6 +135,12 @@ export class SearchComponent implements OnInit {
     };
     this.__searchItem.emit(dt);
   }
+  /**
+   * @description This function is used to clear the search text input.
+   * It emits an event with an object containing id 0, flag 'C', and an empty item string.
+   * It also resets the searchItem control in the SearchForm to an empty string.
+   * This function is typically called when the user wants to clear the search input field.
+   */
   ClearText() {
     var dt = {
       id: 0,
@@ -113,6 +150,13 @@ export class SearchComponent implements OnInit {
     this.__searchItem.emit(dt);
     this.__SearchForm.controls['searchItem'].reset('');
   }
+  /**
+   * @description This function is used to get the selected item from the search list based on the page title ID.
+   * It returns a formatted string based on the ID of the page title.
+   * @param __items - The item from the search list
+   * It checks the ID of the page title and returns a specific property or combination of properties from the __items object.
+   * This is used to display the selected item in a user-friendly format.
+   */
   getSelectItemFromSearchList(__items) {
     let item =
       this.__pageTitle.id == 13

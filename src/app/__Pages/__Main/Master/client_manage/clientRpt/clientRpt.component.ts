@@ -78,6 +78,11 @@ export class ClientRptComponent implements OnInit {
 
   }
 
+  /**
+   * 
+   * @param res - This parameter is used to set the columns based on the selected option.
+   * It filters the columns based on the client type and selected option.
+   */
    setColumns(res){
     const __columnToRemove =  ['edit','delete','upload_details','client_type'];
 
@@ -101,22 +106,49 @@ export class ClientRptComponent implements OnInit {
     this.__exportedClmns = this.__columns.filter((x: any) => !__columnToRemove.includes(x));
    }
 
+   /**
+    * @description This function is used to get the state master data from the API.
+    * It makes an API call to fetch the state data and assigns it to the __stateMst variable.
+    * The pluck operator is used to extract the "data" property from the response.
+    */
   getState(){
     this.__dbIntr.api_call(0,'/states',null).pipe(pluck("data")).subscribe(res =>{
       this.__stateMst = res;
     })
   }
+  /**
+   *  @description This function is used to get the district master data based on the selected state ID.
+   * It makes an API call to fetch the district data and assigns it to the __distMst variable.
+   * The pluck operator is used to extract the "data" property from the response.
+   * 
+   * @function getdistrict  
+   * @param {number[]} __state_id - An array of state IDs for which the districts are to be fetched.
+   * @returns {void} 
+   */
   getdistrict(__state_id){
     this.__dbIntr.api_call(0,'/districts','state_id_array='+ JSON.stringify(__state_id)).pipe(pluck("data")).subscribe(res =>{
       this.__distMst = res;
     })
   }
+  /**
+   * 
+   * @param __dist_id - An array of district IDs for which the cities are to be fetched.
+   * @description This function is used to get the city master data based on the selected district IDs.
+   * It makes an API call to fetch the city data and assigns it to the __cityMst variable.
+   * The pluck operator is used to extract the "data" property from the response.
+   */
   getcity(__dist_id){
     this.__dbIntr.api_call(0,'/city','district_id_array='+ JSON.stringify(__dist_id)).pipe(pluck("data")).subscribe(res =>{
       this.__cityMst = res;
     })
   }
 
+  /**
+   * 
+   * @param column_name - The name of the column to be exported.
+   * @param sort_by - The sorting order for the export, either 'asc' or 'desc'.
+   * @description This function is used to export the client data based on the specified column name and sorting order.
+   */
   tableExport(column_name: string | null ='', sort_by:string | null | '' = 'asc') {
     const __client = new FormData();
     __client.append('anniversary_date', this.__clientForm.value.anniversary_date);
@@ -190,6 +222,13 @@ export class ClientRptComponent implements OnInit {
         },
       });
   }
+  /**
+   * 
+   * @param __paginate - This parameter is used to get the pagination data from the API.
+   * It contains the URL for pagination and other parameters like anniversary date, client code, date of birth, mobile number, email, state, district, city, client type, column name, sorting order, city type, and pincode.
+   * 
+   * @description This function is used to get the paginated data from the API based on the provided pagination URL and parameters.
+   */
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -216,10 +255,23 @@ export class ClientRptComponent implements OnInit {
         });
     }
   }
+  /**
+   * 
+   * @param __paginate - This parameter is used to get the pagination data from the API.
+   * It contains the URL for pagination and other parameters like anniversary date, client code, date of birth, mobile number, email, state, district, city, client type, column name, sorting order, city type, and pincode.
+   * 
+   * @description This function is used to get the paginated data from the API based on the provided pagination URL and parameters.
+   */
   getval(__paginate) {
      this.__pageNumber.setValue(__paginate.toString());
     this.submit();
   }
+  /**
+   *  * @description This function is used to get the client master data from the API.
+   * It makes an API call to fetch the client data based on the client type and pagination.
+   * The data is then processed and displayed in a table format.
+   * @param __paginate 
+   */
   getClientMaster(__paginate: string | null = '10') {
     this.__dbIntr
       .api_call(
@@ -235,15 +287,32 @@ export class ClientRptComponent implements OnInit {
         this.__paginate = res.links;
       });
   }
+  /**
+   * 
+   * @param __res - This parameter is used to set the paginator for the client data.
+   * It takes the response data from the API and assigns it to the __selectClient variable, which is a MatTableDataSource.
+   * This allows the client data to be displayed in a table format with pagination.
+   * 
+   * @description This function is used to set the paginator for the client data.
+   */
   setPaginator(__res) {
     this.__selectClient = new MatTableDataSource(__res);
   }
+  /**
+   * @description This function is used to search for a client based on the provided client code.
+   * It filters the client data based on the client code and updates the visibility of the search result.
+   */
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * @description This function is used to search for a client based on the provided client code.
+   * It filters the client data based on the client code and updates the visibility of the search result.
+   * @param __clientCd - The client code to search for.
+   */
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
@@ -253,6 +322,12 @@ export class ClientRptComponent implements OnInit {
       right: this.data.right + 'px',
     });
   }
+  /**
+   * @description This function is used to toggle the visibility of the dialog.
+   * It removes the 'mat_dialog' panel class and adds the 'full_screen' panel class to the dialog reference.
+   * It also updates the position of the dialog reference to the top of the screen.
+   * The visibility state is toggled using the __isVisible variable.
+   */
   maximize() {
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
@@ -260,6 +335,11 @@ export class ClientRptComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
 
+  /**
+   * @description This function is used to search for a client based on the provided client code.
+   * It filters the client data based on the client code and updates the visibility of the search result.
+   * @param __clientCd - The client code to search for.
+   */
   exportPdf() {
     this.__Rpt.downloadReport(
       '#client',
@@ -271,6 +351,13 @@ export class ClientRptComponent implements OnInit {
   }
 
 
+  /**
+   * 
+   * @param column_name - The name of the column to be sorted.
+   * @param sort_by - The sorting order for the column, either 'asc' or 'desc'.
+   * @description This function is used to get the client report master data based on the provided column name and sorting order.
+   * It makes an API call to fetch the client data and updates the paginator and export data accordingly.
+   */
   getClientRPTMst(column_name: string | null ='', sort_by:string | null | '' = 'asc'){
       const __client = new FormData();
       __client.append('anniversary_date',this.__clientForm.value.anniversary_date);
@@ -294,9 +381,19 @@ export class ClientRptComponent implements OnInit {
       })
   }
 
+  /**
+   * @description This function is used to search for a client based on the provided client code.
+   * It filters the client data based on the client code and updates the visibility of the search result.
+   * It also resets the form values and sorting order.
+   */
   submit() {
      this.getClientRPTMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction)
   }
+  /**
+   * @description This function is used to refresh or advance the client filter.
+   * It resets the form values to their initial state, including clearing the client code, name, date of birth, mobile number, state, district, city, and options.
+   * It also sets the sorting order to ascending and submits the form to fetch the updated client data.
+   */
   refreshOrAdvanceFlt() {
     // this.getClientMaster();
     this.__clientForm.patchValue({
@@ -313,9 +410,24 @@ export class ClientRptComponent implements OnInit {
     this.__sortAscOrDsc = {active:'',direction:'asc'};
     this.submit();
   }
+  /**
+   * 
+   * @param __items - This parameter is used to populate the client details in the dialog.
+   * It contains the client details such as id, client_type, and other relevant information.
+   * 
+   * @description This function is used to open a dialog for populating the client details.
+   * It calls the openDialog function with the provided client details and sets the dialog configuration.
+   */
   populateDT(__items) {
     this.openDialog(__items, __items.id, __items.client_type);
   }
+  /**
+   * 
+   * @param __clDtls - This parameter is used to pass the client details to the dialog.
+   * It contains the client details such as id, client_type, and other relevant information.
+   * @param __clid 
+   * @param __clType 
+   */
   openDialog(__clDtls: client, __clid: number, __clType: string) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -384,6 +496,11 @@ export class ClientRptComponent implements OnInit {
       });
     }
   }
+  /**
+   * 
+   * @param row_obj - This parameter is used to update the row data in the client table.
+   * It contains the updated client details such as client name, code, date of birth, PAN, mobile, email, address, and other relevant information.
+   */
   updateRow(row_obj){
     console.log(row_obj);
 
@@ -458,10 +575,24 @@ export class ClientRptComponent implements OnInit {
         value.country = row_obj.country;
       })
   }
+  /**
+   * 
+   * @param sort - This parameter is used to sort the client data based on the specified column and order (ascending or descending).
+   * It contains the column name and sorting order.
+   * 
+   * @description This function is used to sort the client data based on the specified column and order.
+   * It updates the sorting order and submits the form to fetch the sorted client data.
+   */
   sortData(sort){
     this.__sortAscOrDsc = sort;
     this.submit();
   }
+  /**
+   * 
+   * @param __el - This parameter is used to delete a client from the client list.
+   * It contains the client details such as id and client name.
+   * @param index 
+   */
   deleteClient(__el,index){
     console.log(__el.id);
 
@@ -490,6 +621,14 @@ export class ClientRptComponent implements OnInit {
 
     })
   }
+  /**
+   * 
+   * @param client - This parameter is used to get the items for the selected client.
+   * @param mode - This parameter is used to specify the mode of operation, such as 'edit' or 'view'.
+   * 
+   * @description This function is used to get the items for the selected client.
+   * It resets the client code form control and hides the search result visibility for the client.
+   */
   getItems(client,mode){
     this.__clientForm.controls['client_code'].reset(
       client.client_name,
@@ -497,14 +636,37 @@ export class ClientRptComponent implements OnInit {
     );
     this.searchResultVisibilityForClient('none');
   }
+  /**
+   * 
+   * @param __ev - This parameter is used to handle the outside click event for the client search result.
+   * It hides the search result visibility for the client when an outside click occurs.
+   * 
+   * @description This function is used to handle the outside click event for the client search result.
+   * It hides the search result visibility for the client when an outside click occurs.
+   */
   outsideClickforClient(__ev) {
     if (__ev) {
       this.searchResultVisibilityForClient('none');
     }
   }
+  /**
+   * 
+   * @param display_mode - This parameter is used to set the display mode for the client code element.
+   * It determines whether the client code element should be displayed or hidden.
+   * 
+   * @description This function is used to set the display mode for the client code element.
+   * It updates the style display property of the client code element based on the provided display mode.
+   */
   searchResultVisibilityForClient(display_mode) {
     this.__clientCode.nativeElement.style.display = display_mode;
   }
+  /**
+   *  * @description This function is used to preview the documents uploaded by the client.
+   * It opens a dialog to display the uploaded documents.
+   * 
+   * @function PreviewDocs
+   * @param client - This parameter is used to preview the documents uploaded by the client.
+   */
   PreviewDocs(client){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.role = "dialog";

@@ -94,13 +94,21 @@ __kycLoginAt: any=[];
     this.addUpdateStatus();
     this.setBtn();
   }
-
+  /**
+   * 
+   * @description This function is used to set the button based on the RPTFor value.
+   * It sets the selectBtn array with different button configurations based on the RPTFor value.
+   */
   setBtn(){
     // this.selectBtn = (this.RPTFor == 'M' || this.RPTFor == 'A') ? [{ label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
     // : [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
     this.selectBtn = [{ label: 'Reset', value: 'R',icon:'pi pi-refresh' }];
   }
-
+  /**
+   * @description This function is used to add update status to the form array.
+   * It iterates over the UpdateStatus array and pushes each status into the update_status_id form array.
+   * The setLoggedStatusFormData function is used to create a new FormGroup for each status.
+   */
  addUpdateStatus(){
   if(this.RPTFor == 'M'){
    this.UpdateStatus.forEach(el =>{
@@ -108,7 +116,12 @@ __kycLoginAt: any=[];
    })
   }
  }
-
+ /**
+  * @description This function is used to add logged status to the form array.
+  * It checks if the RPTFor value is 'A' and then iterates over the __logggedInStatus array,
+  * pushing each status into the ack_logged_status form array.
+  * The setLoggedStatusFormData function is used to create a new FormGroup for each status.
+  */
   addLoggedStatus(){
     if(this.RPTFor == 'A'){
       this.__logggedInStatus.forEach(el =>{
@@ -129,6 +142,13 @@ __kycLoginAt: any=[];
        })
     }
   }
+  /**
+   * 
+   * @param loggedStatus This function is used to create a FormGroup for logged status.
+   * It initializes the FormGroup with default values if loggedStatus is not provided.
+   * The FormGroup contains fields such as id, name, value, and isChecked.
+   * @returns 
+   */
   setLoggedStatusFormData(loggedStatus){
    return new FormGroup({
     id:new FormControl(loggedStatus ? loggedStatus.id : 0),
@@ -137,10 +157,24 @@ __kycLoginAt: any=[];
     isChecked:new FormControl(false)
    })
   }
+  /**
+   * 
+   * @returns This function returns the minimum date allowed for the date range.
+   * It uses the dates.getminDate() function to get the minimum date and returns it as a Date object.
+   * @description This function is used to get the minimum date for the date range.
+   * It returns a Date object representing the minimum date allowed for the date range.
+   */
   getMinDate() {
       return new Date(dates.getminDate());
   }
-
+  /**
+   * 
+   * @param kyc_login This function is used to get the KYC login details based on the kyc_login type.
+   * It makes an API call to fetch the KYC login details and updates the kycLoginAt form control with the response data.
+   * The kyc_login parameter determines whether to fetch AMC or RNT data.
+   * @description This function is called when the kyc_login value changes in the form.
+   * It updates the kycLoginAt form control with the fetched data based on the kyc_login type.
+   */
   getKycLoginAtMaster(kyc_login){
 
     this.__dbIntr.api_call(0, kyc_login == 'A' ? '/amc' : '/rnt', null).pipe(map((x: responseDT) => x.data)).subscribe(res => {
@@ -151,6 +185,13 @@ __kycLoginAt: any=[];
 
     })
   }
+  /**
+   * * @param kyc_login_type - The type of KYC login (e.g., 'R', 'A', or other).
+   * @param res - The response data containing KYC login details.
+   * @description This function sets the kycLoginAt property based on the kyc_login_type and the response data.
+   * It filters the response data according to the kyc_login_type and assigns it to the __kycLoginAt property.
+   * If no response data is available, it sets __kycLoginAt to an empty array.
+   */
   setKycLoginAtAccordingToKycLogin(kyc_login_type,res){
     if(res.length > 0){
        switch(kyc_login_type){
@@ -332,12 +373,29 @@ __kycLoginAt: any=[];
         })
         /*** End */
   }
+  /**
+   * 
+   * @returns This function returns the current date in the format 'YYYY-MM-DD'.
+   * @description This function is used to get the current date in the format 'YYYY-MM-DD'.
+   * It uses the dates.getTodayDate() function to retrieve the current date.
+   * The returned date can be used for various purposes, such as setting default values in forms or displaying the current date.
+   */
   getTodayDate(){
     return dates.getTodayDate();
   }
+  /**
+   * @description This function is used to submit the KYC filter form.
+   * It emits the form value through the getKycMst event emitter.
+   * The form value is logged to the console for debugging purposes.
+   */
   submit(){
    this.getKycMst.emit(this.__kycFilterForm.value);
   }
+  /**
+   * @description This function is used to reset the KYC filter form.
+   * It sets the default values for various form controls and emits the resetKycMst event with the form value.
+   * The form is reset to its initial state, allowing the user to start a new search or filter operation.
+   */
   reset(){
     this.__kycFilterForm.get('options').setValue('2');
     this.__kycFilterForm.patchValue({
@@ -373,6 +431,13 @@ __kycLoginAt: any=[];
       this.searchResultVisibilityForTin('none');
     }
   }
+  /**
+   * 
+   * @param display_mode This function is used to control the visibility of the TIN search result element.
+   * It sets the display style of the TIN search result element based on the provided display_mode parameter.
+   * The display_mode parameter can be 'block', 'none', or any other valid CSS display value.
+   * This function is typically used to show or hide the TIN search result element in the user interface.
+   */
   searchResultVisibilityForTin(display_mode) {
     this.__searchTin.nativeElement.style.display = display_mode;
   }
@@ -384,6 +449,13 @@ __kycLoginAt: any=[];
       this.searchResultVisibilityForClient('none');
     }
   }
+  /**
+   * 
+   * @param display_mode This function is used to control the visibility of the client search result element.
+   * It sets the display style of the client search result element based on the provided display_mode parameter.
+   * The display_mode parameter can be 'block', 'none', or any other valid CSS display value.
+   * This function is typically used to show or hide the client search result element in the user interface.
+   */
   searchResultVisibilityForClient(display_mode) {
     this.__clientCode.nativeElement.style.display = display_mode;
   }
@@ -395,6 +467,11 @@ __kycLoginAt: any=[];
       this.searchResultVisibilityForSubBrk('none');
     }
   }
+  /**
+   * 
+   * @param display_mode This function is used to control the visibility of the sub broker ARN search result element.
+   * It sets the display style of the sub broker ARN search result element based on the provided
+   */
   searchResultVisibilityForSubBrk(display_mode) {
     this.__subBrkArn.nativeElement.style.display = display_mode;
   }
@@ -406,11 +483,27 @@ __kycLoginAt: any=[];
       this.searchResultVisibility('none');
     }
   }
+  /**
+   * 
+   * @param display_mode This function is used to control the visibility of the EUIN search result element.
+   * It sets the display style of the EUIN search result element based on the provided display_mode parameter.
+   * The display_mode parameter can be 'block', 'none', or any other valid CSS display value.
+   * This function is typically used to show or hide the EUIN search result element in the user interface.
+   */
   searchResultVisibility(display_mode) {
     this.__searchRlt.nativeElement.style.display = display_mode;
   }
   /** End */
-
+  /**
+   * 
+   * @param __items - This function is used to set the values of the KYC filter form based on the selected item.
+   * It updates the form controls with the values from the selected item and hides the search result elements.
+   * The __items parameter contains the data of the selected item, and __mode determines which form controls to update.
+   * @param __mode - This parameter indicates the mode of operation, which determines which form controls to update.
+   * It can be one of the following values: 'C' for client, 'E' for EUIN, 'T' for TIN, or 'S' for sub broker ARN.
+   * @description This function is called when an item is selected from the search results.
+   * It updates the form controls with the selected item's data and hides the search result elements accordingly.
+   */
   getItems(__items, __mode) {
     switch (__mode) {
       case 'C':
@@ -461,9 +554,25 @@ __kycLoginAt: any=[];
   //     { emitEvent: false }
   //   );
   // }
+  /**
+   * 
+   * @returns This function returns the minimum date allowed for the date range.
+   * It uses the dates.getminDate() function to retrieve the minimum date.
+   * The returned date can be used to set the minimum date for date pickers or other date-related functionalities.
+   * @description This function is used to get the minimum date for the date range.
+   * It returns a Date object representing the minimum date allowed for the date range.
+   */
   getminDate(){
     return dates.getminDate();
   }
+  /**
+   * 
+   * @param ev - This function is triggered when an item is clicked in the filter options.
+   * It checks the value of the clicked item and toggles the __isAdd property if the value is 'A'.
+   * If the value is not 'A', it resets the filter form by calling the reset() method.
+   * @description This function handles the click event for filter options and performs actions based on the clicked item's value.
+   * It allows users to toggle advanced filters or reset the filter form based on their selection.
+   */
   onItemClick(ev){
     if(ev.option.value == 'A'){
       //Advance Filter
@@ -474,6 +583,14 @@ __kycLoginAt: any=[];
       this.reset();
     }
   }
+  /**
+   * 
+   * @param ev - This function is triggered when the close button is clicked.
+   * It updates the frm_dt and to_dt form controls based on the selected date range.
+   * If a date range is selected, it formats the dates using the dates.getDateAfterChoose function.
+   * If no date range is selected, it sets the frm_dt and to_dt to empty strings.
+   * @description This function handles the close event for the filter form and updates the date fields accordingly.
+   */
   close(ev){
     this.__kycFilterForm.patchValue({
       frm_dt: this.__kycFilterForm.getRawValue().date_range ? dates.getDateAfterChoose(this.__kycFilterForm.getRawValue().date_range[0]) : '',

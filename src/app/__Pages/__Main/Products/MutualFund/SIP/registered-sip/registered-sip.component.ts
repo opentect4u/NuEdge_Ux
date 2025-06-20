@@ -62,7 +62,13 @@ export class RegisteredSIPComponent implements OnInit {
   ngOnInit(): void {
     this.setTitle(this.sub_tab[0].tab_name);
   }
-
+  /**
+   * Event fired at the time of change sip report
+   * @param ev
+   * @description This function is used to get the sip report data based on the selected tab.
+   * It calls the getSipMasterData function with the event data.
+   * The event data contains the filter criteria for the sip report.
+   */
   searchSipReport(ev){
     this.getSipMasterData(ev);
   }
@@ -79,11 +85,24 @@ export class RegisteredSIPComponent implements OnInit {
           this.column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes(this.sub_type == 'RR' ? 'LS-1' : 'U'));
 
     }
-
+    /**
+     *  Set Title for the component
+     *  @description This function sets the title for the component based on the provided title parameter.
+     *  It updates the __title property with the given title.
+     *  This function is used to dynamically change the title of the component.
+     *  @param {string} title - The title to be set for the component.
+     * @param title 
+     */
     setTitle = (title:string) =>{
       this.__title = title;
     }
-
+    /**
+     *  This function fetches the SIP master data based on the provided form data.
+     *  It makes an API call to retrieve the data and updates the register_sip array with the response.
+     *  It also calculates the total registered SIP amount and sets the state based on the response data length.
+     *  @description This function is used to get the SIP master data for the registered SIP report.
+     * @param form_data 
+     */
     getSipMasterData(form_data){
       this.register_sip = [];
       this.reset_data = 'N';
@@ -102,7 +121,10 @@ export class RegisteredSIPComponent implements OnInit {
         this.state = res.data.length > 0 ? displayMode[0] : displayMode[1];
       })
     }
-
+    /**
+     *  This function exports the registered SIP data to an Excel file.
+     *  It formats the data into columns and rows, including footer details for totals.
+     */
     exportExcel = () =>{
       const column = this.column.map(el => el.header);
       let dt = [];
@@ -241,19 +263,35 @@ export class RegisteredSIPComponent implements OnInit {
         this.disclaimer,column,dt,this.sub_type != 'RR' ? 'UNREGISTER SIP' : 'TO BE REGISTERED',this.sub_type != 'RR' ? 'UNREGISTER_SIP.xlsx' : 'TOBEREGISTERED_SIP.xlsx',footerDetails
       )
     }
-  
+    /**
+     * Convert a string to an ArrayBuffer.
+     * @param s The string to convert.
+     * @returns An ArrayBuffer representing the string.
+     * @description This function converts a string to an ArrayBuffer, which is useful for binary data manipulation.
+     */
     s2ab(s) {
       var buf = new ArrayBuffer(s.length);
       var view = new Uint8Array(buf);
       for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
       return buf;
       }
-
+      /**
+       * @description This function filters the global search input for the registered SIP table.
+       * It takes the event object as a parameter and retrieves the value from the input field.
+       * The table is then filtered based on the value using the 'contains' filter match mode.
+       * @param $event The event object containing the input value for filtering.
+       */
     filterGlobal = ($event) => {
       let value = $event.target.value;
       this.primeTbl.filterGlobal(value, 'contains');
     };
-
+    /**
+     * @description This function toggles the state of the component between 'collapsed' and 'expanded'.
+     * It checks the current state and changes it to the opposite state.
+     * If the current state is 'collapsed', it changes to 'expanded', and vice versa.
+     * @param event The event that triggers the state change.
+     * @returns void
+     */
     changeState = (event) => {
       this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
     };
@@ -264,7 +302,11 @@ export class RegisteredSIPComponent implements OnInit {
         this.changeWheelSpeed(el, 0.99);
       }, 500);
      }
-
+     /**
+      * @description This function changes the scroll speed of the container when mouse wheel is used.
+      * It takes a container element and a speed factor as parameters.
+      * The speed factor determines how fast the scrolling will be.
+      */
      changeWheelSpeed(container, speedY) {
       var scrollY = 0;
       var handleScrollReset = function() {

@@ -15,7 +15,11 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this._menu = this._menu.flatMap(({sub_menu}) =>sub_menu);
   }
-
+/**
+ * * @param item - The menu item object containing the URL to navigate to
+ * * @description This function is used to navigate to the specified URL when a menu item is clicked.
+ * * It uses the utility service to perform the navigation.
+ */
   getItems = (item) =>{
     this.utility.navigate(item.url);
   }

@@ -42,9 +42,20 @@ export class MegaMenuForColumnComponent implements OnInit,AfterContentChecked {
   ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
   }
+  /**
+   * @description This function is used to get the form array of column items
+   * It returns the 'clmItems' form array from the 'clmFrm' form group.
+   * This form array contains the individual column items with their properties.
+   * 
+   * @returns {FormArray} - The form array of column items.
+   */
   get clmItems() {
     return this.clmFrm.controls.clmItems as FormArray;
   }
+  /**
+   * @description This function is used to add checkboxes for each column in the column list
+   * It iterates through the 'ColumnList' and creates a form control for each column  
+   */
   addcheckColumn(selectedColumns){
     this.ColumnList.forEach((el) =>{
       this.clmItems.push(this.setClmCtrl(
@@ -57,6 +68,15 @@ export class MegaMenuForColumnComponent implements OnInit,AfterContentChecked {
     this.clmFrm.get('is_all').setValue((this.ColumnList.length == this.clmItems.value.filter(x => x.isChecked).length),{emitEvent:false});
       
   }
+  /**
+   * @description This function is used to create a form group for each column control
+   * It takes the parameters 'isChecked', 'clmName', 'id', and 'width' to create a form group
+   * @param {boolean} isChecked - Indicates whether the column is checked or not
+   * @param {string} clmName - The name of the column
+   * @param {string} id - The unique identifier for the column
+   * @param {number} width - The width of the column
+   * @returns {FormGroup} - A form group containing the column control properties
+   */
   setClmCtrl(isChecked,clmName,id,width){
    return new FormGroup({
     isChecked:new FormControl(isChecked),
@@ -67,6 +87,13 @@ export class MegaMenuForColumnComponent implements OnInit,AfterContentChecked {
     width:new FormControl(width)
    })
   }
+  /**
+   * @description This function is used to toggle the 'is_all' checkbox
+   * It sets the value of the 'is_all' checkbox to false when called.
+   * This is typically used to hide the mega menu when the user clicks outside of it.
+   * 
+   * @returns void
+   */
   hideMenu(){
     this.hideMegamenu.emit(false);
   }

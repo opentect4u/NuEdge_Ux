@@ -103,9 +103,23 @@ export class AMCEntryComponent implements OnInit {
           this.__amcForm.controls['l3_email'].setValue(res ? global.getActualVal(this.__amcForm.controls['local_contact_per_email'].value) : '');
     })
   }
+  /**
+   * @description This function is used to get the security questions and answers form array
+   * @returns FormArray - Returns the form array containing security questions and answers
+   * 
+   * This function retrieves the 'sec_qusAns' form array from the '__amcForm' FormGroup.
+   * It is used to manage a dynamic list of security questions and answers in the AMC entry form.
+   */
   get sec_qusAns(): FormArray {
     return this.__amcForm.get("sec_qusAns") as FormArray;
   }
+  /**
+   * @description This function is used to add security questions and answers to the form array
+   * @param secQusAns - An array of security questions and answers to be added to the form array
+   * 
+   * This function checks if the provided 'secQusAns' array is empty. If it is, it adds a new security question and answer form group.
+   * If 'secQusAns' contains data, it iterates through each element and adds a corresponding form group to the 'sec_qusAns' form array.
+   */
   addSecurityQuesAns(secQusAns : any | undefined | null = []): void {
     console.log(secQusAns);
 
@@ -118,6 +132,12 @@ export class AMCEntryComponent implements OnInit {
       })
     }
   }
+  /**
+   * @description This function creates a new FormGroup for security questions and answers
+   * @param id - The ID of the security question and answer (default is 0)
+   * @param sec_qus - The security question (default is an empty string)
+   * @param sec_ans - The security answer (default is an empty string)
+   */
   SecurityQuesAns(id: number | null = 0,
     sec_qus:string | null = '',
     sec_ans: string | null = '') : FormGroup{
@@ -127,18 +147,30 @@ export class AMCEntryComponent implements OnInit {
       sec_ans: new FormControl(sec_ans)
     })
   }
+  /**
+   * @description This function toggles the visibility of the dialog panel
+   * @returns void
+   */
   fullScreen(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({top:'0px'});
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * @description This function minimizes the dialog panel
+   * @returns void
+   */
   minimize(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.updateSize("40%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * @description This function maximizes the dialog panel
+   * @returns void
+   */
   maximize(){
     this.dialogRef.removePanelClass('full_screen');
     this.dialogRef.addPanelClass('mat_dialog');
@@ -151,14 +183,31 @@ export class AMCEntryComponent implements OnInit {
   //     this.__ProductMaster = res;
   //   })
   // }
+  /**
+   * @description This function retrieves the RNT master data from the server
+   * and updates the __RntMaster property with the response data.
+   * It makes an API call to fetch the RNT master data and subscribes to the response.
+   */
   getRNTMaster() {
     this.__dbIntr.api_call(0, '/rnt', null).pipe(map((x: responseDT) => x.data)).subscribe((res: rnt[]) => {
       this.__RntMaster = res;
     })
   }
+  /**
+   * @description This function is used to prevent non-numeric input in the date field
+   * @param __ev - The event object containing the input value
+   * 
+   * This function uses the 'dates' utility to restrict input to numeric values only.
+   * It is typically used in form fields where only numeric input is allowed, such as date fields.
+   */
   preventNonumeric(__ev) {
     dates.numberOnly(__ev);
   }
+  /**
+   * @description This function is used to submit the AMC form data
+   * It checks if the form is valid, and if so, it prepares the AMC data and sends it to the server.
+   * If the submission is successful, it resets the form and closes the dialog with the response data.
+   */
   submit() {
     if (this.__amcForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error', 0);
@@ -230,12 +279,27 @@ export class AMCEntryComponent implements OnInit {
 
     })
   }
+  /**
+   * @description This function resets the AMC form to its initial state
+   * It clears all form controls and sets the form to its pristine state.
+   * 
+   * This function is typically used to clear the form fields and reset the form validation status.
+   * It is useful when you want to start fresh with a new form submission or when you want to clear the existing data.
+   */
   reset(){
     this.__amcForm.reset();
   }
+  /**
+   * @description This function removes a security question and answer from the form array
+   * @param index - The index of the security question and answer to be removed
+   */
   removeSecurityQuesAns(index){
     this.sec_qusAns.removeAt(index);
   }
+  /**
+   * @description This function retrieves the file from the input event and sets the validators for the logo field
+   * @param __ev - The event object containing the file input
+   */
   getFile(__ev){
     this.__amcForm.controls['logo'].setValidators([fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
     this.__amcForm.controls['logo'].updateValueAndValidity();

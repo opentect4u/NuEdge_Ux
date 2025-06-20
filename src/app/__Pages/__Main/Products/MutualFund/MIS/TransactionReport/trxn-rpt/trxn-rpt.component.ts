@@ -467,7 +467,18 @@ export class TrxnRptComponent implements OnInit {
         this.trxnTypeMst = res;
       });
   };
-
+  /**
+   * 
+   * @param container - This function changes the mouse wheel scroll speed for a given container element.
+   * It listens for mouse wheel events and adjusts the scroll speed based on the provided speedY parameter.
+   * The scroll position is clamped to ensure it does not exceed the container's scrollable height.
+   * 
+   * @param container - The container element whose scroll speed is to be changed.
+   * @param speedY  - The speed factor by which the scroll speed will be adjusted.
+   * 
+   * @example 
+   * @returns 
+   */
   changeWheelSpeed(container, speedY) {
     var scrollY = 0;
     var handleScrollReset = function() {
@@ -875,6 +886,12 @@ export class TrxnRptComponent implements OnInit {
       });
   }
 
+  /**
+   * 
+   * @param dt - This function calculates the total amounts for various transaction types
+   * and updates the component's state with the calculated values.
+   * It also updates the transaction count summary and displays a message if no transactions are found.
+   */
   handleExport = (dt) =>{
     console.log(dt);
     let workbook = new ExcelJS.Workbook();
@@ -1001,7 +1018,13 @@ export class TrxnRptComponent implements OnInit {
     })
   }
 
-
+  /**
+   * Export Excel Function
+   * This function exports the transaction report data to an Excel file.
+   * It formats the data into a 2D array and uses the handleExport method to create and download the Excel file.
+   * 
+   * @returns void
+   */
   exportExcel = () =>{
      
       let dt = [];
@@ -1096,6 +1119,10 @@ export class TrxnRptComponent implements OnInit {
     //       link.click();
     //       link.remove();
   }
+  /**
+   *  Convert string to ArrayBuffer
+   *  This function converts a string to an ArrayBuffer, which is useful for binary data
+   */
   s2ab(s) {
     var buf = new ArrayBuffer(s.length);
     var view = new Uint8Array(buf);
@@ -1103,7 +1130,11 @@ export class TrxnRptComponent implements OnInit {
     return buf;
   }
 
-
+  /**
+   * This function calculates the process and rejection counts for transactions
+   * and updates the transaction amount count summary.
+   * It groups transactions by category and calculates totals for each category.
+   */
   async calculateProcess_Reject(res:TrxnRpt[]){
 
     /*** Group by Category */
@@ -1127,6 +1158,11 @@ export class TrxnRptComponent implements OnInit {
       // console.log(this.total__transaction_summary);
   }
 
+  /**
+   * This function calculates the total amounts for various transaction types
+   * and updates the component's state with the calculated values.
+   * It also updates the transaction count summary and displays a message if no transactions are found.
+   */
    calculateTotal = async (obj) =>{
      try{
        await Object.keys(obj).forEach(key =>{
@@ -1188,7 +1224,10 @@ export class TrxnRptComponent implements OnInit {
 
 
   /**
-   *
+   *  This function retrieves family members based on the family head's ID.
+   *  If an ID is provided, it makes an API call to fetch family details and updates the family members list.
+   *  If no ID is provided, it resets the family members list and form control.
+   * @param id - The ID of the family head (optional).
    */
   getFamilymemberAccordingToFamilyHead_Id = (id:number | undefined = undefined) =>{
             if(id){
@@ -1383,7 +1422,12 @@ export class TrxnRptComponent implements OnInit {
          this.searchTrxnReport();
     }
   };
-
+  /**
+   * This function sets the EUIN dropdown based on the selected sub-broker codes and relationship managers.
+   * It filters the EUIN master list to exclude those already associated with the selected sub-broker codes.
+   * If sub-broker codes are provided, it adds the EUINs associated with those codes to the EUIN master list.
+   * If no sub-broker codes are provided, it filters out EUINs already associated with the sub-broker ARN master list.
+   */
   setEuinDropdown = (sub_brk_cd, rm) => {
     this.__euinMst = rm.filter(
       (item) =>
@@ -1425,6 +1469,13 @@ export class TrxnRptComponent implements OnInit {
     const dt = this.misTrxnRpt.get('euin_no').value.filter(el => euin_no.includes( el.euin_no));
     this.misTrxnRpt.get('euin_no').setValue(dt,{emitEvent:false});
   };
+  /**
+   * This function disables the sub-broker dropdown based on the selected business type IDs.
+   * If the business type IDs include a code for 'B', it enables the sub-broker dropdown.
+   * Otherwise, it disables the sub-broker dropdown and resets its value to an empty array.
+   * 
+   * @param bu_type_ids - An array of business type IDs.
+   */
   disabledSubBroker(bu_type_ids) {
     if (bu_type_ids.findIndex((item) => item.bu_code == 'B') != -1) {
       this.misTrxnRpt.controls['sub_brk_cd'].enable();
@@ -1434,6 +1485,14 @@ export class TrxnRptComponent implements OnInit {
       this.__subbrkArnMst = [];
     }
   }
+  /**
+   * This function retrieves sub-broker master data based on the provided EUIN numbers. 
+   * It checks if the array of EUIN numbers is not empty, and if so, it makes an API call to fetch the sub-broker data.
+   * The retrieved data is then processed to create a list of sub-broker ARNs, which includes the sub-broker code, name, EUIN number, and employee EUIN number.
+   * If the array of EUIN numbers is empty, it resets the sub-broker master data and updates the form control for sub-broker codes.
+   * 
+   * @param arr_euin_no - An array of objects containing EUIN numbers.
+   */
   getSubBrokerMst(arr_euin_no) {
     if (arr_euin_no.length > 0) {
       this.dbIntr
@@ -1466,6 +1525,14 @@ export class TrxnRptComponent implements OnInit {
       this.misTrxnRpt.controls['sub_brk_cd'].setValue([]);
     }
   }
+  /**
+   * This function retrieves business type master data based on the provided branch codes.
+   * It checks if the array of branch codes is not empty, and if so, it makes an API call to fetch the business type data.
+   * The retrieved data is then processed to create a list of business types, which includes the business type code and name.
+   * If the array of branch codes is empty, it resets the business type master data and updates the form control for business type IDs.
+   * 
+   * @param brn_cd - An array of objects containing branch codes.
+   */
   getBusinessTypeMst(brn_cd) {
     console.log(brn_cd)
     if (brn_cd.length > 0) {
@@ -1492,6 +1559,11 @@ export class TrxnRptComponent implements OnInit {
       this.__bu_type = [];
     }
   }
+  /**
+   * This function retrieves the relationship manager master data based on the provided business type IDs and branch IDs.
+   * It checks if both arrays are not empty, and if so, it makes an API call to fetch the relationship manager data.
+   * The retrieved data is then processed to create a list of relationship managers, which includes the EUIN number and employee name.  
+   */
   getRelationShipManagerMst(bu_type_id, arr_branch_id) {
     if (bu_type_id.length > 0 && arr_branch_id.length > 0) {
       this.dbIntr
@@ -1524,24 +1596,53 @@ export class TrxnRptComponent implements OnInit {
     }
   }
 
-
+  /**
+   * This function filters the global search input for the primary table.
+   * It retrieves the value from the event target and applies a global filter to the primary table using the 'contains' match mode.
+   * 
+   * @param $event - The event object containing the search input value.
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
   }
 
+  /**
+   * This function filters the global search input for the secondary table.
+   * It retrieves the value from the event target and applies a global filter to the secondary table using the 'contains' match mode.
+   * 
+   * @param $event - The event object containing the search input value.
+   */
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.secondaryTbl.filterGlobal(value,'contains')
   }
 
+  /**
+   * This function retrieves the columns for the primary table.
+   * It uses the utility service to get the columns based on the defined column structure.
+   * 
+   * @returns An array of columns for the primary table.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }
 
+  /**
+   * This function retrieves the columns for the secondary table.
+   * It uses the utility service to get the columns based on the defined column structure.
+   * 
+   * @returns An array of columns for the secondary table.
+   */
   getcolumns_secondary = () =>{
     return this.utility.getColumns(this.column);
   }
+  /**
+   * This function is triggered when the user scrolls to the end of the investor list.
+   * It checks if the client name field is empty, and if so, it increments the pagination value and retrieves the client master data.
+   * 
+   * @param ev - The scroll event object.
+   */
   loadInvestorOnScrollToEnd = (ev) =>{
     // if(this.misTrxnRpt.value.client_name == ''){
     //   this.paginate+=1;
@@ -1577,9 +1678,21 @@ export class TrxnRptComponent implements OnInit {
       // console.log(ev);
   }
 
+  /**
+   *  This function toggles the state of the component between 'collapsed' and 'expanded'.
+   *  It updates the `state` property to reflect the current state.
+   *  If the state is 'collapsed', it changes to 'expanded', and vice versa.
+   * 
+   * @returns void
+   */
   toggle() {
     this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }
+  /**
+   * This function retrieves transaction details based on the specified column, transaction report, header title, and category.
+   * It closes any existing snack bar, resets the secondary table, and sets the popup header title.
+   * If the transaction report has data, it populates the `shwoPopup__trxn` array with the transaction details,
+   */
   getTransaction = async (column:string,trxn:TrxnRpt[],header:string,category:string) =>{
     this.utility.closeSnackBar();
     this.shwoPopup__trxn = [];

@@ -386,12 +386,23 @@ export class ReportFilterComponent implements OnInit {
       }
     })
   }
-
+  /**
+   * Set End Date for Monthly and Yearly Report
+   * This function is used to set the end date for monthly and yearly reports based on the current date.
+   * It calculates the maximum date allowed for the report based on the current date and sets it to max_dt.
+   * This is useful for ensuring that the report does not exceed the current date.
+   */
   setEndDateFormonthly_yearly = () =>{
     // this.max_dt = dates.calculateDates('T');
 
   }
-
+  /**
+   * @description This function is triggered when a menu item is clicked.
+   * It checks the value of the clicked item and performs actions accordingly.
+   * If the value is 'A', it calls the getBranchMst() function to fetch branch data.
+   * If the value is not 'A', it resets certain form controls and performs a search if the flag is 'R'.
+   * @param ev - The event object containing the clicked item's value.
+   */
   onItemClick = (ev) => {
     if (ev.option.value == 'A') {
       this.getBranchMst();
@@ -571,7 +582,11 @@ export class ReportFilterComponent implements OnInit {
         this.__branchMst = res;
       });
   };
-
+  /**
+   * Get Relationship Manager Master Data according to Branch and Business Type
+   * @param bu_type_ids
+   * @param brn_cd  
+   */
   toggle() {
     this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }
@@ -607,7 +622,11 @@ export class ReportFilterComponent implements OnInit {
     this.searchReport.emit(liveSipReportFilter);
   }
   /*******END */
-
+  /**
+   * @description This function sets the EUIN dropdown based on the selected sub broker codes and relationship managers.
+   * It filters the relationship managers to exclude those that are already associated with the selected sub brokers.
+   * If sub broker codes are provided, it adds the corresponding relationship managers to the EUIN dropdown.
+   */
   setEuinDropdown = (sub_brk_cd, rm) => {
     this.__euinMst = rm.filter(
       (item) =>
@@ -643,7 +662,12 @@ export class ReportFilterComponent implements OnInit {
     }
   };
 
-
+  /**
+   * @description This function disables the sub broker dropdown based on the selected business type IDs.
+   * If the business type IDs contain a broker code ('B'), the sub broker dropdown is enabled.
+   * Otherwise, it is disabled.
+   * @param bu_type_ids - An array of business type IDs to check against.
+   */
   disabledSubBroker(bu_type_ids) {
     if (bu_type_ids.findIndex((item) => item.bu_code == 'B') != -1) {
       this.monthly_mis_filter_form.controls['sub_brk_cd'].enable();
@@ -651,7 +675,10 @@ export class ReportFilterComponent implements OnInit {
       this.monthly_mis_filter_form.controls['sub_brk_cd'].disable();
     }
   }
-
+  /**
+   * @description This function retrieves the business type master data based on the provided branch codes.
+   * It makes an API call to fetch the business types associated with the given branch codes.
+   */
   getBusinessTypeMst(brn_cd) {
     if (brn_cd.length > 0) {
       this.dbIntr
@@ -674,7 +701,12 @@ export class ReportFilterComponent implements OnInit {
       this.__bu_type = [];
     }
   }
-
+  /**
+   * @description This function retrieves the sub broker master data based on the provided EUIN numbers.
+   * It makes an API call to fetch the sub broker details associated with the given EUIN numbers.
+   * If no EUIN numbers are provided, it resets the sub broker master data and clears the sub broker dropdown in the form.
+   * @param arr_euin_no - An array of objects containing EUIN numbers to fetch sub broker details for.
+   */
   getSubBrokerMst(arr_euin_no) {
     if (arr_euin_no.length > 0) {
       this.dbIntr
@@ -704,7 +736,10 @@ export class ReportFilterComponent implements OnInit {
       this.monthly_mis_filter_form.controls['sub_brk_cd'].setValue([]);
     }
   }
-
+  /**
+   * @description This function retrieves the relationship manager master data based on the provided business type IDs and branch codes.
+   * It makes an API call to fetch the relationship managers associated with the given business type IDs
+   */
   getRelationShipManagerMst(bu_type_id, arr_branch_id) {
     if (bu_type_id.length > 0 && arr_branch_id.length > 0) {
       this.dbIntr
@@ -733,11 +768,22 @@ export class ReportFilterComponent implements OnInit {
       this.monthly_mis_filter_form.controls['rm_id'].setValue([], { emitEvent: true });
     }
   }
-
+  /**
+   * @description This function sets the end date for the monthly MIS report.
+   * It is currently a placeholder function and does not perform any actions.
+   * This function can be used to set the end date for the monthly MIS report based on specific requirements in the future.
+   */
   setEndDate = () =>{
     // console.log('imm!! Manku Khaichilo')
   }
-
+  /**
+   * @description This function compares an existing monthly MIS object with a given object to check if they are the same.
+   * It checks if the 'actual' property of the existing monthly MIS object is equal to the 'actual' property of the object to check against.
+   * If the 'toCheckAgainst' object is not provided, it returns false.
+   * @param existing_mis_month - The existing monthly MIS object to compare against.
+   * @param toCheckAgainst - The object to check against the existing monthly MIS object.
+   * @returns {boolean} - Returns true if the 'actual' properties are equal, otherwise false.
+   */
   compareWith(existing_mis_month, toCheckAgainst) {
     if (!toCheckAgainst) {
       return false;

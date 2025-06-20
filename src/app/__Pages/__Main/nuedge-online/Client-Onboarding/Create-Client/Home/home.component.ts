@@ -20,6 +20,10 @@ export class HomeComponent implements OnInit {
         console.log(this.__menu)
   }
 
+  /**
+   * @description This function is used to navigate to the selected menu item
+   * @param ev - The event object containing the URL of the selected menu item
+   */
   getItems = (ev) => {
     this.utility.navigate(ev.url)
   }

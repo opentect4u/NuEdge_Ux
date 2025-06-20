@@ -26,18 +26,29 @@ export class RecentTrxnComponent implements OnInit {
   ngOnInit(): void {
 
   }
-
+  
   ngOnChanges(changes: SimpleChanges){
        queueMicrotask(()=>{
           this.totalAmt = global.Total__Count(this.recent_trxn,item => Number(item.tot_amount));
           this.totalUnit = global.Total__Count(this.recent_trxn,item => Number(item.tot_units))
         })
   }
-
+  /**
+   *  * @description This function filters the global search input for the recent transactions table.
+   * It takes the event object as a parameter and retrieves the value from the input field.
+   * The table is then filtered based on the value using the 'contains' filter match mode.
+   * @param $event This function filters the global search input for the recent transactions table.
+   */
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.primaryTbl.filterGlobal(value,'contains')
   }
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the table.
+   * @description This function is used to get the columns for the table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.recent_trxn_clmn);
   }

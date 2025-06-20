@@ -35,24 +35,50 @@ export class ModifyQueryStatusComponent implements OnInit {
     console.log(this.data.data);
     this.fetchQueryStatus();
   }
-
+  /**
+   * @description This function is used to close the dialog
+   * It updates the size of the dialog to 30% width and 47px height,
+   * and positions it at the bottom right corner of the screen.
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * @description This function is used to maximize the dialog
+   * It updates the size of the dialog to 40% width and toggles the visibility state of the dialog.
+   */
   maximize(){
     this.dialogRef.updateSize("40%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * @description This function is used to toggle the full screen mode of the dialog
+   * It updates the size of the dialog to 60% width and toggles the visibility state of the dialog.
+   */
   fullScreen(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * @description This function fetches the query status from the server
+   * and updates the `md_queryStatus` array with the response data.
+   * It uses the `pluck` operator to extract the `data` property from the response.
+   * The fetched data is of type `Partial<IQueryStatus>[]`, which is an array of objects
+   * that may contain partial properties of the `IQueryStatus` interface.
+   */
   fetchQueryStatus = () =>{
     this.__dbIntr.api_call(0,'/cus_service/queryStatus',null).pipe(pluck('data')).subscribe((res:Partial<IQueryStatus>[]) =>{
       this.md_queryStatus = res;
   })
   }
+  /**
+   * @description This function is used to submit the query status form.
+   * It converts the form data to a format suitable for the API call
+   * and makes a POST request to the server to update the query status.
+   * If the response indicates success, it closes the dialog with the response data
+   * and shows a success message using the utility service.
+   */
   submitQuery = () =>{
       this.__dbIntr.api_call(1,'/cus_service/queryAdd',this.utils.convertFormData(this.StatusForm.value))
       .subscribe((res:any) =>{

@@ -20,7 +20,12 @@ export class AsPerItdComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the table.
+   * @description This function is used to get the columns for the As Per ITD table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumns = () => {
     return this.utility.getColumns(this.as_per_itd_column);
   }

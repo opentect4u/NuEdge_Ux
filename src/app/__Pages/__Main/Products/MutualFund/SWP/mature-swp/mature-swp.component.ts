@@ -80,18 +80,38 @@ ngOnInit(): void {
   this.setTitle(data.tabDtls.tab_name);
   this.reset_data = 'Y';
 }
-
+/**
+ * 
+ * @param ev Event containing form data for searching SWP report
+ * @description Fetches the matured SWP report based on the provided form data and updates the component state.
+ */
 searchSwpReport = (ev) =>{
   this.getMaturedSwpMasterData(ev);
 }
+/**
+ * 
+ * @param title Title to be set for the component
+ * @description This function sets the title for the component based on the provided title parameter.
+ */
 setTitle = (title:string) =>{
   this.__title = title;
 }
+/**
+ * 
+ * @param ev Event containing the value to filter the global search
+ * @description This function filters the global search input for the matured SWP report table.
+ * It uses the value from the event to filter the table based on the 'contains' match mode.
+ */
 filterGlobal = (ev) =>{
   let value = ev.target.value;
   this.primeTbl.filterGlobal(value, 'contains');
 }
-
+/**
+ * 
+ * @param form_data Form data to fetch the matured SWP report
+ * @description This function retrieves the matured SWP master data based on the provided form data.
+ * It makes an API call to fetch the data and updates the component state accordingly.
+ */
 getMaturedSwpMasterData(form_data){
   this.mature_swp = [];
   this.reset_data = 'N';
@@ -110,11 +130,21 @@ getMaturedSwpMasterData(form_data){
     this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
   })
 }
-
+/**
+ * 
+ * @param event Event containing the value to change the display state.
+ * @description This function toggles the display state between 'expanded' and 'collapsed'.
+ * It checks the current state and switches it to the opposite mode.
+ */
 changeState = (event) =>{
   this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
 }
-
+/**
+ * Exports the matured SWP report data to an Excel file.
+ * 
+ * @description This function formats the matured SWP report data into an array and exports it to an Excel file.
+ * It includes a disclaimer and a footer with the grand total of the amounts.
+ */
 exportExcel = () =>{
   const column = this.column.map(el => el.header);
     let dt = [];

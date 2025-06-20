@@ -467,6 +467,18 @@ export class RejctTransactionComponent implements OnInit {
       });
   };
 
+  /**
+   * 
+   * @param container - This function changes the mouse wheel scroll speed for a given container element.
+   * It listens for mouse wheel events and adjusts the scroll speed based on the provided speedY parameter.
+   * 
+   * @param container - The container element to apply the scroll speed change to.
+   * @param speedY  - The speed factor for the vertical scroll. A value less than 1 will slow down the scroll speed, while a value greater than 1 will speed it up.
+   * 
+   * @description This function is used to change the mouse wheel scroll speed for a given container element.
+   * It listens for mouse wheel events and adjusts the scroll speed based on the provided speedY parameter.
+   * @returns 
+   */
   changeWheelSpeed(container, speedY) {
     var scrollY = 0;
     var handleScrollReset = function() {
@@ -875,6 +887,13 @@ export class RejctTransactionComponent implements OnInit {
       });
   }
 
+  /**
+   * 
+   * @param dt - This function handles the export of transaction details to an Excel file using the ExcelJS library.
+   * It creates a new workbook, adds a worksheet, sets the column headers, and populates the worksheet with transaction data.
+   * It also adds a footer row with grand totals and a disclaimer row at the end.
+   * Finally, it generates a Blob from the workbook data and triggers a download of the Excel file using the saveAs function.
+   */
   handleExport = (dt) =>{
     console.log(dt);
     let workbook = new ExcelJS.Workbook();
@@ -1001,7 +1020,10 @@ export class RejctTransactionComponent implements OnInit {
     })
   }
 
-
+  /**
+   * Export Transaction Report to Excel
+   * This function exports the transaction report data to an Excel file.
+   */
   exportExcel = () =>{
      
       let dt = [];
@@ -1096,6 +1118,13 @@ export class RejctTransactionComponent implements OnInit {
     //       link.click();
     //       link.remove();
   }
+  /**
+   * Convert string to ArrayBuffer
+   * @param s - The string to convert to an ArrayBuffer.
+   * @returns An ArrayBuffer representation of the input string.
+   * @description This function converts a string into an ArrayBuffer, which is useful for binary data manipulation.
+   * It creates a new ArrayBuffer, fills it with the character codes of the string, and returns the buffer.
+   */
   s2ab(s) {
     var buf = new ArrayBuffer(s.length);
     var view = new Uint8Array(buf);
@@ -1103,7 +1132,10 @@ export class RejctTransactionComponent implements OnInit {
     return buf;
   }
 
-
+  /**
+   * Calculate Process and Reject Transactions
+   * This function processes an array of transaction reports and groups them by category.
+   */
   async calculateProcess_Reject(res:TrxnRpt[]){
 
     /*** Group by Category */
@@ -1126,7 +1158,13 @@ export class RejctTransactionComponent implements OnInit {
       // this.exportExcel();
       // console.log(this.total__transaction_summary);
   }
-
+  /**
+   * Calculate Total Transaction Summary
+   * @param obj - The object containing transaction data to be processed.
+   * @description This function calculates the total transaction summary by iterating through the keys of the provided object.
+   * It updates the `total__transaction_summary` object with the cumulative values for each key, including processing and rejection counts.
+   * It handles both numeric and array values, ensuring that totals are correctly aggregated.
+   */
    calculateTotal = async (obj) =>{
      try{
        await Object.keys(obj).forEach(key =>{
@@ -1188,7 +1226,8 @@ export class RejctTransactionComponent implements OnInit {
 
 
   /**
-   *
+   *  Get Family Members according to Family Head ID
+   * @param id - Family Head ID
    */
   getFamilymemberAccordingToFamilyHead_Id = (id:number | undefined = undefined) =>{
             if(id){
@@ -1383,7 +1422,13 @@ export class RejctTransactionComponent implements OnInit {
          this.searchTrxnReport();
     }
   };
-
+  /**
+   * Set EUIN Dropdown based on Sub Broker and Relationship Manager
+   * @param sub_brk_cd - Array of sub broker codes
+   * @param rm - Array of relationship managers
+   * @description This function filters the EUIN master list based on the selected sub broker codes and relationship managers.
+   * It ensures that only EUINs that are not already assigned to the selected sub brokers are included in the dropdown.
+   */
   setEuinDropdown = (sub_brk_cd, rm) => {
     this.__euinMst = rm.filter(
       (item) =>
@@ -1425,6 +1470,12 @@ export class RejctTransactionComponent implements OnInit {
     const dt = this.misTrxnRpt.get('euin_no').value.filter(el => euin_no.includes( el.euin_no));
     this.misTrxnRpt.get('euin_no').setValue(dt,{emitEvent:false});
   };
+  /**
+   * Disable Sub Broker Dropdown based on Business Type
+   * @param bu_type_ids - Array of business type IDs
+   * @description This function enables or disables the sub broker dropdown based on the selected business types.
+   * If a business type with code 'B' is selected, the sub broker dropdown is enabled; otherwise, it is disabled and cleared.
+   */
   disabledSubBroker(bu_type_ids) {
     if (bu_type_ids.findIndex((item) => item.bu_code == 'B') != -1) {
       this.misTrxnRpt.controls['sub_brk_cd'].enable();
@@ -1434,6 +1485,13 @@ export class RejctTransactionComponent implements OnInit {
       this.__subbrkArnMst = [];
     }
   }
+  /**
+   * Get Sub Broker Master Data
+   * @param arr_euin_no - Array of EUIN numbers
+   * @description This function fetches the sub broker master data based on the provided EUIN numbers.
+   * It updates the `__subbrkArnMst` property with the fetched data and sets the sub broker dropdown values accordingly.
+   * If no EUIN numbers are provided, it clears the sub broker dropdown.
+   */
   getSubBrokerMst(arr_euin_no) {
     if (arr_euin_no.length > 0) {
       this.dbIntr
@@ -1466,6 +1524,13 @@ export class RejctTransactionComponent implements OnInit {
       this.misTrxnRpt.controls['sub_brk_cd'].setValue([]);
     }
   }
+  /**
+   * Get Business Type Master Data
+   * @param brn_cd - Array of branch codes
+   * @description This function fetches the business type master data based on the provided branch codes.
+   * It updates the `__bu_type` property with the fetched data and sets the business type dropdown values accordingly.
+   * If no branch codes are provided, it clears the business type dropdown.
+   */
   getBusinessTypeMst(brn_cd) {
     console.log(brn_cd)
     if (brn_cd.length > 0) {
@@ -1492,6 +1557,11 @@ export class RejctTransactionComponent implements OnInit {
       this.__bu_type = [];
     }
   }
+  /**
+   * Get Relationship Manager Master Data
+   * @param bu_type_id - Array of business type IDs
+   * @param arr_branch_id - Array of branch IDs
+   */
   getRelationShipManagerMst(bu_type_id, arr_branch_id) {
     if (bu_type_id.length > 0 && arr_branch_id.length > 0) {
       this.dbIntr
@@ -1524,24 +1594,47 @@ export class RejctTransactionComponent implements OnInit {
     }
   }
 
-
+  /**
+   * Filter Global Search
+   * @param $event - The event triggered by the global search input.
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
   }
-
+  /**
+   * Filter Global Search for Secondary Table
+   * @param $event - The event triggered by the global search input for the secondary table.
+   * @description This function filters the secondary table based on the global search input value.
+   * It uses the 'contains' filter match mode to filter the data displayed in the secondary table.
+   */
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.secondaryTbl.filterGlobal(value,'contains')
   }
-
+  /**
+   * Get Columns for Primary Table
+   * @returns An array of column definitions for the primary table.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }
-
+  /**
+   * Get Columns for Secondary Table
+   * @returns An array of column definitions for the secondary table.
+   * @description This function retrieves the column definitions for the secondary table using the utility service.
+   * It is used to dynamically generate the columns based on the provided column configuration.
+   */
   getcolumns_secondary = () =>{
     return this.utility.getColumns(this.column);
   }
+  /**
+   * Load Investor Data on Scroll to End
+   * @param ev - The event triggered when the user scrolls to the end of the investor list.
+   * @description This function is intended to load more investor data when the user scrolls to the end of the list.
+   * It can be used to implement infinite scrolling or pagination for the investor data.
+   * Currently, it is commented out and does not perform any actions.
+   */
   loadInvestorOnScrollToEnd = (ev) =>{
     // if(this.misTrxnRpt.value.client_name == ''){
     //   this.paginate+=1;
@@ -1576,10 +1669,19 @@ export class RejctTransactionComponent implements OnInit {
   changePage = (ev) =>{
       // console.log(ev);
   }
-
+  /**
+   * Toggle the state of the component
+   * @description This function toggles the state of the component between 'collapsed' and 'expanded'.
+   * It is typically used to show or hide additional content or functionality in the UI.
+   * The state is stored in the `state` property of the component.
+   */
   toggle() {
     this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }
+  /**
+   * Get Transaction Details
+   * @param column - The column name to filter the transaction report.
+   */
   getTransaction = async (column:string,trxn:TrxnRpt[],header:string,category:string) =>{
     this.utility.closeSnackBar();
     this.shwoPopup__trxn = [];

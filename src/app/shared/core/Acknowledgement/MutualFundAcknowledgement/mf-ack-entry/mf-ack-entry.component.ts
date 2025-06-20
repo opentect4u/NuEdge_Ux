@@ -48,12 +48,23 @@ export class MfAckEntryComponent implements OnInit {
               this.__ackUpload.get('ack_file').updateValueAndValidity();
         })
   }
-
+  /**
+   * @description This function is used to get the current date in ISO format
+   * It creates a new Date object, adjusts the minutes to account for the timezone offset,
+   * and returns the date in ISO format (YYYY-MM-DD).
+   * 
+   * @returns {string} The current date in ISO format (YYYY-MM-DD).
+   */
   getcurrenctDatetime(){
     var now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     return  now.toISOString().slice(0,10);
     }
+    /**
+     * @description This function is used to upload the acknowledgement file
+     * It creates a new FormData object, appends the necessary fields,
+     * and makes an API call to upload the acknowledgement.
+     */
     UploadAcknowledgement(){
       console.log(this.__ackUpload.value);
       const __ackUpload =  new FormData();
@@ -70,18 +81,42 @@ export class MfAckEntryComponent implements OnInit {
         this.__utility.showSnackbar(res.suc == 1 ? 'Acknowledgement Uploaded Successfully' : "Error in acknowledgement uploading" ,res.suc)
       })
     }
+    /**
+     * @description This function is used to close the dialog
+     * It checks if the form is valid, and if so, it calls the UploadAcknowledgement function.
+     * If the form is invalid, it shows a snackbar message indicating that submission failed due to some error.
+     */
     minimize(){
       this.dialogRef.updateSize("30%",'55px');
       this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
     }
+    /**
+     * @description This function is used to maximize the dialog
+     * It updates the size of the dialog to 50% of the screen width
+     * and toggles the visibility state of the dialog.
+     * 
+     * @returns void
+     */
     maximize(){
       this.dialogRef.updateSize("50%");
       this.__isVisible = !this.__isVisible;
     }
+    /** 
+     * @description This function is used to toggle the full screen mode of the dialog
+     * It updates the size of the dialog to 60% of the screen width
+     * and toggles the visibility state of the dialog.
+     * 
+     * @returns void
+     */
     fullScreen(){
       this.dialogRef.updateSize("60%");
       this.__isVisible = !this.__isVisible;
     }
+    /**
+     * @description This function is used to get the file from the input event
+     * It sets the value of the 'file' control in the form group to the selected file,
+     * and applies validators for file size and file extension.
+     */
     getFile(__ev){
       this.__ackUpload.controls['file'].setValue(__ev.target.files[0]);
 

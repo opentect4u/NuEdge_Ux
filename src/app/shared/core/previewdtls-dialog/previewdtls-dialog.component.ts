@@ -144,9 +144,32 @@ export class PreviewdtlsDialogComponent implements OnInit {
         })
     }
   }
+  /**
+   * @description This function is used to get the document details form array.
+   * It returns the form array containing document details.
+   * @returns {FormArray} - The form array containing document details.
+   */
   get __docs(): FormArray {
     return this.__frmDtls.get("doc_dtls") as FormArray;
   }
+  /**
+   * 
+   * @param id - The unique identifier for the document.
+   * @param type_id - The type identifier for the document.
+   * @param doc - The document name or path.
+   * @param type_id - The client ID associated with the document.
+   * @description This function creates a new FormGroup for a document item.
+   * It initializes the form controls with the provided parameters.
+   * If the document is not provided, it sets a default image path.
+   * @param doc - The document name or path.
+   * @param id - The unique identifier for the document.
+   * @param cl_id - The client ID associated with the document.
+   * @param type_id - The type identifier for the document.
+   * @description This function creates a new FormGroup for a document item.
+   * It initializes the form controls with the provided parameters.
+   * If the document is not provided, it sets a default image path.
+   * @returns 
+   */
   setItem(id, type_id, doc, cl_id) {
     console.log(doc);
     return new FormGroup({
@@ -157,6 +180,10 @@ export class PreviewdtlsDialogComponent implements OnInit {
       file: new FormControl(doc ? `${environment.clientdocUrl}` + cl_id + '/' + doc : this.__noImg)
     });
   }
+  /**
+   * @description This function is used to add a new document item to the form array.
+   * It creates a new FormGroup for the document item and pushes it to the form array
+   */
   getscmDtls(){
    this.__dbIntr.api_call(0,'/scheme','scheme_id='+this.data.dt.id).pipe(pluck("data")).subscribe(res =>{
     console.log(res);
@@ -168,19 +195,40 @@ export class PreviewdtlsDialogComponent implements OnInit {
     })
    })
   }
+  /**
+   * @description This function is used to add a new document item to the form array.
+   * It creates a new FormGroup for the document item and pushes it to the form array
+   */
   getDocumnetTypeMaster() {
     this.__dbIntr.api_call(0, '/documenttype', null).pipe(map((x: responseDT) => x.data)).subscribe((res: docType[]) => {
       this.__docTypeMaster = res;
     })
   }
-
+  /**
+   * @description This function is used to add a new document item to the form array.
+   * It creates a new FormGroup for the document item and pushes it to the form array
+   * @param {docType} docType - The document type to be added.
+   * @returns {void}
+   */
   getExtension(fileName){
     const ext = fileName.split('.');
     return fileName ? ext[ext.length - 1] : ''
   }
+  /**
+   * @description This function is used to add a new document item to the form array.
+   * It creates a new FormGroup for the document item and pushes it to the form array
+   * @param {docType} docType - The document type to be added.
+   * @returns {void}
+   */
   get pertner_dtls(): FormArray{
     return this.__frmDtls.get('pertner_dtls') as FormArray;
   }
+  /**
+   * @description This function is used to add a new partner details item to the form array.
+   * It creates a new FormGroup for the partner details item and pushes it to the form array.
+   * @param {any} pertnerDtls - The partner details to be added.
+   * @returns {void}
+   */
   setPertner(pertnerDtls){
     return new FormGroup({
         id:new FormControl(global.getActualVal(pertnerDtls) ? pertnerDtls.id : 0),
@@ -191,7 +239,12 @@ export class PreviewdtlsDialogComponent implements OnInit {
         pan:new FormControl(global.getActualVal(pertnerDtls) ?  pertnerDtls.pan : ''),
     })
   }
-
+  /**
+   * @description This function is used to add a new partner details item to the form array.
+   * It creates a new FormGroup for the partner details item and pushes it to the form array.
+   * @param {any} pertnerDtls - The partner details to be added.
+   * @returns {void}
+   */
   makeBankEditableorDisabled(){
     this.isEditable = !this.isEditable;
      if(!this.isEditable){
@@ -209,6 +262,11 @@ export class PreviewdtlsDialogComponent implements OnInit {
       this.__frmDtls.get('branch_addr').enable();
      }
   }
+  /** 
+   * @description This function is used to update the bank details.
+   * It creates a FormData object with the bank details and sends it to the server.
+   * If the response is successful, it closes the dialog and shows a success message.
+   */
   Update(){
     console.log(this.__frmDtls.value);
      const bank = new FormData();

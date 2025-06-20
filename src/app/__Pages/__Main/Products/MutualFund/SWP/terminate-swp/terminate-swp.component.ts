@@ -68,7 +68,11 @@ ngOnInit(): void {
     console.log(this.report_type);
   }, 3000);
 }
-
+/**
+ * 
+ * @param formDt Form data to fetch the live SWP report
+ * @description Fetches the live SWP report based on the provided form data and updates the component state.
+ */
 LiveSwpReport = (formDt) =>{
   this.live_swp_rpt = [];
     let dt ={
@@ -95,15 +99,31 @@ searchSwpReport = (ev) =>{
   this.LiveSwpReport({...ev,swp_type:this.swp_type});
  }
 
-
+/**
+ * 
+ * @param $event Event containing the search input for filtering the SWP report
+ * @description Filters the global search input for the SWP report table.
+ * It uses the value from the event to filter the table based on the 'contains' match mode.
+ */
  filterGlobal = ($event) => {
   let value = $event.target.value;
   this.primeTbl.filterGlobal(value, 'contains');
   }
+  /**
+   * 
+   * @param event Event containing the display mode to change the state of the component
+   * @description This function toggles the display state between 'expanded' and 'collapsed'.
+   * It updates the state based on the provided event value.
+   */
 changeState = (event) =>{
   this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
 }
-
+/**
+ * @description Exports the SWP report data to an Excel file.
+ * It constructs the data structure for the Excel file, including headers and footer details.
+ * The data is formatted according to the specified columns and includes a disclaimer.
+ * The exported file is named 'TERMINATE_SWP.xlsx'.
+ */
 exportExcel = () =>{
   const column = this.column.map(el => el.header);
     let dt = [];

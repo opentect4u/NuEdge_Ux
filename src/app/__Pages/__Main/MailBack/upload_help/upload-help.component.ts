@@ -179,6 +179,17 @@ export class UploadHelpComponent implements OnInit {
   };
   /**** END */
 
+  /**
+   * 
+   * @param res - This function modifies the master data of file upload help based on the response received from the backend API.
+   * It checks if the response is successful (suc == 1) and updates the `upload_file_help_mst_dt` array accordingly.
+   * If the `id` parameter is 0, it adds the new data to the beginning of the array.
+   * If the `id` is greater than 0, it updates the existing data in the array based on the `id`.
+   * Finally, it resets the form and shows a snackbar message indicating whether the operation was successful or not.
+   * @param res - The response object received from the backend API.
+   * @param id - The ID of the file upload help record being modified. If it is 0, a new record is being added; otherwise, an existing record is being updated.
+   * @returns void
+   */
   modifyMasterData(res:responseDT,id:number){
     if(res.suc == 1){
             if(id == 0){
@@ -243,11 +254,24 @@ export class UploadHelpComponent implements OnInit {
   /********************END****************************** */
     }
   /***** END */
+  /**
+   * 
+   * @param $event - This function filters the global data in the PrimeNG table based on the input value.
+   * It retrieves the value from the event target and applies a global filter to the table with 'contains' as the match mode.
+   * @param $event - The event object containing the input value for filtering.
+   * @returns void
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.pTableRef.filterGlobal(value,'contains')
   }
 
+  /**
+   * @description This function toggles the state of the component between 'collapsed' and 'expanded'.
+   * It changes the value of the `state` property to either 'collapsed' or 'expanded' based on its current value.
+   * This is typically used to show or hide additional content in the component.
+   * @returns void
+   */
   toggle() {
     this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }

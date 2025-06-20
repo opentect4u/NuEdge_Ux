@@ -219,6 +219,11 @@ export class NewClientComponent implements OnInit {
     this.fetchClientModeOfHolding();
   }
 
+  /**
+   * @description This function is used to scroll the view to the bottom
+   * It checks if the scrollContainer is defined and then scrolls to the bottom.
+   * It sets the shouldScroll flag to false after scrolling.
+   */
     fetchTaxStatus = () =>{
         this.dbIntr.api_call_for_nuedge_online(0,'/taxStatus',null).pipe(pluck('data'))
         .subscribe((res:any) =>{
@@ -226,6 +231,13 @@ export class NewClientComponent implements OnInit {
         })
     }
 
+    /**
+     * @description This function is used to fetch the client mode of holding
+     * It makes an API call to the '/clientHolding' endpoint and retrieves the data.
+     * The fetched data is then assigned to the md_clientHolding variable.
+     * 
+     * @returns void
+     */
     fetchClientModeOfHolding = () =>{
           this.dbIntr.api_call_for_nuedge_online(0,'/clientHolding',null)
           .pipe(pluck('data'))
@@ -234,6 +246,11 @@ export class NewClientComponent implements OnInit {
           })
     }
 
+    /**
+     * @description This function is used to fetch the country data
+     * It makes an API call to the '/country' endpoint and retrieves the data.
+     * The fetched data is then assigned to the md_country variable.
+     */
     fetchOccupation = () =>{
       if(this.md_occupation.length == 0){
         this.dbIntr.api_call_for_nuedge_online(0,'/occupationCode',null)
@@ -245,6 +262,11 @@ export class NewClientComponent implements OnInit {
       } 
     }
 
+    /**
+     * @description This function is used to fetch the country data
+     * It makes an API call to the '/country' endpoint and retrieves the data.
+     * The fetched data is then assigned to the md_country variable.
+     */
     fetchExemptCategoryDependOnPanExempt = () =>{
         if(this.md_exempt_category.length == 0){
           this.dbIntr.api_call_for_nuedge_online(0,'/panExemptCategory',null)
@@ -253,6 +275,13 @@ export class NewClientComponent implements OnInit {
         } 
     }
 
+    /**
+     * @description This function is used to fetch the country data
+     * It makes an API call to the '/country' endpoint and retrieves the data.
+     * The fetched data is then assigned to the md_country variable.
+     * 
+     * @returns void
+     */
     fetchGaurdianExemptCategoryDependOnGaurdianPanExempt = () =>{
         if(this.md_gaurdian_exempt_category.length == 0){
           this.dbIntr.api_call_for_nuedge_online(0,'/panExemptCategory',null)
@@ -261,6 +290,11 @@ export class NewClientComponent implements OnInit {
         } 
     }
 
+    /**
+     * @description This function is used to fetch the country data
+     * It makes an API call to the '/country' endpoint and retrieves the data.
+     * The fetched data is then assigned to the md_country variable.
+     */
     fetchAccountType = () =>{
       if(this.md_accountType.length == 0){
           this.dbIntr.api_call_for_nuedge_online(0,'/accountType',null)
@@ -269,6 +303,11 @@ export class NewClientComponent implements OnInit {
         } 
     }
 
+    /**
+     * @description This function is used to fetch the country data
+     * It makes an API call to the '/country' endpoint and retrieves the data.
+     * The fetched data is then assigned to the md_country variable.
+     */
     fetchDividendPayMode = () =>{
        if(this.md_divPayMode.length == 0){
         this.dbIntr.api_call_for_nuedge_online(0,'/dividendPaymode',null)
@@ -279,6 +318,11 @@ export class NewClientComponent implements OnInit {
        } 
     }
 
+    /**
+     * @description This function is used to fetch the country data
+     * It makes an API call to the '/country' endpoint and retrieves the data.
+     * The fetched data is then assigned to the md_country variable.
+     */
     fetchRelationShip = () =>{
           if(this.md_relationship.length == 0){
               this.dbIntr.api_call_for_nuedge_online(0,'/relationship',null)
@@ -529,6 +573,14 @@ export class NewClientComponent implements OnInit {
     }
   }
 
+  /**
+   * 
+   * @param range - The number of nominees to be added or removed
+   * @description This function is used to add or remove nominees based on the range provided.
+   * If the number of nominees is greater than 0, it calculates the difference between the current number of nominees and the range.
+   * If the difference is positive, it adds nominees; if negative, it removes nominees.
+   * If there are no nominees, it initializes the nominees with the specified range.
+   */
   addNominee = (range) =>{
         if(this.nominee.length > 0){
             const diff = Number(range) - this.nominee.length;
@@ -555,6 +607,13 @@ export class NewClientComponent implements OnInit {
         }
   }
 
+  /**
+   * 
+   * @param range - The number of nominees to set the percentage for
+   * @description This function sets the percentage of nominees based on the number of selected nominees.
+   * It iterates through the nominees and sets the percentage to 100 for the first nominee and 0 for the rest.
+   * This ensures that the total percentage across all nominees always equals 100%.
+   */
   setPercentageOfNomineesDependOnNumberOfSelectedNominee = (range) =>{
       for(let i=0;i<range;i++){
            const percentage = i == 0 ? 100 : 0
@@ -563,19 +622,69 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  /**
+   * @param control - The form control to validate
+   * @returns A validator function that checks if the percentage is valid
+   * @description This function returns a validator function that checks if the percentage of nominees is valid.
+   */
   get nominee(): FormArray {
     return this.new_client_form.get('nominee_dtls.nominee') as FormArray;
   }
 
+  /**
+   * @param control - The form control to validate
+   * @returns A validator function that checks if the percentage is valid
+   */
   get joint_holder():FormArray {
     return this.new_client_form.get('customer_dtls.joint_holder') as FormArray;
   }
 
+  /**
+   * @param control - The form control to validate
+   * @returns A validator function that checks if the percentage is valid
+   */
   get bank(): FormArray {
     return this.new_client_form.get('bank_dtls.bank') as FormArray;
   }
 
 
+  /**
+   * 
+   * @param title  - The title of the joint holder
+   * @param first_name - The first name of the joint holder
+   * @param middle_name - The middle name of the joint holder
+   * @param last_name - The last name of the joint holder
+   * @param pan - The PAN of the joint holder
+   * @param dob - The date of birth of the joint holder
+   * @param first_name - The first name of the joint holder
+   * @param middle_name - The middle name of the joint holder
+   * @param last_name - The last name of the joint holder
+   * @param pan - The PAN of the joint holder
+   * @description This function is used to set the joint holder details in the form.
+   * It returns a FormGroup with the joint holder details.
+   * @param dob - The date of birth of the joint holder
+   * @param gender -  The gender of the joint holder   
+   * @param occupation - The occupation of the joint holder
+   * @param kyc_type - The KYC type of the joint holder
+   * @param inv_ckyc - The CKYC number of the joint holder 
+   * @param kyc_type - The KYC type of the joint holder
+   * @param exempt_category - The exempt category of the joint holder
+   * @param inv_ckyc - The CKYC number of the joint holder
+   * @param exempt_ref_number - The exempt reference number of the joint holder
+   * @param exempt_category - The exempt category of the joint holder
+   * @param pan_exempt - The PAN exempt status of the joint holder
+   * @param ckyc_number - The CKYC number of the joint holder
+   * @param pan_exempt - The PAN exempt status of the joint holder
+   * @param exempt_category - The exempt category of the joint holder
+   * @param ckyc_number - The CKYC number of the joint holder
+   * @param exempt_ref_number - The exempt reference number of the joint holder
+   * @param exempt_ref_number - The exempt reference number of the joint holder
+   * @param email - The email of the joint holder
+   * @param email_dec_flag - The email declaration flag of the joint holder
+   * @param mobile - The mobile number of the joint holder
+   * @param mobile_dec_flag - The mobile declaration flag of the joint holder
+   * @returns 
+   */
   setJointHolder(
     title='',first_name='',middle_name='',last_name='',
     pan='',
@@ -610,6 +719,10 @@ export class NewClientComponent implements OnInit {
     })
   }
 
+  /**
+   * @description This function is used to set the nominee details in the form.
+   * It returns a FormGroup with the nominee details.
+   */
   setNominee(
     nominee_percentage=100,
     nominee_type='',
@@ -679,6 +792,31 @@ export class NewClientComponent implements OnInit {
     })
   }
 
+  /**
+   * 
+   * @param ifsc_code - The IFSC code of the bank
+   * @param acc_type - The account type of the bank
+   * @param acc_no - The account number of the bank
+   * @param micr - The MICR code of the bank
+   * @description This function is used to set the bank details in the form.
+   * It returns a FormGroup with the bank details.
+   * @param bank_name - The name of the bank
+   * @param bank_branch -   The branch of the bank  
+   * @param bank_address - The address of the bank
+   * @param bank_city - The city of the bank
+   * @param bank_district - The district of the bank
+   * @param bank_state - The state of the bank
+   * @param bank_pincode - The pincode of the bank
+   * @param default_bank_flag - The default bank flag
+   * @param bank_country - The country of the bank
+   * @param md_bank_state - The metadata for the bank state
+   * @param md_bank_district - The metadata for the bank district
+   * @param md_bank_city - The metadata for the bank city
+   * @param md_bank_pincode - The metadata for the bank pincode
+   * @description This function is used to set the bank details in the form.
+   * It returns a FormGroup with the bank details.
+   * @returns 
+   */
   setBankDetails(
     ifsc_code:string='',
     acc_type:string='',
@@ -734,6 +872,17 @@ export class NewClientComponent implements OnInit {
     return isValid ? null : { notNumeric: true };
   }
 
+  /**
+   * 
+   * @param item - The step item to change to
+   * @param index - The index of the step item
+   * @description This function is used to change the step in the step wizard.
+   * @param index - The index of the step item
+   * It updates the step, step_wizard_title, and step_content_name based on the item and index.
+   * It also fetches the required data based on the step id.
+   * If the new client form is invalid, it does not change the step.
+   * @returns
+   */
   changeStep = (item,index) => {
     // if(this.new_client_form.invalid && index > this.step){}
     // else{
@@ -773,6 +922,10 @@ export class NewClientComponent implements OnInit {
     // }
   }
 
+  /**
+   * @description This function is used to set the validation for the form controls based on the step.
+   * It sets the validation for the form controls based on the step id.
+   */
   getCountry = () => {
     if(this.md_country.length == 0){
       this.dbIntr.api_call(0,'/country',null).pipe(pluck('data')).subscribe((res:any) =>{
@@ -781,6 +934,14 @@ export class NewClientComponent implements OnInit {
     }
   }
 
+  /**
+   * 
+   * @param countryId - The ID of the country to get the states for
+   * @description This function is used to get the states by country ID.
+   * It checks if the md_state array is empty, and if so, it makes an API call to fetch the states for the given country ID.
+   * The fetched states are then stored in the md_state array.
+   * @returns
+   */
   getStateByCountryId = (countryId) =>{
       if(this.md_state.length == 0){
         this.dbIntr.api_call(0,`/states?country_id=${countryId}`,null)
@@ -790,6 +951,10 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  /**
+   * @param stateId - The ID of the state to get the districts for
+   * @description This function is used to get the districts by state ID.
+   */
   getDistrictByStateId = (stateId) =>{
     if(this.md_district.length == 0){
       this.dbIntr.api_call(0,`/districts?state_id=${stateId}`,null)
@@ -799,6 +964,10 @@ export class NewClientComponent implements OnInit {
     }
   }
 
+  /**
+   * @param districtId - The ID of the district to get the cities for
+   * @description This function is used to get the cities by district ID.
+   */
   getcityByDistrictId = (districtId) =>{
     if(this.md_city.length == 0){
       this.dbIntr.api_call(0,`/city?district_id=${districtId}`,null)
@@ -808,6 +977,13 @@ export class NewClientComponent implements OnInit {
     }
   }
 
+  /**
+   *  * @param cityId - The ID of the city to get the pin codes for
+   * @description This function is used to get the pin codes by city ID.
+   * It checks if the md_pincode array is empty, and if so, it makes an API call to fetch the pin codes for the given city ID.
+   * The fetched pin codes are then stored in the md_pincode array.
+   * @returns
+   */
   getpinCodeByCityId = (cityId) =>{
     if(this.md_pincode.length == 0){
       this.dbIntr.api_call(0,`/pincode?city_id=${cityId}`,null)
@@ -818,10 +994,22 @@ export class NewClientComponent implements OnInit {
     }
   }
 
+  /**
+   * @description This function is used to add more bank details to the form.
+   * It pushes a new FormGroup with bank details to the bank FormArray.
+   * It also sets the shouldScroll flag to true to enable scrolling to the bottom of the form.
+   * @returns
+   */
   addMoreBank(){
     this.bank.push(this.setBankDetails());
     this.shouldScroll = true;
   }
+  /**
+   * @description This function is used to scroll to the bottom of the form.
+   * It uses the window.scrollTo method to scroll to the bottom of the document body.
+   * If there is an error during scrolling, it logs the error to the console.
+   * @returns 
+   */
   private scrollToBottom(): void {
     try {
       // this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
@@ -830,10 +1018,20 @@ export class NewClientComponent implements OnInit {
       console.error('Scroll failed:', err);
     }
   }
+  /**
+   * @param index - The index of the bank to delete
+   * @description This function is used to delete a bank from the bank FormArray.
+   * It removes the bank at the specified index from the bank FormArray.
+   * @returns
+   */
   deleteBank(index){
     this.bank.removeAt(index)
   }
 
+  /**
+   * @description This function is used to fetch the occupation list from the API.
+   * It checks if the mdOccupation array is empty, and if so, it makes an
+   */
   fetchCommunicationMode = () =>{
         if(this.mdCommunicationMode.length == 0){
               this.dbIntr.api_call_for_nuedge_online(0,'/communicationMode',null)
@@ -844,6 +1042,11 @@ export class NewClientComponent implements OnInit {
         }
   }
 
+  /**
+   * @description This function is used to fetch the occupation list from the API.
+   * It checks if the mdOccupation array is empty, and if so, it makes an API call to fetch the occupations.
+   * The fetched occupations are then stored in the mdOccupation array.
+   */
   get1stepEntry(ev){
       this.custEntry = ev;
       this.joint_holder.clear();
@@ -864,28 +1067,60 @@ export class NewClientComponent implements OnInit {
      
   }
 
+  /**
+   * @description This function is used to fetch the occupation list from the API.
+   * It checks if the mdOccupation array is empty, and if so, it makes an
+   */
   getStepWizardContent = () =>{
     this.step_wizard = this.step_wizard.filter(el => el.id != 1);
     // console.log(this.step_wizard);
     this.changeStep(this.step_wizard[0],0)
   }
 
+  /**
+   * @description This function is used to fetch the occupation list from the API.
+   * It checks if the mdOccupation array is empty, and if so, it makes an API call to fetch the occupations.
+   * The fetched occupations are then stored in the mdOccupation array.
+   */
   addJointHolder(){
     this.joint_holder.push(this.setJointHolder());
     console.log(this.joint_holder.length)
   }
+  /**
+   * @description This function is used to go to the previous step in the step wizard.
+   * It decreases the step by 1 and calls the changeStep function with the previous step item and its index.
+   * If the step is already at the first step, it does nothing.
+   * @returns
+   */
   goPrev(){
     const dt = this.step - 1;
     this.changeStep(this.step_wizard[dt],dt);
     
   }
+  /**
+   * @description This function is used to go to the next step in the step wizard.
+   * It increases the step by 1 and calls the changeStep function with the next step item and its index.
+   * If the step is already at the last step, it does nothing.
+   * @returns
+   */
   goNext(){
     const dt = this.step + 1;
     this.changeStep(this.step_wizard[dt],dt);
   }
+  /**
+   * @param index - The index of the joint holder to delete
+   * @description This function is used to delete a joint holder from the joint_holder FormArray.
+   * It removes the joint holder at the specified index from the joint_holder FormArray.
+   * If there is only one joint holder left, it does not allow deletion.
+   * @returns
+   */
   deleteJointHolder(index){
     this.joint_holder.removeAt(index)
   }
+  /**
+   * @param ev - The event object containing the selected nominee type
+   * @param index - The index of the nominee in the FormArray
+   */
   onChangeNomineeType(ev,index){
       this.nominee.controls[index].get('nominee_gaurdian_name').setValue('');
       this.nominee.controls[index].get('nominee_gaurdian_pan').setValue('');
@@ -912,6 +1147,13 @@ export class NewClientComponent implements OnInit {
 
   }
 
+  /**
+   * @param item - The step item to set the validation for
+   * @description This function is used to set the validation for the form controls based on the step.
+   * It clears the validators for all form controls and sets the validators based on the step id.
+   * It also calls the validateField function to validate the specific field based on the step.
+   * @returns
+   */
   setValidationDependOnStep = (item) => {
       // console.log(item);
       Object.keys(this.new_client_form.controls).forEach(controlName => {
@@ -944,6 +1186,11 @@ export class NewClientComponent implements OnInit {
     
   }
 
+  /**
+   * @param form_controls - The array of form control names
+   * @param formControlName - The name of the form control to validate
+   * @description This function is used to validate a specific field in the form.
+   */
     validateField = (form_controls,formControlName) =>{
       form_controls.forEach(el =>{
         if(el == formControlName){
@@ -1184,6 +1431,10 @@ export class NewClientComponent implements OnInit {
       console.log(this.new_client_form.controls)
     }
 
+    /**
+     * @param control - The FormGroup control to validate
+     * @param formControlName - The name of the form control to validate
+     */
     nestedValidateField = (control,formControlName,index) => {
            Object.keys(control.value).forEach(key =>{
                   if(formControlName == 'customer_dtls'){
@@ -1369,7 +1620,12 @@ export class NewClientComponent implements OnInit {
         return null;  // valid
       }
 
-
+      /**
+       * @description This function checks if a form control has a required validator.
+       * It takes the control name as a parameter and returns true if the control has a required validator, otherwise false.
+       * @param controlName - The name of the form control to check for required validator
+       * @returns boolean - true if the control has a required validator, false otherwise
+       */
      hasRequiredValidator(controlName: string): boolean {
       try{
         const control = this.new_client_form.get(controlName);
@@ -1382,6 +1638,13 @@ export class NewClientComponent implements OnInit {
      
     }
 
+    /**
+     * @description This function checks if a form control in the joint_holder FormArray has a required validator.
+     * It takes the control name and index as parameters and returns true if the control has a required validator, otherwise false.
+     * @param controlName - The name of the form control to check for required validator
+     * @param index - The index of the joint holder in the FormArray
+     * @returns boolean - true if the control has a required validator, false otherwise
+     */
     hasRequiredValidatorForJointHolder = (controlName: string,index): boolean =>{
       try{
         const control = this.joint_holder.at(index).get(controlName);
@@ -1392,6 +1655,10 @@ export class NewClientComponent implements OnInit {
         return false
       }
     }
+    /**
+     * @description This function checks if a form control in the nominee FormArray has a required validator.
+     * It takes the control name and index as parameters and returns true if the control has a
+     */
      hasRequiredValidatorForNominee = (controlName: string,index): boolean =>{
       try{
         const control = this.nominee.at(index).get(controlName);
@@ -1403,6 +1670,13 @@ export class NewClientComponent implements OnInit {
       }
     }
 
+    /**
+     * @description This function checks if a form control in the bank FormArray has a required validator.
+     * It takes the control name and index as parameters and returns true if the control has a required validator, otherwise false.
+     * @param controlName - The name of the form control to check for required validator
+     * @param index - The index of the bank in the FormArray
+     * @returns boolean - true if the control has a required validator, false otherwise
+     */
      hasRequiredValidatorForBankDtls = (controlName: string,index): boolean =>{
       try{
         const control = this.bank.at(index).get(controlName);
@@ -1414,6 +1688,13 @@ export class NewClientComponent implements OnInit {
       }
     }
 
+    /**
+     * @description This function validates the age of a user based on their date of birth.
+     * It checks if the user is old enough based on the minimum age provided.
+     * If the date of birth is invalid or empty, it skips validation.
+     * @param minAge - The minimum age to validate against
+     * @returns ValidatorFn - A function that takes an AbstractControl and returns ValidationErrors or null
+     */
     minAgeValidator(minAge: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const dob = new Date(control.value);
@@ -1433,6 +1714,10 @@ export class NewClientComponent implements OnInit {
     };
   }
 
+  /**
+   * @description This function is used to handle the change event of the pan_exempt field in the joint_holder FormArray.
+   * It updates the validators for the pan, exempt_category, and exempt_ref_number fields based
+   */
   handleChangePanOfJointHolder = (ev,index) =>{
         this.joint_holder.at(index).get('exempt_category').setValue('');   
          this.joint_holder.at(index).get('pan').setValue('');    
@@ -1472,6 +1757,10 @@ export class NewClientComponent implements OnInit {
 
   }
 
+  /**
+   * @description This function is used to handle the blur event of the pan field in the joint_holder FormArray.
+   * It updates the validators for the pan field based on the value of the pan_exempt
+   */
   handleBlurValidatorForJointHolder = (ev,index) =>{
     console.log(ev.target.value)
       if(ev.target.value 
@@ -1483,6 +1772,13 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  /**
+   * @description This function is used to fetch the mobile and email declaration flags from the database.
+   * It checks if the flags are already fetched and if not, it makes an API call to fetch them.
+   * The fetched flags are stored in the mdMobileEmailDecFlag array.
+   * 
+   * @returns void
+   */
   fetchMobileEmailDeclarationFlag = () =>{
         if(this.mdMobileEmailDecFlag.length == 0){
            this.dbIntr.api_call_for_nuedge_online(0,'/mobileEmailDeclaration',null)
@@ -1493,9 +1789,16 @@ export class NewClientComponent implements OnInit {
         }
   }
 
+  /**
+   * @description This function is used to create a new client.
+   * It validates the new_client_form and if valid, it either goes to the next step or submits the form data.
+   * The form data is prepared by appending various fields and their values to a FormData object.
+   * 
+   * @returns void
+   */
   createNewClient(){
     console.log(this.new_client_form.value);
-     return;
+    //  return;
     if(this.new_client_form.invalid){
       console.log('****** VALIDATION ERROR IN FORM **********');
       return;
@@ -1726,6 +2029,12 @@ export class NewClientComponent implements OnInit {
    
   }
 
+  /**
+   * @description This function is used to handle the change event of the KYC type for joint holders.
+   * It updates the validators for the ckyc_number field based on the selected KYC type.
+   * If the KYC type is 'C', it sets the ckyc_number field as required.
+   * If the KYC type is not 'C', it removes the required validator from the ckyc_number field.
+   */
   handleChangeKycTypeOfJointHolder = (ev,index) =>{
         this.joint_holder.at(index).get('ckyc_number').setValue('');
        if(ev.target.value == 'C'){
@@ -1736,6 +2045,11 @@ export class NewClientComponent implements OnInit {
        }
        this.joint_holder.at(index).get('ckyc_number').updateValueAndValidity({emitEvent:false});
   }
+  /**
+   * @description This function is used to handle the blur event of the mobile field for joint holders.
+   * It updates the validators for the mobile_dec_flag field based on the value of the mobile field.
+   * If the mobile field has a value, it sets the mobile_dec_flag field as required.
+   */
   handleBlurForJointHolderMobile = (ev,index) =>{
       //  this.joint_holder.at(index).get('mobile_dec_flag').setValue('');
       //  if(ev.target.value){
@@ -1747,6 +2061,11 @@ export class NewClientComponent implements OnInit {
       //  this.joint_holder.at(index).get('mobile_dec_flag').updateValueAndValidity({emitEvent:false});
   }
 
+  /**
+   * @description This function is used to handle the blur event of the email field for joint holders.
+   * It updates the validators for the email_dec_flag field based on the value of the email field.
+   * If the email field has a value, it sets the email_dec_flag field as required.
+   */
   handleBlurForJointHolderEmail = (ev,index) =>{
       //  this.joint_holder.at(index).get('email_dec_flag').setValue('');
       //  if(ev.target.value){
@@ -1758,6 +2077,14 @@ export class NewClientComponent implements OnInit {
       //  this.joint_holder.at(index).get('email_dec_flag').updateValueAndValidity({emitEvent:false});
   }
 
+  /**
+   * @description This function is used to handle the change event of the default bank flag in the bank FormArray.
+   * It sets the default_bank_flag of all other banks to 'N' when a bank is set as default.
+   * It logs the event and index of the bank being changed.
+   * 
+   * @param ev - The change event from the default bank flag input
+   * @param index - The index of the bank in the FormArray
+   */
   changeDefaultBankFlag = (ev,index) =>{
     console.log('********************* CHANGE EVENT OF DEFAULT BANK FLAG ***********************')
     console.log(index);
@@ -1773,6 +2100,11 @@ export class NewClientComponent implements OnInit {
     })
   }
 
+  /**
+   * @description This function is used to handle the change event of the country field in the nominee FormArray.
+   * It resets the state, district, city, and pincode fields for the nominee at the specified index.
+   * It fetches the states for the selected country and updates the md_nominee_state field.
+   */
   onChangeCountry = (ev,index) =>{
         this.nominee.controls[index].get('nominee_state').setValue('');
         this.nominee.controls[index].get('nominee_district').setValue('');
@@ -1787,6 +2119,14 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  /**
+   * @description This function is used to handle the change event of the country field in the bank FormArray.
+   * It resets the state, district, city, and pincode fields for the bank at the specified index.
+   * It fetches the states for the selected country and updates the md_bank_state field.
+   * 
+   * @param ev - The change event from the country input
+   * @param index - The index of the bank in the FormArray
+   */
   onChangeBankCountry = (ev,index) =>{
       this.bank.controls[index].get('bank_state').setValue('');
       this.bank.controls[index].get('bank_district').setValue('');
@@ -1801,6 +2141,10 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  /**
+   * @description This function fetches the states based on the selected country for the bank FormArray.
+   * It makes an API call to fetch the states and updates the md_bank_state field for the specified index.
+   */
   fetchBankStateByCountry = (countryId,index) =>{
      this.dbIntr.api_call(0,`/states?country_id=${countryId}`,null)
       .pipe(pluck('data')).subscribe((res:any) =>{
@@ -1808,6 +2152,13 @@ export class NewClientComponent implements OnInit {
       })
   }
 
+  /**
+   * @description This function fetches the states based on the selected country for the nominee FormArray.
+   * It makes an API call to fetch the states and updates the md_nominee_state field for the specified index.
+   * 
+   * @param countryId - The ID of the selected country
+   * @param index - The index of the nominee in the FormArray
+   */
   fetchNomineeStateByCountry = (countryId,index) =>{
       this.dbIntr.api_call(0,`/states?country_id=${countryId}`,null)
         .pipe(pluck('data')).subscribe((res:any) =>{
@@ -1815,6 +2166,11 @@ export class NewClientComponent implements OnInit {
         })
   }
 
+  /**
+   * @description This function is used to handle the change event of the state field in the nominee FormArray.
+   * It resets the district, city, and pincode fields for the nominee at the specified index.
+   * It fetches the districts for the selected state and updates the md_nominee_district field.
+   */
   onChangeState = (ev,index) =>{
       this.nominee.controls[index].get('nominee_district').setValue('');
       this.nominee.controls[index].get('nominee_city').setValue('');
@@ -1827,6 +2183,11 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  /**
+   * @description This function is used to handle the change event of the state field in the bank FormArray.
+   * It resets the district, city, and pincode fields for the bank at the specified index.
+   * It fetches the districts for the selected state and updates the md_bank_district field.
+   */
   onChangeBankState = (ev,index) =>{
       this.bank.controls[index].get('bank_district').setValue('');
       this.bank.controls[index].get('bank_city').setValue('');
@@ -1838,6 +2199,13 @@ export class NewClientComponent implements OnInit {
         this.fetchBankDistrictByState(ev.target?.value,index)
       }
   }
+  /**
+   * @description This function fetches the districts based on the selected state for the bank FormArray.
+   * It makes an API call to fetch the districts and updates the md_bank_district field for the specified index.
+   * 
+   * @param stateId - The ID of the selected state
+   * @param index - The index of the bank in the FormArray
+   */
   fetchBankDistrictByState  = (stateId,index) =>{
       this.dbIntr.api_call(0,`/districts?state_id=${stateId}`,null)
       .pipe(pluck('data')).subscribe((res:any) =>{
@@ -1845,6 +2213,10 @@ export class NewClientComponent implements OnInit {
       })
   }
 
+  /**
+   * @description This function fetches the districts based on the selected state for the nominee FormArray.
+   * It makes an API call to fetch the districts and updates the md_nominee_district
+   */
   fetchNomineeDistrictByState = (stateId,index) =>{
       this.dbIntr.api_call(0,`/districts?state_id=${stateId}`,null)
         .pipe(pluck('data')).subscribe((res:any) =>{
@@ -1852,6 +2224,11 @@ export class NewClientComponent implements OnInit {
         })
   }
 
+  /**
+   * @description This function is used to handle the change event of the district field in the nominee FormArray.
+   * It resets the city and pincode fields for the nominee at the specified index.
+   * It fetches the cities for the selected district and updates the md_nominee_city field.
+   */
   onChangeDistrict = (ev,index) =>{
       this.nominee.controls[index].get('nominee_city').setValue('');
       this.nominee.controls[index].get('md_nominee_city').setValue([]);
@@ -1862,6 +2239,11 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  /**
+   * @description This function is used to handle the change event of the district field in the bank FormArray.
+   * It resets the city and pincode fields for the bank at the specified index.
+   * It fetches the cities for the selected district and updates the md_bank_city field.
+   */
   onChangeBankDistrict = (ev,index) =>{
       this.bank.controls[index].get('bank_city').setValue('');
       this.bank.controls[index].get('md_bank_city').setValue([]);
@@ -1871,6 +2253,13 @@ export class NewClientComponent implements OnInit {
         this.fetchBankCityByDistrict(ev.target?.value,index)
       }
   }
+  /**
+   * @description This function fetches the cities based on the selected district for the bank FormArray.
+   * It makes an API call to fetch the cities and updates the md_bank_city field for the specified index.
+   * 
+   * @param districtId - The ID of the selected district
+   * @param index - The index of the bank in the FormArray
+   */
   fetchBankCityByDistrict = (districtId,index) =>{
         this.dbIntr.api_call(0,`/city?district_id=${districtId}`,null)
         .pipe(pluck('data')).subscribe((res:any) =>{
@@ -1878,6 +2267,13 @@ export class NewClientComponent implements OnInit {
         })
   }
 
+  /**
+   * @description This function fetches the cities based on the selected district for the nominee FormArray.
+   * It makes an API call to fetch the cities and updates the md_nominee_city field for the specified index.
+   * 
+   * @param districtId - The ID of the selected district
+   * @param index - The index of the nominee in the FormArray
+   */
   fetchNomineeCityByDistrict = (districtId,index) =>{
         this.dbIntr.api_call(0,`/city?district_id=${districtId}`,null)
         .pipe(pluck('data')).subscribe((res:any) =>{
@@ -1885,6 +2281,11 @@ export class NewClientComponent implements OnInit {
         })
   }
 
+  /**
+   * @description This function is used to handle the change event of the city field in the nominee FormArray.
+   * It resets the pincode field for the nominee at the specified index.
+   * It fetches the pincodes for the selected city and updates the md_nominee_pincode field.
+   */
   onChangeCity = (ev,index) =>{
       this.nominee.controls[index].get('nominee_pincode').setValue('');
       this.nominee.controls[index].get('md_nominee_pincode').setValue([]);
@@ -1893,6 +2294,11 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  /**
+   * @description This function is used to handle the change event of the city field in the bank FormArray.
+   * It resets the pincode field for the bank at the specified index.
+   * It fetches the pincodes for the selected city and updates the md_bank_pincode field.
+   */
   onChangeBankCity = (ev,index) =>{
       this.bank.controls[index].get('bank_pincode').setValue('');
       this.bank.controls[index].get('md_bank_pincode').setValue([]);
@@ -1901,6 +2307,13 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  /**
+   * @description This function fetches the pincodes based on the selected city for the bank FormArray.
+   * It makes an API call to fetch the pincodes and updates the md_bank_pincode field for the specified index.
+   * 
+   * @param cityId - The ID of the selected city
+   * @param index - The index of the bank in the FormArray
+   */
   fetchBankPincodeByCity = (cityId,index) =>{
           this.dbIntr.api_call(0,`/pincode?city_id=${cityId}`,null)
           .pipe(pluck('data')).subscribe((res:any) =>{
@@ -1908,6 +2321,13 @@ export class NewClientComponent implements OnInit {
           })
   }
 
+  /**
+   * @description This function fetches the pincodes based on the selected city for the nominee FormArray.
+   * It makes an API call to fetch the pincodes and updates the md_nominee_pincode field for the specified index.
+   * 
+   * @param cityId - The ID of the selected city
+   * @param index - The index of the nominee in the FormArray
+   */
   fetchNomineePincodeByCity = (cityId,index) =>{
           this.dbIntr.api_call(0,`/pincode?city_id=${cityId}`,null)
           .pipe(pluck('data')).subscribe((res:any) =>{
@@ -1915,6 +2335,11 @@ export class NewClientComponent implements OnInit {
           })
     }
 
+    /**
+     * @description This function is used to handle the change event of the same as mobile applicant checkbox in the nominee FormArray.
+     * It sets the nominee_mobile field to the primary holder's mobile number if the checkbox is checked,
+     * otherwise it clears the nominee_mobile field.
+     */
     sameAsMobileApplicant = (ev,index) =>{
       if(ev.target.checked){
         const primary_holder_mobile = this.new_client_form.get('contact_dtls.mobile')?.value;
@@ -1925,7 +2350,14 @@ export class NewClientComponent implements OnInit {
       }
     }
 
-    
+    /**
+     * @description This function is used to handle the change event of the same as email applicant checkbox in the nominee FormArray.
+     * It sets the nominee_email field to the primary holder's email if the checkbox is checked,
+     * otherwise it clears the nominee_email field.
+     * 
+     * @param ev - The change event from the checkbox input
+     * @param index - The index of the nominee in the FormArray
+     */
     sameAsEmailApplicant = (ev,index) =>{
         if(ev.target.checked){
           const primary_holder_email = this.new_client_form.get('contact_dtls.email')?.value;
@@ -1936,6 +2368,11 @@ export class NewClientComponent implements OnInit {
         }
     }
 
+    /**
+     * @description This function is used to handle the change event of the nominee document type in the nominee FormArray.
+     * It updates the validators for the nominee document fields based on the selected document type.
+     * If the document type is 'P', it sets the nominee_pan field as required with a specific pattern.
+     */
     onchangeNomineeDocumentType = (ev,index) =>{
       this.nominee.controls[index].get('nominee_pan').clearValidators();   
       this.nominee.controls[index].get('nominee_aadhar').clearValidators();   

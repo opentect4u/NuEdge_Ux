@@ -65,7 +65,11 @@ export class RegisteredSwpComponent implements OnInit {
   ngOnInit(): void {
     this.setTitle(this.sub_tab[0].tab_name);
   }
-
+  /**
+   * Event fired at the time of search swp report
+   * @param ev
+   * @returns void
+   */
   searchSwpReport = (ev) =>{
     this.registertSwpMasterData(ev);
   }
@@ -79,16 +83,32 @@ export class RegisteredSwpComponent implements OnInit {
       this.reset_data = 'Y';
       this.column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes(this.sub_type == 'RR' ? 'LS-3' : 'U2'));
     }
-
+    /**
+     * 
+     * @param title - Title to be set for the component
+     * @description Sets the title of the component based on the provided title parameter.
+     */
     setTitle = (title:string) =>{
       this.__title = title;
     }
-
+    /**
+     * 
+     * @param $event - Event containing the search input value
+     * @description Filters the global search results in the SWP report table based on the input value.
+     * It uses the PrimeNG Table component's filterGlobal method to apply the filter.
+     */
     filterGlobal = ($event) => {
       let value = $event.target.value;
       this.primeTbl.filterGlobal(value, 'contains');
     };
-
+    /**
+     * 
+     * @param form_data - The form data containing the parameters for the SWP report.
+     * @description Fetches the registered SWP report data from the server and updates the component state.
+     * It constructs a request object with the form data, sub_type, report_type, and swp_type,
+     * then calls the API to retrieve the SWP details.
+     * The response is processed to update the `register_swp` array and calculate the total amount.
+     */
     registertSwpMasterData(form_data){
       this.register_swp = [];
       this.reset_data = 'N';
@@ -107,10 +127,19 @@ export class RegisteredSwpComponent implements OnInit {
         this.disclaimer =res.disclaimer;
       })
     }
+    /**
+     * 
+     * @param event - Event containing the value to change the display state.
+     * @description This function toggles the display state between 'expanded' and 'collapsed'.
+     * It updates the `state` property based on the provided event value.
+     */
     changeState = (event) =>{
       this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
     }
-
+    /**
+     * @description Exports the registered SWP data to an Excel file.
+     * It constructs the data structure for the Excel file, including headers and footer details.
+     */
     exportExcel = () =>{
       const column = this.column.map(el => el.header);
       let dt = [];

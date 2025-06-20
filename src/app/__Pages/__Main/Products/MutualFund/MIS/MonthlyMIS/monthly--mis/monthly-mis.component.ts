@@ -70,7 +70,11 @@ export class MonthlyMisComponent implements OnInit {
     this.mis_tab = mis_tab.monthly_mis.map((item) => ({ ...item, img_src: ('../../../../../assets/images/monthlyMIS/' + item.img_src) }))
   }
 
-
+  /**
+   * @description This function is used to get the monthly MIS report based on the filter criteria
+   * @param filter__criteria - The criteria to filter the monthly MIS report
+   * @returns void
+   */
   getMisReport = (filter__criteria):void =>{
     // console.log(filter__criteria);
     const {view_by,fin_year,month,upto,duration,...rest} = filter__criteria
@@ -92,7 +96,12 @@ export class MonthlyMisComponent implements OnInit {
 
       })
   }
-
+  /**
+   * @description This function groups the monthly MIS transactions by scheme name and calculates the net inflow for each transaction type.
+   * It uses RxJS operators to group the data and calculate the inflow, outflow, and net flow amounts.
+   * @param arr - The array of monthly MIS transactions to be grouped and processed.
+   * @returns void
+   */
   GroupBySchemeNameForNetInflow = (arr) =>{
     let net_Flow = [];
     let sl_no = 0;
@@ -115,7 +124,12 @@ export class MonthlyMisComponent implements OnInit {
     })
     this.netFlow = net_Flow;
   }
-
+  /**
+   * @description This function exports the monthly MIS report as a PDF document.
+   * It toggles the `is_virtual` flag, creates a new jsPDF instance, and uses the `autoTable` function to generate a table with the monthly MIS transactions.
+   * The generated PDF is then opened in a new window.
+   * @returns void
+   */
   exportAsPdf(){
     this.is_virtual = !this.is_virtual;
     var pdf = new jsPDF('l','pt','a4',true);
@@ -209,7 +223,12 @@ export class MonthlyMisComponent implements OnInit {
     // )
   }
 
-
+  /**
+   * @description This function exports the monthly MIS report as an Excel file.
+   * It filters the monthly transactions by inflow and outflow, prepares the data for export,
+   * and uses the `ExportAs` utility to handle the export process.
+   * @returns void
+   */
   exportAsExcel = () =>{
     const filterPipe = new FilterByStatusPipe();
     const monthly_inflow = filterPipe.transform(this.__monthly_mis_trxn,'I');
@@ -317,7 +336,11 @@ export class MonthlyMisComponent implements OnInit {
     //     link.click();
     //     link.remove();
   }
-
+  /**
+   * @description This function handles the export of monthly inflow and outflow data to an Excel file.
+   * It creates a new Excel workbook, adds worksheets for monthly inflow and outflow, and populates them with the provided data.
+   * It also calculates totals for inflow and outflow, adds disclaimer rows, and saves the workbook as an Excel file.
+   */
   handleExport = (monthly_inflow,monthly_outflow,column,inflow,outflow) =>{
     let workbook = new ExcelJS.Workbook();
     let worksheet = workbook.addWorksheet('MONTHLYINFLOW'
@@ -525,6 +548,10 @@ export class MonthlyMisComponent implements OnInit {
       saveAs(blob, `MONTHLYMISREPORT.xlsx`);
     })
   }
+  /** 
+   * @description This function converts a string to an ArrayBuffer.
+   * It creates a new ArrayBuffer with the length of the string and fills it with the character codes of the string.
+   */
 s2ab(s) {
   var buf = new ArrayBuffer(s.length);
   var view = new Uint8Array(buf);
@@ -533,7 +560,14 @@ s2ab(s) {
 }
 
 
-
+  /**
+   * @description This function changes the wheel speed of a container element.
+   * It listens for mouse wheel events and adjusts the scroll position of the container based on the speedY parameter.
+   * It also resets the scroll position when the mouse is released or pressed down.
+   * @param container - The container element to apply the wheel speed change.
+   * @param speedY - The speed factor for vertical scrolling.
+   * @returns A function to remove the event listeners when no longer needed.
+   */
   changeWheelSpeed(container, speedY) {
     var scrollY = 0;
     var handleScrollReset = function () {
@@ -580,12 +614,22 @@ s2ab(s) {
     this.getMisReport(ev)
   }
   /*******END */
-
+  /**
+   * * @description This function is triggered when the tab details are changed.
+   * It updates the `flag` property based on the selected tab's flag and can be used to fetch the MIS report data.
+   * @param ev - The event object containing the details of the tab change.
+   * @returns void
+   */
   TabDetails = (ev) => {
     this.flag = ev?.tabDtls?.flag;
     // this.getMisReport(this.form__data)
   }
-
+  /**
+   * * @description This function filters the global search in the PrimeNG table.
+   * It retrieves the value from the event target and applies a global filter to the table.
+   * @param $event - The event object containing the input value for filtering.
+   * @returns void
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.__MisTbleComponent.primeTbl.filterGlobal(value, 'contains')

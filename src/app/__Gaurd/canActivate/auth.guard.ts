@@ -8,6 +8,11 @@ import { AU_TK } from 'src/app/strings/localStorage_key';
 })
 export class AuthGuard implements CanActivate {
   constructor(private router: Router){}
+  /**
+   * @description This method is used to check if the route can be activated.
+   * It checks if the user is authenticated by checking the local storage for a token.
+   * If the user is authenticated, it returns true; otherwise, it redirects to the home page.
+   */
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot):boolean  {
@@ -21,7 +26,11 @@ export class AuthGuard implements CanActivate {
       this.router.navigate(['/']);
         return false;
   }
-
+  /**
+   * @description This method is used to check if the child route can be activated.
+   * It checks if the user is authenticated by checking the local storage for a token.
+   * If the user is authenticated, it returns true; otherwise, it redirects to the home page.
+   */
   canActivateChild(
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): boolean{

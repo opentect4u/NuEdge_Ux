@@ -11,6 +11,10 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root',
 })
 export class ManualEntryResolver implements Resolve<any> {
+  /**
+   * @description This resolver is used to resolve the route parameters for the Manual Entry component.
+   * It retrieves 
+   */
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot

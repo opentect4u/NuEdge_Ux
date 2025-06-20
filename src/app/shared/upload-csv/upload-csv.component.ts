@@ -105,6 +105,13 @@ export class UploadCsvComponent implements OnInit {
   ngOnInit(): void {
    this.setValidators(this.flag);
   }
+  /**
+   * @description This function is used to set validators for the form controls based on the flag
+   * @param flag - The flag to determine which validators to set
+   * It sets the validators for the form controls based on the flag value.
+   * For example, if the flag is 'A', it sets the rnt_id control as required.
+   * @returns void
+   */
   setValidators(flag){
    switch(flag) {
     case 'A' : this.__upload.controls['rnt_id'].setValidators([Validators.required]);break;
@@ -171,6 +178,12 @@ export class UploadCsvComponent implements OnInit {
       //        this.getBenchmark(res);
       // })
   }
+  /**
+   * @description This function is used to get the state master data based on the country_id.
+   * It makes an API call to fetch the states for the given country_id and updates the stateMst property.
+   * @param country_id - The ID of the country for which the states are to be fetched.
+   * @returns void
+   */
   getStateMst(country_id){
     if(country_id){
       this.__dbIntr.api_call(0,'/states','country_id='+country_id).pipe(pluck('data')).subscribe(res =>{
@@ -179,6 +192,13 @@ export class UploadCsvComponent implements OnInit {
     }
 
   }
+  /**
+   * @description This function is used to get the district master data based on the country_id and state_id.
+   * It makes an API call to fetch the districts for the given country_id and state_id and updates the districtMst property.
+   * @param country_id - The ID of the country for which the districts are to be fetched.
+   * @param state_id - The ID of the state for which the districts are to be fetched.
+   * @returns void
+   */
   getDistrictMst(country_id,state_id){
     if(country_id && state_id){
       this.__dbIntr.api_call(0,'/districts','country_id='+country_id + '&state_id='+state_id)
@@ -188,6 +208,11 @@ export class UploadCsvComponent implements OnInit {
     }
 
   }
+  /**
+   * @description This function is used to get the city master data based on the country_id, state_id, and district_id.
+   * It makes an API call to fetch the cities for the given country_id, state_id, and district_id and updates the cityMst property.
+   * @param country_id - The ID of the country for which the cities are to be fetched.
+   */
   getCityMst(country_id,state_id,district_id){
   if(country_id && state_id  && district_id){
         this.__dbIntr.api_call(0,'/city','country_id='+country_id + '&state_id='+state_id + '&district_id='+district_id)
@@ -206,7 +231,14 @@ export class UploadCsvComponent implements OnInit {
   //     })
   //   }
   // }
-
+  /**
+   * @description This function is used to get the files from the event and set the validators for the rntFile control.
+   * It checks if the files are valid based on size and extension, and updates the file control accordingly.
+   * @param __ev - The event containing the files to be processed.
+   * It sets the validators for the rntFile control based on the files provided in the event.
+   * If the files are valid, it updates the file control with the first file from the event.
+   * @returns void
+   */
   getFiles(__ev) {
     this.__upload
       .get('rntFile')
@@ -221,6 +253,11 @@ export class UploadCsvComponent implements OnInit {
         this.__upload.get('rntFile').status == 'VALID' ? __ev.files[0] : ''
       );
   }
+  /**
+   * @description This function is used to upload the RNT file.
+   * It checks if the form is valid, creates a FormData object, appends the necessary data based on the flag,
+   * and makes an API call to upload the file.
+   */
   uploadRnt() {
     if (this.__upload.invalid) {
       this.__utility.showSnackbar(
@@ -302,6 +339,13 @@ export class UploadCsvComponent implements OnInit {
         }
       });
   }
+  /**
+   * @description This function is triggered when files are dropped into the upload area.
+   * It checks if the dropped files are valid based on size and extension, and updates the form controls accordingly.
+   * @param __ev - The event containing the dropped files.
+   * It sets the rntFile control errors based on the dropped files and updates the file control with the first file if valid.
+   * @returns void
+   */
   onFileDropped(__ev) {
     this.__upload.get('file').patchValue('');
     this.__upload.controls.rntFile.setErrors({
@@ -341,6 +385,13 @@ export class UploadCsvComponent implements OnInit {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
+  /**
+   * @description This function is used to delete the files from the form controls.
+   * It sets the rntFile and file controls to empty values and updates the validators for the rntFile control.
+   * @returns void
+   * It resets the rntFile and file controls to empty values and sets the validators for the rntFile control.
+   * This is typically used to clear the uploaded files from the form.
+   */
   deleteFiles() {
     this.__upload.get('rntFile').setValue('',{emitEvent:false});
     this.__upload.get('file').setValue('',{emitEvent:false});
@@ -352,6 +403,13 @@ export class UploadCsvComponent implements OnInit {
       ]);
     this.__upload.get('rntFile').updateValueAndValidity();
   }
+  /**
+   * @description This function is used to reset the form controls to their initial state.
+   * It clears the rntFile and file controls, sets the validators for the rntFile control,
+   * and updates the validity of the rntFile control.
+   * @returns void
+   * It resets the form controls to their initial state, clearing any uploaded files and reapplying the validators.
+   */
   reset(){
     this.__upload.reset({emitEvent:false});
     this.__upload
@@ -362,6 +420,12 @@ export class UploadCsvComponent implements OnInit {
     ]);
     this.__upload.get('rntFile').updateValueAndValidity();
   }
+  /**
+   * @description This function is used to export the table data to an Excel file.
+   * It checks if the amc_id or ex_id is selected based on the flag and calls the global function to export the table data.
+   * If the required selection is not made, it shows a snackbar message prompting the user to select the corresponding data.
+   * @param table_id - The ID of the table to be exported.
+   */
   isAmcScelected = (table_id:string,exl_name:string,dt_corosponding_to:string) =>{
      if((this.__upload.value.amc_id && this.flag == 'A') || (this.__upload.value.ex_id && this.flag == 'SBU')){
       global.exportTableToExcel(table_id,exl_name);

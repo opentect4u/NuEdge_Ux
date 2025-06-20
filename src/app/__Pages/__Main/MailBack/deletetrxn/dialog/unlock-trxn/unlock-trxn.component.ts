@@ -25,6 +25,10 @@ export class UnlockTrxnComponent implements OnInit {
     console.log(this.data);
   }
 
+  /**
+   * @description This function is used to close the dialog
+   * It updates the size of the dialog to 30% width and 47px height
+   */
   unlockTransactions =() =>{
     this.toggleLoader();
     this.dbInr.api_call(1,this.data.api_name,
@@ -39,6 +43,11 @@ export class UnlockTrxnComponent implements OnInit {
     }
     )
   }
+  /**
+   * @description This function toggles the loader state
+   * It switches the value of __is_loader between true and false
+   * This is used to show or hide a loading indicator in the UI
+   */
   toggleLoader = () =>{
     this.__is_loader = !this.__is_loader;
   }

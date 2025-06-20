@@ -23,6 +23,11 @@ export class BtnWithMenuComponent implements OnInit {
   getItems(item){
    this.sendItem.emit(item)
   }
+  /**
+   * @description This function is used to emit the flag value when the button is clicked
+   * It is used to notify the parent component about the button click event.
+   * @returns {void}
+   */
   sendEvent(){
     this.btnItem.emit(this.flag);
   }

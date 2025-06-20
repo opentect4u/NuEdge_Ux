@@ -63,7 +63,11 @@ constructor(private dbIntr: DbIntrService,private utility:UtiliService,private d
 
 ngOnInit(): void {
 }
-
+/**
+ * 
+ * @param formDt Form data to fetch the live STP report
+ * @description Fetches the live STP report based on the provided form data and updates the component state.
+ */
 LiveStpReport = (formDt) =>{
   this.live_stp_rpt = [];
   let dt ={
@@ -80,7 +84,10 @@ LiveStpReport = (formDt) =>{
        this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
   })
 }
-
+/**
+ * Export the live STP report to Excel
+ * @description This function formats the live STP report data and exports it to an Excel file.
+ */
 exportExcel = () =>{
   const column = this.column.map(el => el.header);
   let dt = [];
@@ -154,11 +161,20 @@ exportExcel = () =>{
 searchStpReport = (ev) =>{
 this.LiveStpReport(ev);
 }
-
+/**
+ * Filter global search for the table
+ * @param ev
+ * @description Filters the table data based on the global search input.
+ */
 filterGlobal = (ev) =>{
   let value = ev.target.value;
   this.primeTbl.filterGlobal(value, 'contains');
 }
+/**
+ * Change the display state of the component
+ * @param event
+ * @description Toggles the display state between expanded and collapsed based on the current state.
+ */
 changeState = (event) =>{
   this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
 }

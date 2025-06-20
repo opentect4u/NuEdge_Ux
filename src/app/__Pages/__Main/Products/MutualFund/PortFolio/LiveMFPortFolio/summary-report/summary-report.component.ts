@@ -105,27 +105,62 @@ export class SummaryReportComponent implements OnInit {
   constructor(private utility:UtiliService,private datePipe:DatePipe) { }
 
   ngOnInit(): void {}
-
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the Fund House table.
+   * @description This function is used to get the columns for the Fund House table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumnsForFundHouse(){
       return this.utility.getColumns(this.FundHouseColumn);
   }
-
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the Category table.
+   * @description This function is used to get the columns for the Category table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumnsForCategory(){
     return this.utility.getColumns(this.CategoryWiseColumn);
   }
-
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the Subcategory table.
+   * @description This function is used to get the columns for the Subcategory table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumnsForSubcategory(){
     return this.utility.getColumns(this.SubcategoryColumn);
   }
-
+  /**
+   * 
+   * @param $event This function filters the global search input for the Fund House table.
+   * It takes the event object as a parameter and retrieves the value from the input field.
+   * The table is then filtered based on the value using the 'contains' filter match mode.
+   * @description This function filters the global search input for the Fund House table.
+   */
   filterGlobal_FundHouse = ($event) =>{
     let value = $event.target.value;
     this.fundHouseTble.filterGlobal(value,'contains')
   }
+  /**
+   * 
+   * @param $event This function filters the global search input for the Category table.
+   * It takes the event object as a parameter and retrieves the value from the input field.
+   * The table is then filtered based on the value using the 'contains' filter match mode.
+   * @description This function filters the global search input for the Category table.
+   */
   filterGlobal_Category = ($event) =>{
     let value = $event.target.value;
     this.catTble.filterGlobal(value,'contains')
   }
+  /**
+   * 
+   * @param $event This function filters the global search input for the Subcategory table.
+   * It takes the event object as a parameter and retrieves the value from the input field.
+   * The table is then filtered based on the value using the 'contains' filter match mode.
+   * @description This function filters the global search input for the Subcategory table.
+   */
   filterGlobal_Subcategory = ($event) =>{
     let value = $event.target.value;
     this.subcatTble.filterGlobal(value,'contains')

@@ -218,17 +218,31 @@ export class InvestorStaticReportComponent implements OnInit {
     //   this.tble_width = TABLE_WIDTH['F'];
     // })
   }
-
+  /**
+   * Set Title of the Tab
+   * @description This method sets the title of the tab based on the selected index.
+   * It retrieves the tab name from the `tab_menu` array using the current index.
+   * The title is used to display the current tab's name in the UI.
+   */
   setTitle = () => {
     this.title = this.tab_menu[this.index].tab_name;
   }
-
+  /**
+   * Set Flag for the Tab
+   * @description This method sets the flag for the current tab based on the selected index.
+   */
   setFlag = () => {
     this.flag = this.tab_menu[this.index].flag;
     console.log(this.flag);
   }
 
-
+  /**
+   * Set Tab Details
+   * @description This method retrieves the tab details from the `Menu` array based on the ID.
+   * It filters the `Menu` array to find the sub-menu with ID 7 and maps it to an array of tab objects.
+   * Each tab object contains properties such as `id`, `tab_name`, `flag`, `img_src`, and `sub_menu`.
+   * @returns A promise that resolves to an array of tab objects.
+   */
   setTab = (): Promise<ITab[]> => {
     return new Promise((resolve, reject) => {
       resolve( Menu.filter(item => item.id == 7)[0].sub_menu
@@ -244,7 +258,13 @@ export class InvestorStaticReportComponent implements OnInit {
     })
 
   }
-
+  /**
+   * 
+   * @param flag - Flag is used for maintaining Parent Tab
+   * F => Folio Master (index : 0)
+   * K => KYC Report (index: 1)
+   * @returns 
+   */
   setColumn = (flag:string):Promise<column[]> => {
     return new Promise((resolve, reject) => {
       resolve(
@@ -253,7 +273,12 @@ export class InvestorStaticReportComponent implements OnInit {
        reject([])
     })
   }
-
+  /**
+   * 
+   * @param container - The container element to which the mouse wheel speed change will be applied.
+   * @param speedY - The speed at which the mouse wheel scrolls vertically.
+   * @description This function changes the mouse wheel scroll speed for a given container element.
+   */
   changeWheelSpeed(container, speedY) {
     var scrollY = 0;
     var handleScrollReset = function() {
@@ -414,7 +439,14 @@ export class InvestorStaticReportComponent implements OnInit {
     })
         /**End */
   }
-
+  /**
+   * 
+   * @param ev - Event containing the tab details to change the tab
+   * @description This function is triggered when a tab is changed.
+   * It updates the `sub_tab` array, sets the current index, title, and flag based on the selected tab.
+   * It also retrieves the column details for the selected tab and updates the table width accordingly.
+   * Finally, it resets the sub-tab index and updates the sub-tab details based on the selected tab.
+   */
   changeTabDtls = (ev) => {
     this.sub_tab = [];
     this.index = ev.index;
@@ -438,7 +470,14 @@ export class InvestorStaticReportComponent implements OnInit {
     }, 100);
 
   }
-
+  /**
+   * 
+   * @param event - Event containing the details of the sub-tab to change the sub-tab
+   * @description This function is triggered when a sub-tab is changed.
+   * It updates the `sub_flag` based on the selected sub-tab's flag, resets the form, and clears the report data.
+   * If the current state is 'collapsed', it toggles the state to 'expanded'.
+   * This allows for dynamic switching between different sub-tabs within the main tab.
+   */
   changeSubTab = (event) =>{
       this.sub_flag = event.tabDtls?.flag;
       this.resetForm();
@@ -447,13 +486,24 @@ export class InvestorStaticReportComponent implements OnInit {
         this.toggle();
       }
     }
-
+    /**
+     * 
+     * @param ev - Event containing the details of the selected branch
+     * @description This function retrieves the business type master data based on the selected branch.
+     * It calls the API to fetch the business type details and updates the `__bu_type` array with the response data.
+     */
   filterGlobal = (ev) => {
     let value = ev.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
 
-  }
-
+  } 
+  /**
+   * 
+   * @returns Returns the columns for the table based on the selected column configuration.
+   * @description This function retrieves the columns for the table based on the selected column configuration.
+   * It uses the `utility` service to get the columns defined in the `column` property.
+   * The columns are used to display data in the table and can be customized based on user preferences.
+   */
   getColumns = () => {
     return this.utility.getColumns(this.column);
   }
@@ -479,7 +529,8 @@ export class InvestorStaticReportComponent implements OnInit {
 
 
   /**
-   *
+   *  * Get Branch Master Data
+   * @description This function retrieves the branch master data from the database.
    */
   getFamilymemberAccordingToFamilyHead_Id = (id:number | undefined = undefined) =>{
     if(id){
@@ -504,7 +555,13 @@ export class InvestorStaticReportComponent implements OnInit {
   searchResultVisibilityForClient = (display_mode: string) => {
     this.displayMode_forClient = display_mode;
   };
-
+  /**
+   * Get Invesor Master Data on scroll to end
+   * @param ev - Event triggered when the user scrolls to the end of the investor list.
+   * @description This function is called when the user scrolls to the end of the investor list.
+   * It checks if the client name filter is empty, and if so, it increments the pagination value and fetches more client data.
+   * The function uses the `getClientMst` method to retrieve additional client data based on the current view type and pagination value.
+   */
   loadInvestorOnScrollToEnd = (ev) => {
     console.log(this.filter.value.client_name);
     if (this.filter.value.client_name == '') {
@@ -538,7 +595,9 @@ export class InvestorStaticReportComponent implements OnInit {
     }
 
   }
-
+  /**
+   * Get Branch Master Data
+   */
   onItemClick = (ev) => {
     if (ev.option.value == 'A') {
       if (this.state == 'collapsed') {
@@ -551,7 +610,13 @@ export class InvestorStaticReportComponent implements OnInit {
       this.report_data = [];
     }
   }
-
+  /**
+   * Resert Form
+   * @description This function resets the form fields to their default values.
+   * It clears the folio number, status, KYC status, nominee status, Aadhaar PAN link status, view type, and PAN number fields.
+   * It also resets the pagination to 1 and clears the branch code, sub broker code, and EUIN number fields.
+   * Finally, it sets the client name field to an empty string without emitting an event.
+   */
   resetForm = () => {
     this.filter.patchValue({
       folio_no: '',
@@ -569,12 +634,21 @@ export class InvestorStaticReportComponent implements OnInit {
     this.filter.controls['euin_no'].setValue([]);
     this.filter.controls['client_name'].setValue('', { emitEvent: false });
   }
-
+  /**
+   * Search Investor Report
+   * @description This function retrieves the investor report data based on the filter criteria specified in the form.
+   * It checks if either the client name or folio number is provided, or if the "is_all_client" checkbox is selected.
+   * If the criteria are met, it constructs an object with the filter values and calls the API to fetch the report data.
+   * The retrieved data is then assigned to the `report_data` property for further processing or display.
+   */
   searchInvestorReport = () => {
     this.getfolioMaster(this.filter.getRawValue());
   }
 
-
+  /**
+   * Get Folio Master Data
+   * @param fb - Form values containing the filter criteria for fetching folio master data.
+   */
   getfolioMaster = (fb) => {
     this.report_data = [];
     if(
@@ -616,7 +690,9 @@ export class InvestorStaticReportComponent implements OnInit {
     }
 
   };
-
+  /**
+   * Export to excel  
+   */
   exportExcel = () =>{
 
     let dt = [];
@@ -804,7 +880,13 @@ export class InvestorStaticReportComponent implements OnInit {
     this.handleExport(dt)
   }
 
-
+  /**
+   * Export to excel
+   * @param dt - Data to be exported to Excel.
+   * @description This function creates an Excel workbook and worksheet, adds the header row, applies styles, and populates the worksheet with data.
+   * It then merges cells for the disclaimer row and saves the workbook as an Excel file using the `saveAs` function.
+   * The exported file is named based on the `title` property of the component.
+   */
   handleExport = (dt) =>{
     let workbook = new ExcelJS.Workbook();
     let worksheet = workbook.addWorksheet('REPORT',
@@ -854,7 +936,10 @@ export class InvestorStaticReportComponent implements OnInit {
         this.__branchMst = res;
       });
   };
-
+  /**
+   * Set EUIN Dropdown
+   * @param sub_brk_cd - Array of sub broker codes to filter the EUIN
+   */
   setEuinDropdown = (sub_brk_cd, rm) => {
     this.__euinMst = rm.filter(
       (item) =>
@@ -892,6 +977,12 @@ export class InvestorStaticReportComponent implements OnInit {
     const dt = this.filter.get('euin_no').value.filter(el => euin_no.includes( el.euin_no));
     this.filter.get('euin_no').setValue(dt,{emitEvent:false});
   };
+  /**
+   * Disable Sub Broker Control
+   * @param bu_type_ids - Array of business type IDs to determine if the sub broker control should be enabled or disabled.
+   * @description This function checks if the business type IDs contain a specific code ('B') and enables or disables the sub broker control accordingly.
+   * If 'B' is found, the sub broker control is enabled; otherwise, it is disabled.
+   */
   disabledSubBroker(bu_type_ids) {
     if (bu_type_ids.findIndex((item) => item.bu_code == 'B') != -1) {
       this.filter.controls['sub_brk_cd'].enable();
@@ -899,6 +990,13 @@ export class InvestorStaticReportComponent implements OnInit {
       this.filter.controls['sub_brk_cd'].disable();
     }
   }
+  /**
+   * Get Sub Broker Master Data
+   * @param arr_euin_no - Array of EUIN numbers to filter the sub broker master data.
+   * @description This function retrieves the sub broker master data based on the provided EUIN numbers.
+   * It calls the API to fetch the sub broker details and updates the `__subbrkArnMst` array with the response data.
+   * The sub broker codes are then set in the filter form control for further processing.
+   */
   getSubBrokerMst(arr_euin_no) {
     if (arr_euin_no.length > 0) {
       this.dbIntr
@@ -931,6 +1029,13 @@ export class InvestorStaticReportComponent implements OnInit {
       this.filter.controls['sub_brk_cd'].setValue([]);
     }
   }
+  /**
+   * Get Business Type Master Data
+   * @param brn_cd - Array of branch codes to filter the business type master data.
+   * @description This function retrieves the business type master data based on the provided branch codes.
+   * It calls the API to fetch the business type details and updates the `__bu_type` array with the response data.
+   * The business type IDs are then set in the filter form control for further processing.
+   */
   getBusinessTypeMst(brn_cd) {
     if (brn_cd.length > 0) {
       this.dbIntr
@@ -956,6 +1061,10 @@ export class InvestorStaticReportComponent implements OnInit {
       this.__bu_type = [];
     }
   }
+  /**
+   * Get Relationship Manager Master Data
+   * @param bu_type_id - Array of business type IDs to filter the relationship manager master
+   */
   getRelationShipManagerMst(bu_type_id, arr_branch_id) {
     if (bu_type_id.length > 0 && arr_branch_id.length > 0) {
       this.dbIntr
@@ -987,7 +1096,12 @@ export class InvestorStaticReportComponent implements OnInit {
       this.filter.controls['rm_id'].setValue([], { emitEvent: true });
     }
   }
-
+  /**
+   * Toggle the state of the component between 'collapsed' and 'expanded'.
+   * @description This function toggles the state of the component between 'collapsed' and 'expanded'.
+   * It updates the `state` property accordingly, allowing for dynamic expansion and collapse of the component.
+   * This is useful for UI elements that need to show or hide additional content based on user interaction.
+   */
   toggle = () => {
     this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }

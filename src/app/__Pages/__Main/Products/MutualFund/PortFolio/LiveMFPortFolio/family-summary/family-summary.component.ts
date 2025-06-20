@@ -75,11 +75,22 @@ export class FamilySummaryComponent implements OnInit {
   }
 
   ngOnInit(): void {}
-
+  /**
+   * 
+   * @param $event - The event object containing the filter criteria.
+   * @description This function is used to filter the global search results in the primary table.
+   * It retrieves the value from the event object and applies a global filter to the primary table.
+   */
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.primaryTbl.filterGlobal(value,'contains')
   }
+  /**
+   * 
+   * @returns {Array} - An array of columns formatted for the table.
+   * @description This function is used to get the columns for the table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }

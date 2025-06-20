@@ -28,7 +28,12 @@ export class FolioComponent implements OnInit, IFolioMasterStructure {
     // console.log(this.primeTbl.wrapperViewChild);
 
   }
-
+  /**
+   * @description This function is used to fetch the folio master data from the server.
+   * It makes an API call to '/showFolioDetails' and subscribes to the response.
+   * The response data is then assigned to the folio_dt property.
+   * This function is called during the component initialization.
+   */
   getfolioMaster = () => {
     this.dbIntr
       .api_call(0, '/showFolioDetails', null)
@@ -37,12 +42,20 @@ export class FolioComponent implements OnInit, IFolioMasterStructure {
         this.folio_dt = res;
       });
   };
-
+  /**
+   * @description This function is used to filter the global search results in the folio table.
+   * It takes an event object as a parameter, which contains the search input value.
+   */
   filterGlobal = (ev) => {
     console.log(ev);
     this.primeTbl.filterGlobal(ev.target.value, 'contains');
   };
-
+  /**
+   * 
+   * @returns This function returns the columns of the folio table.
+   * It uses the utility service to get the columns based on the column property.
+   * The column property is an array of column objects defined in the FolioColumn class.
+   */
   getColumns = (): string[] => {
     return this.utility.getColumns(this.column);
   };

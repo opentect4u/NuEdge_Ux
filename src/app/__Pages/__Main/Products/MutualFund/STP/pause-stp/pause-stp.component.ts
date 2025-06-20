@@ -41,11 +41,20 @@ export class PauseStpComponent implements OnInit {
   ngOnInit(): void {
   }
 
-
+  /**
+   * @returns {Array} An array of columns formatted for the pause STP report table.
+   * This method filters the columns from the `live_sip_stp_swp_rpt` configuration
+   * based on the visibility criteria for the pause STP report.
+   */
   searchStpReport =(ev):void =>{
     this.PauseStpReport(ev);
   }
-
+  /**
+   *  Fetches and displays the pause STP report based on the provided form data.
+   * 
+   * @param {Object} formDt - The form data containing the parameters for the report.
+   * @param formDt 
+   */
   PauseStpReport = (formDt) =>{
     this.pause_stp = [];
     let dt ={
@@ -62,15 +71,32 @@ export class PauseStpComponent implements OnInit {
          this.disclaimer =res.disclaimer;
     })
   }
-
+  /**
+   * 
+   * @param $event - The event object containing the input value for global filtering.
+   * @description This function filters the global search input for the pause STP report table.
+   * It takes the event object as a parameter and retrieves the value from the input field.
+   * The value is then used to filter the table globally using the 'contains' match mode.
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
   };
+  /**
+   *  * Toggles the display state of the component between two modes.
+   * 
+   * @param {string} event - The event that triggers the state change.
+   * @param event 
+   */
   changeState = (event) =>{
     this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
   }
-
+  /**
+   * Exports the pause STP report data to an Excel file.
+   * 
+   * @description This function formats the pause STP report data into an array and exports it to an Excel file.
+   * It includes a disclaimer and a footer with the grand total of the amounts.
+   */
   exportExcel = () =>{
     const column = this.column.map(el => el.header);
     let dt = [];

@@ -67,7 +67,11 @@ export class LiveSIPComponent implements OnInit {
     const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
       this.changeWheelSpeed(el, 0.99);
    }
-
+   /**
+    * Change the scroll speed of the container when mouse wheel is used.
+    * @param container The container element to apply the scroll speed change.
+    * @param speedY The speed factor for vertical scrolling.
+    */
    changeWheelSpeed(container, speedY) {
     var scrollY = 0;
     var handleScrollReset = function() {
@@ -102,7 +106,14 @@ export class LiveSIPComponent implements OnInit {
         removed = true;
     };
 }
-
+  /**
+   * 
+   * @param formDt Form data for fetching live SIP report
+   * @description This function fetches the live SIP report based on the provided form data.
+   * It makes an API call to '/showSipStpDetails' with the form data and updates the component state
+   * with the response data, including disclaimer and total amount.
+   * It also calculates the number of paused SIPs and sets the display mode based on the response.
+   */
   LiveSipReport = (formDt) =>{
     this.live_sip_rpt = [];
        let dt ={
@@ -122,7 +133,12 @@ export class LiveSIPComponent implements OnInit {
 
 
   }
-
+  /**
+   * Export the live SIP report to an Excel file.
+   * @description This function exports the live SIP report data to an Excel file.
+   * It formats the data into a 2D array, including headers and footer details, and uses the global exportExcel function to generate the file.
+   * The exported file will contain details such as BU type, branch name, RM name, EUIN number, client names, registration date, scheme details, transaction type, amount, frequency, duration, bank details, and remarks.
+   */
   exportExcel = () =>{
     const column = this.column.map(el => el.header);
     let dt = [];
@@ -190,7 +206,11 @@ export class LiveSIPComponent implements OnInit {
       this.disclaimer,column,dt,'LIVE SIP','LIVE_SIP.xlsx',footerDetails
     )
   }
-
+  /**
+   * Convert a string to an ArrayBuffer.
+   * @param s The string to convert.
+   * @returns An ArrayBuffer representing the string.
+   */
   s2ab(s) {
     var buf = new ArrayBuffer(s.length);
     var view = new Uint8Array(buf);
@@ -205,12 +225,23 @@ export class LiveSIPComponent implements OnInit {
   searchSipReport = (ev) =>{
    this.LiveSipReport({...ev,sip_type:this.sipType});
   }
-
+  /**
+   * flter global search
+   * @param $event
+   * @description This function filters the global search input in the PrimeNG table.
+   * It retrieves the value from the event target and applies a global filter to the table.
+   * The filter type is set to 'contains', meaning it will match any part of the string.
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
   };
-
+  /**
+   * Change the display state of the component.
+   * @param event The event that triggers the state change.
+   * @description This function toggles the display state between 'expanded' and 'collapsed'.
+   * It updates the state based on the current display mode.
+   */
   changeState = (event) =>{
     this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
   }

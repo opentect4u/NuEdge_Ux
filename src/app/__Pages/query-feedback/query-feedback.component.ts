@@ -83,6 +83,11 @@ export class QueryFeedbackComponent implements OnInit {
       }
     })
   }
+  /**
+   * @description This function is used to submit the feedback form.
+   * It checks if the form is valid, and if so, it sends the feedback data to the server.
+   * If the feedback is successfully submitted, it displays a success message.
+   */
   submitFeedback(){
    
     
@@ -103,6 +108,12 @@ export class QueryFeedbackComponent implements OnInit {
       })
   }
 
+  /**
+   * @description This function fetches the details of a query based on the provided query ID.
+   * It makes an API call to retrieve the query details and populates the feedback form with the retrieved data.
+   * If the query has already been rated, it sets the isFeedbackDone flag accordingly.
+   * @param {string} query_id - The ID of the query to fetch details for.
+   */
   fetchQueryDetails = (query_id:string) =>{
     // eyJpdiI6IlViYk5XRythYjFwVTltTy9KYnJaZ1E9PSIsInZhbHVlIjoiSUlLMFgyY3prL0kvMktRcC93WVFDUmwzMGxCWDcyTU1qWlY0dUVkbTdzMD0iLCJtYWMiOiIxODczYjBjZDQwOGI5Njc1NGMzY2YyYzg2YWM0NmExZGMxMjRmYzA0ZTAzZjA3YTkzOGY3ZGQ5ODc4ZTAwNjVlIiwidGFnIjoiIn0=
     this.dbIntr.api_call(1,`/cus_service/queryShowDetails?query_id=${query_id}`,null)
@@ -124,6 +135,12 @@ export class QueryFeedbackComponent implements OnInit {
     })
 }
 
+/**
+ * @description This function is used to select an emoji for the feedback rating.
+ * It sets the value of the 'rating' form control to the selected emoji's value.
+ * It also logs the selected emoji and the updated rating value to the console for debugging purposes.
+ * @param {Object} emoji - The emoji object containing the emoji value to be set.
+ */
   selectEmoji(emoji){
       console.log(emoji);
       this.feedbackForm.get('rating').setValue(emoji.emoji_value);

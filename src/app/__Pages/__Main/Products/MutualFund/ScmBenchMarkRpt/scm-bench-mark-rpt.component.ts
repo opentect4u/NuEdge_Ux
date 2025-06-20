@@ -164,7 +164,11 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       this.getBenchmarkDt(res);
     });
   }
-
+  /**
+   * @description This function is used to set the end date for the monthly and yearly periods.
+   * It calculates the maximum date based on the selected month and sets it as the end date.
+   * If only one benchmark is selected, it sets the maximum date to today's date.
+   */
   setEndDateFormonthly_yearly = () =>{
     console.log(this.my_cal);
     this.minDate = null;
@@ -201,7 +205,12 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
     // }
     }
   }
-
+  /**
+   * @description This function is used to set the end date for the selected date range.
+   * It calculates the maximum date based on the selected start date and sets it as the end date.
+   * If only one benchmark is selected, it sets the maximum date to today's date.
+   * If multiple benchmarks are selected, it sets the minimum date to the start date and calculates the maximum date accordingly.
+   */
   setEndDate(){
     // this.setMaxDate(this.scmbenchmarkFrm.get('date_range').value[0]);
    this.minDate = null;
@@ -240,6 +249,12 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
     //     this.date_range.toggle();
     // }
   }
+  /**
+   * 
+   * @param start_date - This function sets the maximum date for the selected date range.
+   * It calculates the maximum date by adding one year to the start date.
+   * If the calculated maximum date is greater than today's date, it sets the maximum date to today's date.
+   */
   setMaxDate = (start_date:Date) =>{
     const  dt = new Date(start_date);
     dt.setFullYear(start_date.getFullYear() + 1);
@@ -250,7 +265,13 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       this.maxDate = dt;
     }
   }
-
+  /**
+   * 
+   * @param benchmark_length - This function returns the periods based on the selected benchmark length.
+   * If the benchmark length is greater than 1 and not equal to the length of the benchmark array,
+   * it filters out certain periods ('D', 'F', 'W') from the periods array.
+   * @returns 
+   */
   getPeriodsBasedonBenchmarkSelection = (benchmark_length:number) => {
           if(benchmark_length > 1){
             if(benchmark_length!=this.benchmark.length){
@@ -264,7 +285,11 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
           return periods;
 
   }
-
+  /**
+   * 
+   * @returns void
+   * @description This function retrieves the scheme benchmark report based on the selected filters.
+   */
   getschemebenchmarkReport = () => {
     this.submittedDT  = null;
     this.scmbrnchMstDt= [];
@@ -313,7 +338,14 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       this.utility.showSnackbar('Please select either Exchange or benchmark',2);
     }
   };
-
+  /**
+   * 
+   * @param res - This function populates the navigation with the scheme benchmark data.
+   * It uses the `from` operator to create an observable from the response data,
+   * and then subscribes to it with a delay of 1000 milliseconds.
+   * The response data is then pushed into the `scmbrnchMstDt` array.
+   * @returns void
+   */
   populateNav = (res:Partial<IschemeBenchmark>[]) =>{
     from(res)
     .pipe(delay(1000))
@@ -322,6 +354,13 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       this.scmbrnchMstDt.push(res);
     })
   }
+  /**
+   * 
+   * @param event - This function is used to load scheme data for lazy loading in a table.
+   * It takes an event of type `LazyLoadEvent` as a parameter.
+   * The function currently logs the event to the console and has a commented-out section that simulates loading data after a delay.
+   * @returns void
+   */
   loadSchemeData = (event: LazyLoadEvent) =>{
     console.log(event);
     // setTimeout(() => {
@@ -331,7 +370,12 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
     //   }
     // }, 1000);
   }
-
+  /**
+   * * This function retrieves exchange data from the backend and populates the `exchangeMstDt` array.
+   * It makes an API call to the '/exchange' endpoint and extracts the 'data' property from the response.
+   * The retrieved data is then assigned to the `exchangeMstDt` array, which holds the exchange master data.
+   * @returns void
+   */
   getExhangeDt = () => {
     this.dbIntr
       .api_call(0, '/exchange', null)
@@ -340,7 +384,12 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
         this.exchangeMstDt = res;
       });
   };
-
+  /**
+   * 
+   * @param ex_id - This function retrieves benchmark data based on the selected exchange ID.
+   * It sets the value of the 'benchmark' control in the `scmbenchmarkFrm` form to an empty array.
+   * If the exchange ID is provided, it makes an API call to the '/benchmark' endpoint with the exchange ID as a parameter.
+   */
   getBenchmarkDt = (ex_id: number) => {
     this.scmbenchmarkFrm.controls['benchmark'].setValue([]);
     if (ex_id) {
@@ -355,15 +404,34 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
 
     }
   };
-
+  /**
+   * 
+   * @param $event - This function filters the global search results in the scheme benchmark report table.
+   * It takes an event object as a parameter, extracts the value from the event's target,
+   * and uses the `filterGlobal` method of the `primeTbl` to filter the table based on the 'contains' match mode.
+   * @returns void
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
   };
-
+  /**
+   * 
+   * @returns {Partial<column[]>} - This function retrieves the columns for the scheme benchmark report table.
+   * It uses the `getColumns` method from the `utility` service to get the columns based on the `column` property.
+   * The `column` property is defined in the `schemeBenchmarkcolumn` class.
+   * @description This function is used to get the columns for the scheme benchmark report table.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }
+  /**
+   * @description This function toggles the state of the component between 'collapsed' and 'expanded'.
+   * It checks the current state and switches it to the opposite state.
+   * If the current state is 'collapsed', it changes to 'expanded', and vice versa.
+   * This function is typically used to show or hide additional content in the component.
+   * @returns void
+   */
   toggle() {
     this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }

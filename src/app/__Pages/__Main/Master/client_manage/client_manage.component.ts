@@ -175,6 +175,11 @@ export class Client_manageComponent implements OnInit {
     }
   }
 
+  /**
+   * @description This function is used to get the client master data based on the client type.
+   * It fetches the data from the database using the DbIntrService and updates the MatTableDataSource with the fetched data.
+   * @param __clType - The type of client (e.g., 'E' for Existing, 'M' for Minor, 'P' for PAN Holder, 'N' for Non PAN Holder).
+   */
   getClDetailsParticular() {
     this.__dbIntr
       .api_call(
@@ -193,11 +198,21 @@ export class Client_manageComponent implements OnInit {
         }
       });
   }
+  /**
+   * @description This function is used to get the client master data based on the client type.
+   * It fetches the data from the database using the DbIntrService and updates the MatTableDataSource with the fetched data.
+   * @param __clType - The type of client (e.g., 'E' for Existing, 'M' for Minor, 'P' for PAN Holder, 'N' for Non PAN Holder).
+   */
   populateDT(__items: client) {
     this.openDialog(__items, __items.id, __items.client_type);
     //  this.__utility.navigatewithqueryparams('/main/master/clModify',{queryParams:{flag:btoa(__items.client_type),id:btoa(__items.id.toString())}})
   }
 
+  /**
+   * 
+   * @param __menu This function is used to navigate to different pages based on the flag provided in the __menu object.
+   * It uses the utility service to navigate with or without query parameters.
+   */
   navigate(__menu) {
     switch (__menu.flag) {
       case 'M':this.openDialog(null,0,atob(this.__RtDT.snapshot.queryParamMap.get('flag')));break;
@@ -211,6 +226,12 @@ export class Client_manageComponent implements OnInit {
     }
   }
 
+  /**
+   * @description This function is used to open a dialog for generating reports.
+   * It configures the dialog with various properties such as autoFocus, closeOnNavigation, disableClose, hasBackdrop, width, height, scrollStrategy, panelClass, and id.
+   * The data passed to the dialog includes the client type decoded from the query parameters.
+   * If an error occurs while opening the dialog, it logs the error and updates the dialog's panel class.
+   */
   openDialogForReports(){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -241,6 +262,16 @@ export class Client_manageComponent implements OnInit {
   }
 
 
+  /**
+   * 
+   * @param __clDtls - The details of the client to be modified or added.
+   * @param __clid - The ID of the client to be modified or added. If it is 0, a new client will be added.
+   * @param __clType - The type of client (e.g., 'M' for Minor, 'P' for PAN Holder, 'N' for Non PAN Holder, 'E' for Existing).
+   * @description This function is used to open a dialog for modifying or adding a client.
+   * It configures the dialog with various properties such as autoFocus, closeOnNavigation, disableClose, hasBackdrop, width, scrollStrategy, and data.
+   * The data passed to the dialog includes the client details, ID, title (based on whether it is an update or add operation), right position, and client type.
+   * If an error occurs while opening the dialog, it logs the error and updates the dialog's size and visibility.
+   */
   openDialog(__clDtls: client, __clid: number, __clType: string) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

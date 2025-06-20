@@ -44,17 +44,30 @@ export class PauseSwpComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  /**
+   * @returns {Array} An array of columns formatted for the pause SWP report table.
+   * This method filters the columns from the `live_sip_stp_swp_rpt` configuration
+   */
   searchSwpReport = (ev):void =>{
    this.PauseSwpReport(ev);
   }
 
-
+  /**
+   *  Fetches and displays the pause SWP report based on the provided form data.
+   * @param $event 
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
   };
-
+  /**
+   * 
+   * @param formDt - The form data containing the parameters for the report.
+   * This method retrieves the pause SWP report data from the server and updates the component state.
+   * It constructs a request object with the form data, report type, and SWP type,
+   * then calls the API to fetch the report details.
+   * The response is processed to update the `pause_swp` array and calculate the total amount.
+   */
   PauseSwpReport = (formDt) =>{
     this.pause_swp = [];
     console.log(formDt)
@@ -73,10 +86,22 @@ export class PauseSwpComponent implements OnInit {
          this.disclaimer = res.disclaimer;
     })
   }
+  /**
+   * 
+   * @param event - The event containing the value to change the display state.
+   * This method toggles the display state of the component between two modes:
+   * 'expanded' and 'collapsed'. It checks the current state and switches to the opposite mode.
+   * If the current state is 'expanded', it changes to 'collapsed', and vice versa.
+   */
   changeState = (event) =>{
     this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
   }
-
+  /**
+   * Exports the pause SWP report data to an Excel file.
+   * @description This method formats the pause SWP report data into an array and exports it to an Excel file.
+   * It constructs the column headers and data rows, including formatting dates and calculating totals.
+   * The resulting data is then passed to a utility function to generate the Excel file.
+   */
   exportExcel = () =>{
     const column = this.column.map(el => el.header);
       let dt = [];

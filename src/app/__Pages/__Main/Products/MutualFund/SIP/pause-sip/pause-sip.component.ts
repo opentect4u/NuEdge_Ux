@@ -56,10 +56,19 @@ export class PauseSIPComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  /**
+   * @returns {Array} An array of columns formatted for the pause SIP report table.
+   * @description This function is used to get the columns for the pause SIP report table.
+   */
   searchSipReport(ev) {
     this.PauseSipReport(ev);
   }
+  /**
+   * @param formDt - The form data containing the report type and SIP type.
+   * @description This function fetches the pause SIP report based on the provided form data.
+   * It makes an API call to retrieve the data and updates the pause_sip array with the response.
+   * It also calculates the total pause SIP amount and sets the state based on the response data length.
+   */
   PauseSipReport = (formDt) => {
     this.pause_sip = [];
     let dt = {
@@ -77,11 +86,23 @@ export class PauseSIPComponent implements OnInit {
         this.state = res.data.length > 0 ? displayMode[0] : displayMode[1];
       });
   };
-
+  /**
+   * 
+   * @param $event This function filters the global search input for the pause SIP report table.
+   * It takes the event object as a parameter and retrieves the value from the input field.
+   * The table is then filtered based on the value using the 'contains' filter match mode.
+   * @description This function filters the global search input for the pause SIP report table.
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
   };
+  /**
+   * 
+   * @param event This function changes the state of the display mode based on the event value.
+   * If the event value matches the first display mode, it switches to the second display mode, and vice versa.
+   * @description This function changes the state of the display mode based on the event value.
+   */
   changeState = (event) => {
     this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
   };
@@ -92,7 +113,16 @@ export class PauseSIPComponent implements OnInit {
       this.changeWheelSpeed(el, 0.99);
     }, 500);
    }
-
+   /**
+    * 
+    * @param container The container element to apply the scroll speed change.
+    * @param speedY The speed factor for vertical scrolling.
+    * @description This function changes the scroll speed of the container when the mouse wheel is used.
+    * @param speedY - The speed factor for vertical scrolling.
+    * @param container - The container element to apply the scroll speed change.
+    * @description This function changes the scroll speed of the container when mouse wheel is used.
+    * @returns 
+    */
    changeWheelSpeed(container, speedY) {
     var scrollY = 0;
     var handleScrollReset = function() {
@@ -127,6 +157,12 @@ export class PauseSIPComponent implements OnInit {
         removed = true;
     };
 }
+/**
+ * @description This function exports the pause SIP data to an Excel file.
+ * It formats the data into a structured array and appends a footer with the total amount.
+ * The exported file is named 'PAUSE_SIP.xlsx'.
+ * @returns {void}
+ */
 exportExcel = () =>{
   const column = this.column.map(el => el.header);
     let dt = [];
@@ -198,7 +234,12 @@ exportExcel = () =>{
       this.disclaimer,column,dt,'PAUSE SIP','PAUSE_SIP.xlsx',footerDetails
     )
 }
-
+/**
+ * @description This function converts a string to an ArrayBuffer.
+ * It creates a new ArrayBuffer with the length of the string and fills it with the character codes of each character in the string.
+ * @param s The string to convert.
+ * @returns An ArrayBuffer representing the string.
+ */
 s2ab(s) {
   var buf = new ArrayBuffer(s.length);
   var view = new Uint8Array(buf);

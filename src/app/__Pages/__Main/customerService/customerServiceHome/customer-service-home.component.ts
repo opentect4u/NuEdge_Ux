@@ -204,6 +204,11 @@ export class CustomerServiceHomeComponent implements OnInit {
       }, 500);
   }
 
+  /**
+   * @description This function fetches the holiday data from the server.
+   * It makes an API call to the backend service to retrieve the holiday data.
+   * The response is then processed to extract relevant information such as holiday dates.
+   */
   fetchCustomerServiceIndex = () =>{
           this.dbIntr.api_call(0,'/cus_service/index',null).pipe(pluck('data'))
           .subscribe((res:any) =>{
@@ -278,6 +283,11 @@ export class CustomerServiceHomeComponent implements OnInit {
           })
   }
 
+  /**
+   * @description This function fetches the holiday data from the server.
+   * It makes an API call to the backend service to retrieve the holiday data.
+   * The response is then processed to extract relevant information such as holiday dates.
+   */
   getNo_of_tatExp = (query_dtls) :Number =>{
       let count_Query_dtls = 0;
       query_dtls.forEach((el,index) =>{
@@ -306,6 +316,10 @@ export class CustomerServiceHomeComponent implements OnInit {
       return count_Query_dtls;
   }
 
+  /**
+   * @description This function used to convert hex color code to rgba format with 0.4 opacity.
+   * It checks if the provided hex code is valid and then converts it to rgba format.
+   */
   hexToRgbA(hex){
     var c;
     if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
@@ -319,6 +333,9 @@ export class CustomerServiceHomeComponent implements OnInit {
     throw new Error('Bad Hex');
 }
 
+/**
+ * @description This function fetches the employee data from the server.
+ */
   fetchEmployee(){
     this.dbIntr.api_call(0,'/cus_service/users',null)
     .pipe(pluck('data'))
@@ -328,6 +345,9 @@ export class CustomerServiceHomeComponent implements OnInit {
   }
 
 
+  /**
+   * @description This function fetches dtaa according to TAT Expired
+   */
   getItemsAccording_TAT_Expired = (data,item,index) =>{
     const _index = this.md_product.findIndex(el => el.id == data.product_id);
     if(this.index == _index){
@@ -350,6 +370,10 @@ export class CustomerServiceHomeComponent implements OnInit {
     this.visible = !this.visible;
   }
 
+  /**
+   * @description This function fetches the holiday data from the server.
+   * It makes an API call to the backend service to retrieve the holiday data.
+   */
   getItems = (data,item,index) =>{
       const _index = this.md_product.findIndex(el => el.id == data.product_id);
       if(this.index == _index){
@@ -382,6 +406,11 @@ export class CustomerServiceHomeComponent implements OnInit {
   }
 
 
+  /**
+   * @description This function fetches the holiday data from the server.
+   * It makes an API call to the backend service to retrieve the holiday data.
+   * The response is then processed to extract relevant information such as holiday dates.
+   */
   fetchQueryGivenBy(){
       this.dbIntr.api_call(0,'/cus_service/queryGivenBy',null)
       .pipe(pluck('data'))
@@ -391,6 +420,11 @@ export class CustomerServiceHomeComponent implements OnInit {
       })
   }
 
+  /**
+   * @description This function fetches the holiday data from the server.
+   * It makes an API call to the backend service to retrieve the holiday data.
+   * The response is then processed to extract relevant information such as holiday dates.
+   */
   fetchQueryReceievGivenThrough(){
         this.dbIntr.api_call(0,'/cus_service/queryGivenThrough',null)
         .pipe(pluck('data'))
@@ -400,6 +434,10 @@ export class CustomerServiceHomeComponent implements OnInit {
         })
   }
 
+  /**
+   * @description This function fetches the holiday data from the server.
+   * It makes an API call to the backend service to retrieve the holiday data.
+   */
   disabledSubBroker(bu_type_ids) {
     if (bu_type_ids.findIndex((item) => item.bu_code == 'B') != -1) {
       this.customerServiceForm.controls['sub_brk_cd'].enable();
@@ -410,6 +448,11 @@ export class CustomerServiceHomeComponent implements OnInit {
     }
   }
 
+  /**
+   * @description This function fetches the holiday data from the server.
+   * It makes an API call to the backend service to retrieve the holiday data.
+   * The response is then processed to extract relevant information such as holiday dates.
+   */
   getRelationShipManagerMst(bu_type_id, arr_branch_id) {
     if (bu_type_id.length > 0 && arr_branch_id.length > 0) {
       this.dbIntr
@@ -442,6 +485,10 @@ export class CustomerServiceHomeComponent implements OnInit {
     }
   }
 
+  /**
+   * @description This function fetches the holiday data from the server.
+   * It makes an API call to the backend service to retrieve the holiday data.
+   */
   getSubBrokerMst(arr_euin_no) {
     if (arr_euin_no.length > 0) {
       this.dbIntr
@@ -475,6 +522,10 @@ export class CustomerServiceHomeComponent implements OnInit {
     }
   }
 
+  /**
+   * @description This function fetches the holiday data from the server.
+   * It makes an API call to the backend service to retrieve the holiday data.
+   */
     setEuinDropdown = (sub_brk_cd, rm) => {
       this.__euinMst = rm.filter(
         (item) =>
@@ -513,6 +564,10 @@ export class CustomerServiceHomeComponent implements OnInit {
     this.customerServiceForm.get('euin_no').setValue(dt,{emitEvent:false});
   }
 
+  /**
+   * @description This function fetches the holiday data from the server.
+   * It makes an API call to the backend service to retrieve the holiday data.
+   */
   getBusinessTypeMst(brn_cd) {
     if (brn_cd.length > 0) {
       this.dbIntr
@@ -539,6 +594,8 @@ export class CustomerServiceHomeComponent implements OnInit {
     }
   }
 
+  /** * @description This function control scrolls in table container 
+   */
   changeWheelSpeed(container, speedY) {
     var scrollY = 0;
     var handleScrollReset = function() {
@@ -717,18 +774,33 @@ export class CustomerServiceHomeComponent implements OnInit {
       /**** End */
 
   }
+  /**
+   * @description This function used to change status of visibility of search result for Query ID
+   */
   searchResultVisibilityForQueryID(mode){
       this.displayMode_forQueryId = mode;
   } 
-  
+  /**
+   * @description This function used to change status of visibility of search result for Client
+   * @param mode - The mode to set for the visibility of the search result.
+   * It can be 'block' or 'none'.
+   */
   searchResultVisibilityForClient(mode){
       this.displayMode_forClient = mode;
   }
 
+  /**
+   * @description This function used to set columns.
+   */
   setColumns = (productId:number) =>{
       this.query_column = queryColumn.QueryColumn.filter(el => el.isVisible.includes(Number(productId)))
   }
-
+  
+  /** * @description This function used to populate tab details and fetch query data based on the selected tab.
+   * @param ev - The event object containing the tab details.
+   * It updates the customerServiceForm with the selected query status and resets the query mode.
+   * It also fetches the query data based on the selected tab and sets the columns accordingly.
+   */
   TabDetails(ev){
       this.customerServiceForm.patchValue({
         query_status_id:this.status_id ? this.status_id : '',
@@ -739,11 +811,23 @@ export class CustomerServiceHomeComponent implements OnInit {
       this.fetchQuery(ev.tabDtls?.flag);
       this.setColumns(ev.tabDtls?.id)
   }
+  /**
+   * @description This function filter global search in the table.
+   * @param $event - The event object containing the search input value.
+   * It filters the table data based on the search input value using the 'contains' filter mode.
+   */
   filterGlobal($event){
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
 }
 
+/**
+ * @description This function fetches the query data based on the provided flag and other form values.
+ * It constructs a FormData object with the necessary parameters and makes an API call to fetch the query data.
+ * The response is then processed to filter and format the query data before updating the queryDataSource.
+ * @param flag - The flag indicating the type of query to fetch (e.g., 'A', 'R').
+ * @param isTATClicked - Optional boolean parameter indicating if TAT was clicked, defaulting to false.
+ */
   fetchQuery = (flag,isTATClicked:boolean | undefined = false) =>{
       const fb = new FormData();
       fb.append('query_id',global.getActualVal(this.customerServiceForm.getRawValue().query_id));
@@ -837,6 +921,10 @@ export class CustomerServiceHomeComponent implements OnInit {
   }
  
 
+  /**
+   * @description This function calculates the expected close date based on the provided date and query TAT.
+   * It adds the query TAT to the date and checks for holidays and weekends to adjust
+   */
  globalFuncForExpectedCloseDate = (date,query_tat) =>{
      let  daysAfteradd;
      if(date){
@@ -864,6 +952,12 @@ export class CustomerServiceHomeComponent implements OnInit {
      return expected_close_date.format('YYYY-MM-DD');
    }
 
+   /**
+    * @description This function fetches the product data from the server.
+    * It makes an API call to the backend service to retrieve the product data.
+    * The response is then processed to extract relevant information such as product IDs and names.
+    * The product ID is encrypted for security purposes.
+    */
   fetchProduct = () =>{
     this.dbIntr.api_call(0,'/product',null).pipe(pluck('data')).subscribe((res:any) => {
       // this.productId =this.__utility.encrypt_dtls(JSON.stringify((res.length > 0 ? res[0].id : 0))) 
@@ -883,6 +977,12 @@ export class CustomerServiceHomeComponent implements OnInit {
     })
   }
 
+  /**
+   * @description This function fetches the holiday data from the server.
+   * It makes an API call to the backend service to retrieve the holiday data.
+   * The response is then processed to extract relevant information such as holiday dates.
+   * The holiday dates are stored in the md_holiday array for further use.
+   */
   fetchHoliday = () =>{
         this.dbIntr.api_call(0,'/cus_service/holiday',null)
         .pipe(pluck("data"))
@@ -895,10 +995,17 @@ export class CustomerServiceHomeComponent implements OnInit {
 
   
 
+ 
   getColumns = () =>{
     return this.__utility.getColumns(this.query_column);
   }
 
+  /**
+   * @description This function fetches the query status data from the server.
+   * It makes an API call to the backend service to retrieve the query status data.
+   * The response is then processed to extract relevant information such as query status IDs and names.
+   * The query status data is stored in the md_query_status array for further use.
+   */
   fetchQueryStatus = () =>{
     this.dbIntr.api_call(0,'/cus_service/queryStatus',null).pipe(pluck('data')).subscribe((res:Partial<IQueryStatus>[]) =>{
           this.md_query_status = res;
@@ -908,6 +1015,12 @@ export class CustomerServiceHomeComponent implements OnInit {
     })
   }
 
+  /**
+   *  * @description This function used to return initials from words.
+   * @param words - The input string containing words from which initials are to be extracted.
+   * It replaces each word with its first letter, removes spaces, and converts the result to uppercase.
+   * @returns A string containing the initials of the words in uppercase.
+   */
   initialName(words) {
     return words
         .replace(/\b(\w)\w+/g, '$1')
@@ -916,6 +1029,11 @@ export class CustomerServiceHomeComponent implements OnInit {
         .toUpperCase();
   }
 
+  /**
+   * @description This function fetches the customer service index data from the server.
+   * It makes an API call to the backend service to retrieve the customer service index data.
+   * The response is then processed to extract relevant information such as product IDs and names.
+   */
   searchQuery = () =>{
     // //console.log(this.customerServiceForm.getRawValue());
     // const product_id = this.__utility.decrypt_dtls(this.productId);
@@ -924,6 +1042,12 @@ export class CustomerServiceHomeComponent implements OnInit {
     this.fetchQuery(flag[0].flag)
   }
 
+  /**
+   * @description This function opens a dialog to modify the query status.
+   * It sets the dialog configuration and passes the query details to the dialog component.
+   * After the dialog is closed, it updates the query data source with the modified status if applicable.
+   * @param queryDtls - The details of the query to be modified.
+   */
   setQuery = (queryDtls) =>{
         const dialogConfig = new MatDialogConfig();
         dialogConfig.autoFocus = false;
@@ -976,6 +1100,10 @@ export class CustomerServiceHomeComponent implements OnInit {
         }
   }
 
+  /** 
+   * @description This function is triggered when a search result is selected from the parent component.
+   * It resets the query_id field in the customerServiceForm with the selected item's query_id
+   */
   getSelectedItemsFromParent = (searchRlt: {
     flag: string;
     item: any;
@@ -1004,6 +1132,13 @@ export class CustomerServiceHomeComponent implements OnInit {
       // }
     };
 
+    /**
+     * @description This function is triggered when an item is clicked in the search result.
+     * It checks the value of the clicked item and performs actions accordingly.
+     * If the value is 'A', it fetches the branch master data.
+     * Otherwise, it resets the form and prepares for a new search.
+     * @param ev - The event object containing the clicked item's value.
+     */
     onItemClick = (ev) => {
       if (ev.option.value == 'A') {
         this.getBranchMst();
@@ -1028,6 +1163,10 @@ export class CustomerServiceHomeComponent implements OnInit {
       }
     }
 
+    /**
+     * @description This function resets the form values in the customerServiceForm.
+     * It sets the client_id, pan_no, query_receive_by, query_solve_by
+     */
     resetForm = () => {
       // //console.log(`SUB TYPE: ${this.sub_type}`);
       this.customerServiceForm.patchValue({
@@ -1061,20 +1200,43 @@ export class CustomerServiceHomeComponent implements OnInit {
     }
   }
 
+  /**
+   * @description This function is triggered when an item is selected from the business type dropdown.
+   * It updates the customerServiceForm with the selected business type and fetches the relationship manager
+   */
     onbuTypeDeSelect = (ev) =>{
       // this.misTrxnRpt.get('bu_type_id').setValue(this.misTrxnRpt.value.bu_type_id.filter(item => item.bu_code != ev.bu_code));
     }
+    /**
+     * @description This function is triggered when an item is selected from the branch dropdown.
+     * It updates the customerServiceForm with the selected branch and fetches the relationship manager
+     */
     onbrnCdDeSelect = (ev) =>{
       // this.misTrxnRpt.get('brn_cd').setValue(this.misTrxnRpt.value.brn_cd.filter(item => item.id != ev.id));
     }
+    /**
+     * @description This function is triggered when an item is selected from the relationship manager dropdown.
+     * It updates the customerServiceForm with the selected relationship manager and fetches the sub broker
+     */
     onRmDeSelect = (ev) =>{
       // this.misTrxnRpt.get('rm_id').setValue(this.misTrxnRpt.value.rm_id.filter(item => item.euin_no != ev.euin_no));
     }
+    /**
+     * @description This function is triggered when an item is selected from the sub broker dropdown.
+     * It updates the customerServiceForm with the selected sub broker and sets the euin dropdown based on the selected sub broker.
+     * @param ev - The event object containing the selected sub broker details.
+     */
     onSubBrkDeSelect = (ev) =>{
       // this.misTrxnRpt.get('sub_brk_cd').setValue(this.misTrxnRpt.value.sub_brk_cd.filter(item => item.code != ev.code));
 
     }
     
+    /**
+     * @description This function clears the advance filter values in the customerServiceForm.
+     * It resets the branch code, sub broker code, and euin number fields to their default values.
+     * It also sets the button type to 'R' for resetting the filter.
+     * This function is typically called when the user wants to clear the advanced filter criteria.
+     */
   clearAdvanceFilter = () =>{
     this.btn_type = 'R';
     this.customerServiceForm.get('brn_cd').setValue([], { emitEvent: true });
@@ -1082,6 +1244,12 @@ export class CustomerServiceHomeComponent implements OnInit {
     this.customerServiceForm.controls['sub_brk_cd'].setValue([]);
     this.customerServiceForm.controls['euin_no'].setValue([]);
   }
+  /**
+   * @description This function opens the attachments dialog for a given transaction.
+   * It filters the attachments based on their query status and constructs a URL for each attachment.
+   * It groups the attachments by their query status name and opens a dialog to display them.
+   * @param trxn - The transaction object containing the attachments to be opened.
+   */
   openAttachments(trxn){
       const modifyAttachment = trxn.allattach.filter(el =>{
         if(el.query_status_id == 2 || el.query_status_id == trxn.query_status_id){
@@ -1102,12 +1270,23 @@ export class CustomerServiceHomeComponent implements OnInit {
       this.openDialog(trxn,trxn.query_id,attachments);
   }
 
+  /**
+   * @description This function copies the provided text to the clipboard.
+   * It uses the Clipboard API to write the text to the clipboard.
+   * If the text is not empty, it writes the text to the clipboard.
+   * @param text - The text to be copied to the clipboard.
+   */
   copyText(text){
       if(text){
         navigator.clipboard.writeText(text);
       }
   }
 
+  /**
+   * @description This function opens a dialog to view attachments for a given transaction.
+   * It sets the dialog configuration, including the data to be passed to the dialog component.
+   * The dialog displays the attachments related to the transaction and allows users to view them.
+   */
   openDialog(transaction, __quertId,attachments) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -1142,11 +1321,23 @@ export class CustomerServiceHomeComponent implements OnInit {
       });
     }
   }
+  /**
+   * @description This function is triggered when a scheme is selected.
+   * It updates the md_scheme property with the selected scheme data.
+   * This function is typically called when a user selects a scheme from a list or dropdown.
+   * @param scheme - The selected scheme data to be displayed in the report.
+   */
   showReport(scheme){
       // //console.log(scheme);
       this.md_scheme = [];
       this.md_scheme = scheme;
   }
+  /**
+   * @description This function opens a dialog to add TAT remarks for a given transaction.
+   * It sets the dialog configuration, including the data to be passed to the dialog component.
+   * The dialog allows users to add remarks related to the TAT (Turnaround Time) of the transaction.
+   * @param trxn - The transaction object for which TAT remarks are to be added.
+   */
   openTatRemarks(trxn){
       //console.log(trxn);
       const dialogConfig = new MatDialogConfig();
@@ -1191,6 +1382,12 @@ export class CustomerServiceHomeComponent implements OnInit {
       }
   }
 
+  /**
+   * @description This function copies the provided text to the clipboard.
+   * It uses the Clipboard API to write the text to the clipboard.
+   * If the Clipboard API is not available, it falls back to a manual copy method using a textarea element.
+   * @param textToCopy - The text to be copied to the clipboard.
+   */
   copyToClipboard(textToCopy){
     if (navigator.clipboard) {
       navigator.clipboard.writeText(textToCopy).then(() => {
@@ -1203,6 +1400,13 @@ export class CustomerServiceHomeComponent implements OnInit {
       this.fallbackCopyText(textToCopy);
     }
   }
+  /**
+   * @description This function provides a fallback method for copying text to the clipboard.
+   * It creates a temporary textarea element, sets its value to the text to be copied,
+   * and uses the execCommand method to copy the text.
+   * After copying, it removes the temporary textarea element from the document.
+   * @param text - The text to be copied to the clipboard.
+   */
   fallbackCopyText(text: string): void {
     const textarea = document.createElement('textarea');
     textarea.value = text;

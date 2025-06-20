@@ -40,11 +40,20 @@ export class LiveSIPComponent implements OnInit {
 
   ngOnInit(): void {}
 
-
+  /**
+   * @description This function is used to get the columns for the table
+   * It uses the utility service to get the columns based on the input column array.
+   */
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.primaryTbl.filterGlobal(value,'contains')
   }
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the table.
+   * @description This function is used to get the columns for the table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }

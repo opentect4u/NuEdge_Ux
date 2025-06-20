@@ -45,6 +45,13 @@ export class MailbackhomeComponent implements OnInit {
   }
 
 
+  /**
+   * @description This function is used to get the missed mailback upload details
+   * It calls the API '/mailbackProcessDetails' with the flag 'F' to fetch the details
+   * The response is then assigned to the merquee_mailbackUpload variable
+   * and the loading state is toggled off
+   * @returns void
+   */
   getMissedMailback = () =>{
     this.dbIntr.callApiOnChange('/mailbackProcessDetails',`flag=F`)
     .pipe(pluck('data'))
@@ -58,6 +65,13 @@ export class MailbackhomeComponent implements OnInit {
   }
 
 
+  /**
+   * @description This function is used to get the missed mailback upload details
+   * It calls the API '/mailbackProcessDetails' with the date range and flag 'M'
+   * The response is then mapped to format the process_type and assigned to mailbackuploaded_record
+   * If there is an error, it calls getMissedMailback to fetch the missed mailback details again
+   * @returns void
+   */
   getMissedMailbackUpload = () =>{
     this.dbIntr.api_call(0,'/mailbackProcessDetails',`date=${this.date_range?.inputFieldValue}&flag=M`)
     .pipe(pluck('data'))
@@ -88,18 +102,40 @@ export class MailbackhomeComponent implements OnInit {
   
   }
 
+  /**
+   * @description This function is used to navigate to the items page
+   * It takes an items object as a parameter and uses the utility service to navigate to the specified URL
+   * @param items - The items object containing the URL to navigate to
+   * @returns void
+   */
   getItems(items) {
     this.utility.navigate(items.url);
   }
 
+  /**
+   *  @description This function is used to get the columns for the mailback uploaded records
+   * It uses the utility service to get the columns based on the column property
+   * @returns {column[]} - An array of column objects
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }
 
+  /**
+   * @description This function is used to search for mailback uploaded records
+   * It calls the getMissedMailbackUpload function to fetch the records based on the date range selected in the mailbackuploaded_frm form
+   * @returns void
+   */
   searchMailbackuploaded =() =>{
       this.getMissedMailbackUpload();
   }
 
+  /**
+   * @description This function is used to convert NFO files to ongoing files
+   * It calls the API '/nfoToOngoing' with a flag of 0 to initiate the conversion process
+   * Upon successful completion, it shows a snackbar message indicating that the scheduler has run successfully
+   * @returns void
+   */
   convertNfoToOngoing = () =>{
       this.dbIntr.api_call(0,'/nfoToOngoing',null).subscribe(res =>{
             this.utility.showSnackbar('Schedular run successfully',1);

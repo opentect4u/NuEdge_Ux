@@ -73,6 +73,12 @@ export class FamilyRelationshipComponent implements OnInit {
  //  End
   }
 
+  /**
+   * 
+   * @param searchRlt - This function is used to get the selected item from the parent component
+   * It resets the family_head_name form control with the selected item's client_name
+   * It hides the search result for client by calling searchResultVisibilityForClient with 'none'
+   */
   getSelectedItemsFromParent = (searchRlt: {
     flag: string;
     item: any;
@@ -82,10 +88,23 @@ export class FamilyRelationshipComponent implements OnInit {
       this.getFamilymemberAccordingToFamilyHead_Id(searchRlt.item.client_id)
   }
 
+  /**
+   * 
+   * @param display_mode - This function is used to set the visibility of the search result for client
+   * It takes a string parameter display_mode which can be 'block' or 'none'
+   * and assigns it to the displayMode_forClient variable
+   * @returns void
+   */
   searchResultVisibilityForClient = (display_mode:string) =>{
         this.displayMode_forClient = display_mode;
   }
 
+  /**
+   * 
+   * @param id - This function is used to get the family members according to the family head ID
+   * It takes an optional parameter id which is the family head ID
+   * If the id is provided, it makes an API call to fetch the family members
+   */
   getFamilymemberAccordingToFamilyHead_Id = (id:number | undefined = undefined) =>{
     if(id){
       this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=F`)
@@ -99,15 +118,34 @@ export class FamilyRelationshipComponent implements OnInit {
    }
 }
 
+/**
+ * @description This function is used to get the columns for the family relationship table
+ * It uses the utility service to retrieve the columns based on the rel_column property
+ * @returns {column[]} - An array of column objects
+ */
   getColumns =() =>{
     return this.utility.getColumns(this.rel_column);
   }
 
+  /**
+   * @description This function is used to filter the global data in the PrimeNG table
+   * It takes an event object as a parameter and retrieves the value from the target input field
+   * The value is then passed to the filterGlobal method of the PrimeNG table with 'contains' as the filter match mode
+   * @param $event - The event object containing the target input field value
+   * @returns void
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
   }
 
+  /**
+   * @description This function updates the relationship of family members
+   * It prepares the data by extracting existing members and the family head ID
+   * Then it makes an API call to update the family members
+   * If the update is successful, it resets the family members list and clears the family head search input
+   * @returns void
+   */
   UpdateRelationShip = () =>{
           try{
             const dt = {

@@ -13,6 +13,12 @@ export class CRMDashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+  /**
+   * 
+   * @param item - The menu item object containing the URL to navigate to
+   * @description This function is used to navigate to the specified URL when a menu item is clicked.
+   * It uses the utility service to perform the navigation.
+   */
   getItems = (item) =>{
       this.utility.navigate(item.url);
   }

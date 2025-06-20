@@ -25,9 +25,21 @@ export class PaginateComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  /**
+   * @description This function is used to handle the selection of items per page
+   * It emits the selected value to the parent component using the itemPerpageShow event emitter.
+   * @param ev - The event object containing the selected value.
+   * @returns {void}
+   */
   onselectItem(ev){
    this.itemPerpageShow.emit(this.__pageNumber.value)
   }
+  /**
+   * 
+   * @param __paginate - This function is used to handle pagination
+   * It emits the pagination value to the parent component using the PaginateFn event emitter.
+   * @returns {void}
+   */
   getPaginate(__paginate){
      this.PaginateFn.emit(__paginate)
   }

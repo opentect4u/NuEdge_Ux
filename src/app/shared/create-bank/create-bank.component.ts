@@ -28,7 +28,11 @@ export class CreateBankComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {}
-
+  /**
+   * @description This function is used to close the dialog
+   * It updates the size of the dialog to 30% of the screen width
+   * and sets the bottom and right position of the dialog
+   */
   submit() {
     if (this.__bankForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error',0);
@@ -53,6 +57,10 @@ export class CreateBankComponent implements OnInit {
     })
 
   }
+  /**
+   * @description This function is used to minimize the dialog
+   * It updates the size of the dialog to 30% of the screen width
+   */
   reset(){
     this.__bankForm.reset();
   }

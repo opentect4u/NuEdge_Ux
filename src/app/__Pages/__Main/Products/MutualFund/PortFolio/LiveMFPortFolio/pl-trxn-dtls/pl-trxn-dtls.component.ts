@@ -70,15 +70,31 @@ export class PlTrxnDtlsComponent implements OnInit {
 
   column:column[] = PLTransaction.column
   ngOnInit(): void {}
-
+  /**
+   * @description This function is triggered when the global filter input changes.
+   * It filters the table based on the input value.
+   * @param $event The event object containing the input value.
+   */
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.primaryTbl.filterGlobal(value,'contains')
   }
+  /**
+   * 
+   * @returns {Array} An array of columns formatted for the table.
+   * @description This function is used to get the columns for the table.
+   * It uses the utility service to get the columns based on the input column array.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }
-
+  /**
+   * 
+   * @param rows This function is triggered when a row in the table is clicked.
+   * It emits an event with the row data to get the transaction details.
+   * @description This function is used to get the transaction details from the P&L table.
+   * It emits an event with the row data to retrieve the transaction details.
+   */
   getRowDtls =(rows:Partial<IPLTrxn>) =>{
       this.getTransactionDetailsFromPL.emit(rows)
   }
@@ -131,7 +147,13 @@ export class PlTrxnDtlsComponent implements OnInit {
     // })
   }
 
-
+  /**
+   * 
+   * @param mode This function generates a PDF document from the table data.
+   * It uses the jsPDF library to create a PDF document and exports the table data as a summary.
+   * @description This function is used to generate a PDF document from the table data.
+   * It uses the jsPDF library to create a PDF document and exports the table data as a summary.
+   */
   generatePDF = (mode:string) =>{
     var pdf = new jsPDF('l','pt','a4');
     let finalY ;

@@ -20,6 +20,13 @@ export class ValuationRptDownloadLinkComponent implements OnInit {
     private route: Router,
     private dbIntr: DbIntrService) {
   }
+  /**
+   * @description This function is used to fetch the PDF report based on the token provided in the URL
+   * It makes an API call to download the valuation report and checks if the report is valid.
+   * If valid, it fetches the PDF and triggers a download in the browser.
+   * If not valid, it sets the PDF URL to 'err'.
+   * @param token - The token extracted from the URL parameters
+   */
   getPdf(token) {
     console.log(this.hasLocalStorage)
     const fb = new FormData();

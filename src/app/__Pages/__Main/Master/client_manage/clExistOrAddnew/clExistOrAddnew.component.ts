@@ -57,6 +57,12 @@ export class ClExistOrAddnewComponent implements OnInit {
   ngOnInit() {
     this.utility.getBreadCrumb(this.__brdCrmbs);
   }
+  /**
+   * @description This function is used to navigate to the specified URL with query parameters.
+   * @param items - An object containing the URL and flag to be passed as query parameters.
+   * The flag is encoded using base64 encoding before being passed as a query parameter.
+   * It uses the utility service to navigate with query parameters.
+   */
   navigate(items){
     console.log(items.flag);
       this.utility.navigatewithqueryparams(items.url,{queryParams:{flag:btoa(items.flag)}})

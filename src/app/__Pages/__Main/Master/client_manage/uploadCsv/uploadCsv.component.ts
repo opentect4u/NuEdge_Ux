@@ -201,12 +201,24 @@ export class UploadCsvComponent implements OnInit {
     this.__utility.getBreadCrumb(this.__brdCrmbs);
     this.setColumns();
   }
+  /**
+   * @description This function is used to preview the latest client entries
+   * It fetches the client data from the database and sets it to the __selectClient MatTableDataSource.
+   * The data is filtered based on the client type passed in the query parameters.
+   * It uses the pluck operator to extract the 'data' property from the response.
+   */
   previewlatestClientEntry() {
     this.__dbIntr.api_call(0, '/client', 'client_type='+ atob(this.__rtDt.snapshot.queryParamMap.get('flag'))).pipe(pluck('data','data')).subscribe((res: client[]) => {
       this.__selectClient = new MatTableDataSource(res.splice(0,5));
 
     })
   }
+  /**
+   * @description This function is used to set the columns and table data for downloading/uploading CSV files.
+   * It decodes the 'flag' query parameter from the route snapshot and sets the columns based on the client type.
+   * It filters out certain columns that are not needed for the CSV download.
+   * The table data is set based on the client type, and the displayed columns are updated accordingly.
+   */
   setColumns(){
     /** FOR SETTING COLUMNS & TABLE DATA FOR DOWNLOADING UPLOAD CSV */
     console.log(atob(this.__rtDt.snapshot.queryParamMap.get('flag')));
@@ -222,6 +234,10 @@ export class UploadCsvComponent implements OnInit {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef).filter(x => this.__columns.includes(x));
     this.clmsToDisplay = this.tableColumns.filter((x) => columns.includes(x.columnDef));
    }
+   /**
+    * @description This function is used to set the table data based on the client type.
+    * It filters out certain columns based on the client type and sets the table data accordingly.
+    */
    setTableData(flag){
     switch(flag){
       case 'M':
@@ -241,13 +257,31 @@ export class UploadCsvComponent implements OnInit {
     }
     console.log(this.tableData.data);
    }
+   /**
+    * @description This function is used to navigate to the client master page with query parameters.
+    * It encodes the client type and id in base64 format and passes them as query parameters.
+    * It uses the utility service to navigate with query parameters.
+    * @param __items - An object containing the client type and id.
+    */
   populateDT(__items: client) {
     this.__utility.navigatewithqueryparams('/main/master/clientmaster', { queryParams: { flag: btoa(__items.client_type), id: btoa(__items.id.toString()) } })
   }
+  /**
+   * @description This function is used to get the files from the file input event.
+   * It sets the validators for the file input control based on the selected files.
+   * It checks if the file size and extension are valid, and updates the form control value accordingly.
+   * @param __ev - The file input event containing the selected files.
+   */
   getFiles(__ev) {
     this.__uploadRnt.get('rntFile').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)]);
     this.__uploadRnt.get('file')?.patchValue(this.__uploadRnt.get('rntFile').status == 'VALID' ? __ev.files[0] : '');
   }
+  /**
+   * @description This function is used to upload the RNT file.
+   * It checks if the form is valid, and if so, it creates a FormData object with the file and sends it to the server.
+   * It uses the database interaction service to make the API call and displays a snackbar message based on the response.
+   * If the upload is successful, it calls the deleteFiles function to reset the form.
+   */
   uploadRnt() {
 
     if (this.__uploadRnt.invalid) {
@@ -263,6 +297,13 @@ export class UploadCsvComponent implements OnInit {
       }
     })
   }
+  /**
+   * @description This function is used to handle the file drop event.
+   * It checks if the dropped files are valid based on the allowed extensions and file size.
+   * If the files are valid, it updates the form control value with the first file.
+   * It also sets the errors for the form control based on the validation results.
+   * @param __ev - The file drop event containing the dropped files.
+   */
   onFileDropped(__ev) {
     this.__uploadRnt.get('file').patchValue('');
     this.__uploadRnt.controls.rntFile.setErrors({
@@ -303,6 +344,12 @@ export class UploadCsvComponent implements OnInit {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
+  /**
+   * @description This function is used to delete the files from the form.
+   * It resets the form control for the file input and sets the validators for the file input control.
+   * It updates the validity of the form control after resetting it.
+   * This function is called after a successful file upload to clear the form for the next upload.
+   */
   deleteFiles() {
     this.__uploadRnt.reset();
     this.__uploadRnt
@@ -313,6 +360,12 @@ export class UploadCsvComponent implements OnInit {
       ]);
     this.__uploadRnt.get('rntFile').updateValueAndValidity();
   }
+  /**
+   * @description This function is used to navigate to the client master page with query parameters.
+   * It uses the utility service to navigate with query parameters.
+   * The query parameters include the flag from the route snapshot.
+   * This function is called when the user clicks on the "View All" button.
+   */
   viewAll(){
     this.__utility.navigatewithqueryparams('/main/master/clientmaster', { queryParams: { flag: this.__rtDt.snapshot.queryParamMap.get('flag') } })
 

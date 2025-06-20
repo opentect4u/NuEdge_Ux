@@ -139,6 +139,13 @@ export class UpdateFamilyComponent implements OnInit {
 
  }
 
+ /**
+  *   * This function is used to get the selected item from the parent component
+  * It resets the family_head_name form control with the selected item's client_name
+  * It resets the family_head_pan and family_head_id form controls with the selected item's pan and client_id respectively
+  * It hides the search result for client by calling searchResultVisibilityForClient with 'none'
+  * @param searchRlt 
+  */
  getSelectedItemsFromParent = (searchRlt: {
    flag: string;
    item: any;
@@ -149,6 +156,13 @@ export class UpdateFamilyComponent implements OnInit {
      this.searchResultVisibilityForClient('none');
  }
 
+ /**
+  * 
+  * @param searchRlt - This function is used to get the selected item from the parent component
+  * It resets the family_member_name form control with the selected item's client_name
+  * It resets the family_member_pan and family_member_id form controls with the selected item's pan and client_id respectively
+  * It hides the search result for new member by calling searchResultVisibilityFornewMember with 'none'
+  */
  getSelectedMembersFromParent = (searchRlt: {
     flag: string;
     item: any;
@@ -159,6 +173,12 @@ export class UpdateFamilyComponent implements OnInit {
     this.searchResultVisibilityFornewMember('none');
  }
 
+ /**
+  * @description This function is used to search family members based on the family head's ID or PAN.
+  * If either family_head_id or family_head_pan is provided, it calls the getFamilymemberAccordingToFamilyHead_Id function
+  * to fetch the family members associated with the specified family head.
+  * If neither is provided, it shows a snackbar message prompting the user to select a family head.
+  */
  searchFamilyMembers = () =>{
   if(this.family_head_search.value.family_head_id || this.family_head_search.value.family_head_pan){
     this.getFamilymemberAccordingToFamilyHead_Id(this.family_head_search.value.family_head_id);
@@ -168,11 +188,19 @@ export class UpdateFamilyComponent implements OnInit {
   }
 }
 
+/**
+ * @description This function is used to search for new family members based on the family member's name, ID, or PAN. 
+ */
 searchnewFamilyMembers = () =>{
   console.log(this.family_head_search.value)
 }
 
-
+/**
+ *  * @description This function is used to filter the global data in the PrimeNG table.
+ * It retrieves the value from the target input field and passes it to the filterGlobal method of the PrimeNG table with 'contains' as the filter match mode.
+ * This allows for global filtering of the table data based on the input value.
+ * @param $event 
+ */
 filterGlobal = ($event) => {
   let value = $event.target.value;
   this.primeTbl.filterGlobal(value,'contains')
@@ -181,7 +209,13 @@ filterGlobal = ($event) => {
 // deleteMembers = (members:client) =>{
 //     console.log(members);
 // }
-
+/**
+ * 
+ * @returns {column[]} - An array of column objects for the family member table
+ * @description This function retrieves the columns for filtering from the utility service.
+ * It uses the `getColumns` method of the utility service to get the columns defined in `this.family_tbl_column`.
+ * The columns are expected to be in a specific format that includes field names, headers, and visibility flags.
+ */
 getColumns = () =>{
   return this.utility.getColumns(this.family_tbl_column);
 }
@@ -210,18 +244,35 @@ getColumns = () =>{
     }
 }
 
+/**
+ * * @description This function is used to set the visibility of the search result for client
+ * It takes a display mode as a parameter and sets the displayMode_forClient property to that value
+ */
  searchResultVisibilityForClient = (display_mode: string) => {
    this.displayMode_forClient = display_mode;
  };
 
+ /**
+  * @description This function is used to set the visibility of the search result for new members
+  * It takes a display mode as a parameter and sets the displayMode_forMember property to that value
+  * @param display_mode - The display mode to set for the search result visibility
+  * @returns void
+  */
  searchResultVisibilityFornewMember = (display_mode: string) => {
   this.displayMode_forMember = display_mode;
 };
-
+/**
+ * * @description This function is used to add a new family member to the selectedFamily_member array
+ * It checks if the family member already exists in the array based on the client_id.
+ */
 deleteMembers = (members:client,index:number) =>{
             this.selectedFamily_member = this.selectedFamily_member.filter((item:client) => item.id != members.id)
 }
-
+/**
+ * * @description This function is used to delete an existing family member from the getFamilyMemberMstDT array
+ * It checks if there are more than two members in the array before allowing deletion.
+ * If there are two or fewer members, it shows a snackbar message indicating that deletion is not allowed.
+ */
 deleteExistingMembers = (members:client,index:number) =>{
        if(this.getFamilyMemberMstDT.length > 2){
         const dialogConfig = new MatDialogConfig();
@@ -253,7 +304,10 @@ deleteExistingMembers = (members:client,index:number) =>{
         this.utility.showSnackbar(`Can't delete!! Must be two members in family`,2);
        }
 }
-
+/**
+ * * @description This function is used to update the family members
+ * It checks if there are any existing family members and if new family members are selected.
+ */
 UpdateFamily =() =>{
   if(this.getFamilyMemberMstDT.length == 0){
     this.utility.showSnackbar(`Please search & select family head`,2)

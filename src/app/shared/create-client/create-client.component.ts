@@ -112,7 +112,11 @@ export class CreateClientComponent implements OnInit {
     }
 
   }
-
+  /**
+   * @description This function is used to set the validators for the form controls based on the client type.
+   * It sets the validators for the 'proprietor_name', 'dob', 'karta_name', 'inc_date', and 'identification_number' controls.
+   * It also updates the validity of the form controls after setting the validators.
+   */
   getPertnerDtls(pertner_details){
     if(this.data.cl_type == 'P' || this.data.cl_type == 'N' || this.data.cl_type == 'E')
     {
@@ -127,16 +131,31 @@ export class CreateClientComponent implements OnInit {
   }
 
   }
+  /**
+   * @description This function is used to set the validators for the form controls based on the client type.
+   * It sets the validators for the 'proprietor_name', 'dob', 'karta_name', 'inc_date', and 'identification_number' controls.
+   * It also updates the validity of the form controls after setting the validators.
+   */
   getCountryMaster(){
     this.__dbIntr.api_call(0,'/country',null).pipe(pluck('data')).subscribe(res =>{
       this.countryMst = res;
     })
   }
+  /**
+   * @description This function is used to set the validators for the form controls based on the client type.
+   * It sets the validators for the 'proprietor_name', 'dob', 'karta_name', 'inc_date', and 'identification_number' controls.
+   * It also updates the validity of the form controls after setting the validators.
+   */
   getClientType(){
     this.__dbIntr.api_call(0,'/clientType','flag=' + (this.data.cl_type == 'M' ? this.data.cl_type : 'P')).pipe(pluck("data")).subscribe(res =>{
     this.__clTypeMst = res;
     })
   }
+  /**
+   * @description This function is used to set the validators for the form controls based on the client type.
+   * It sets the validators for the 'proprietor_name', 'dob', 'karta_name', 'inc_date', and 'identification_number' controls.
+   * It also updates the validity of the form controls after setting the validators.
+   */
   getDistrict_city(){
     if(this.data.id > 0 && this.data.client_type != 'E'){
       this.getDistrict(this.data.items.state);
@@ -220,13 +239,29 @@ export class CreateClientComponent implements OnInit {
 
 
   }
-
+  /**
+   * @description This function is used to set the validators for the form controls based on the client type.
+   * It sets the validators for the 'proprietor_name', 'dob', 'karta_name', 'inc_date', and 'identification_number' controls.
+   * It also updates the validity of the form controls after setting the validators.
+   */
   get pertner_dtls(): FormArray{
     return this.__clientForm.get('pertner_dtls') as FormArray;
   }
+  /**
+   * @description This function is used to set the validators for the form controls based on the client type.
+   * It sets the validators for the 'proprietor_name', 'dob', 'karta_name', 'inc_date', and 'identification_number' controls.
+   * It also updates the validity of the form controls after setting the validators.
+   */
   addPertner(){
     this.pertner_dtls.push(this.setPertner(null));
   }
+  /**
+   * 
+   * @param pertnerDtls - This function is used to set the form group for the partner details.
+   * It takes an optional parameter `pertnerDtls` which contains the details of the partner.
+   * If `pertnerDtls` is provided, it initializes the form controls with the values from `pertnerDtls`.
+   * @returns 
+   */
   setPertner(pertnerDtls){
 
 
@@ -241,31 +276,72 @@ export class CreateClientComponent implements OnInit {
     })
 
   }
+  /**
+   * @description This function is used to set the validators for the form controls based on the client type. 
+   * It sets the validators for the 'proprietor_name', 'dob', 'karta_name', 'inc_date', and 'identification_number' controls.
+   * It also updates the validity of the form controls after setting the validators.
+   */
   getDocumnetTypeMaster() {
     this.__dbIntr.api_call(0, '/documenttype', null).pipe(map((x: responseDT) => x.data)).subscribe((res: docType[]) => {
       this.__docTypeMaster = res;
     })
   }
+  /**
+   * 
+   * @param country_id - This function is used to get the state master data based on the country_id.
+   * It makes an API call to '/states' with the country_id as a parameter.
+   * The response is then mapped to the 'data' property of the responseDT object and assigned to the __stateMaster variable.
+   * @returns
+   */
   getStateMaster(country_id) {
     this.__dbIntr.api_call(0, '/states', 'country_id='+ country_id).pipe(map((x: responseDT) => x.data)).subscribe(res => {
       this.__stateMaster = res;
     })
   }
+  /**
+   * reset the form controls to their initial values.
+   * It clears the form and resets all the form controls to their default state.
+   * This function is typically used to clear the form inputs and start fresh.
+   * @description Resets the client form to its initial state.
+   */
   reset(){
     this.__clientForm.reset();
   }
+  /**
+   * @description This function is used to minimize the dialog box.
+   * It updates the size and position of the dialog box to make it smaller and move it to the bottom right corner.
+   * The size is set to 30% width and 55px height, and the position is updated based on the `right` property from the dialog data.
+   * It is typically used to minimize the dialog box when the user wants to focus on other tasks or reduce clutter on the screen.
+   */
   minimize(){
     this.dialogRef.updateSize("30%",'55px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
+  /**
+   * @description This function is used to maximize the dialog box.
+   * It updates the size of the dialog box to 60% width and toggles the visibility of the dialog.
+   * This function is typically used to expand the dialog box to a larger size for better visibility or interaction.
+   * @returns
+   */
   maximize(){
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * @description This function is used to toggle the full screen mode of the dialog box.
+   * It updates the size of the dialog box to 100% width and toggles the visibility of the dialog.
+   * This function is typically used to expand the dialog box to cover the entire screen for better visibility or interaction.
+   * @returns
+   */
   fullScreen(){
     this.dialogRef.updateSize("100%");
     this.__isVisible = !this.__isVisible;
   }
+  /**
+   * 
+   * @returns This function is used to add a new document item to the form array.
+   * It creates a new form group with default values for the document type and file, and
+   */
   submit(){
 
     if (this.__clientForm.invalid) {
@@ -398,6 +474,14 @@ export class CreateClientComponent implements OnInit {
       }
     })
   }
+  /**
+   * 
+   * @param _pan - This function is used to check if a PAN number already exists in the database.
+   * It takes a parameter `_pan` which is an event object containing the value of the PAN number.
+   * If the `cl_type` is not 'E', it makes an API call to check if the PAN number already exists.
+   * If the PAN number exists, it shows a snackbar message indicating that the PAN number already exists and prompts the user to try with another one.
+   * @returns
+   */
   checkPanExistornot(_pan){
     if(this.data.cl_type != 'E'){
       if(_pan.target.value != ''){
@@ -408,24 +492,58 @@ export class CreateClientComponent implements OnInit {
     }
     
   }
+  /**
+   * 
+   * @param __ev - This function is used to prevent non-numeric input in an event.
+   * It takes an event object `__ev` as a parameter and calls the `dates.numberOnly` function to restrict the input to numeric values only.
+   * This function is typically used to ensure that only numeric values are entered in input fields, such as phone numbers or amounts.
+   * @returns
+   */
   preventNonumeric(__ev) {
     dates.numberOnly(__ev)
   }
+  /**
+   * 
+   * @param __state_id - This function is used to get the district data based on the state_id.
+   * It makes an API call to '/districts' with the state_id as a parameter.
+   * The response is then mapped to the 'data' property of the responseDT object and assigned to the __district variable.
+   * @returns
+   */
   getDistrict(__state_id) {
     this.__dbIntr.api_call(0, '/districts', 'state_id=' + __state_id).pipe(pluck("data")).subscribe(res => {
       this.__district = res;
     })
   }
+  /**
+   * @description This function is used to get the city data based on the district_id.
+   * It makes an API call to '/city' with the district_id as a parameter.
+   * The response is then mapped to the 'data' property of the responseDT object and assigned to the __city variable.
+   * @param __district_id - The district_id for which the city data needs to be fetched.
+   * @returns
+   */
   getCity(__district_id) {
     this.__dbIntr.api_call(0, '/city', 'district_id=' + __district_id).pipe(pluck("data")).subscribe(res => {
       this.__city = res;
     })
   }
+  /**
+   * @description This function is used to get the pincode data based on the city_id.
+   * It makes an API call to '/pincode' with the city_id as a parameter.
+   * The response is then mapped to the 'data' property of the responseDT object and assigned to the pincodeMst variable.
+   * @param city_id - The ID of the city for which the pincode data needs to be fetched.
+   * @returns
+   */
   getPinCode(city_id){
     this.__dbIntr.api_call(0, '/pincode', 'city_id=' + city_id).pipe(pluck("data")).subscribe(res => {
       this.pincodeMst = res;
     })
   }
+  /**
+   * @description This function is used to add a new item to the document form array.
+   * It creates a new form group using the `createItem` method and pushes it to the `__docs` form array.
+   * This function is typically called when the user wants to add a new document item to the form.
+   * @returns
+   */
   addItem(): void {
     this.__docs.push(this.createItem());
     // if (this.__docs.length > 1) {
@@ -438,6 +556,14 @@ export class CreateClientComponent implements OnInit {
     //   }, 50);
     // }
   }
+  /**
+   * 
+   * @returns This function is used to create a new form group for a document item.
+   * It initializes the form controls with default values and validators.
+   * The form group includes controls for id, doc_type_id, doc_name, file_preview, and file.
+   * This function is typically called when adding a new document item to the form.
+   * @returns A new FormGroup instance with the specified controls and validators.
+   */
   createItem(): FormGroup {
     return new FormGroup({
       id: new FormControl(0),
@@ -447,12 +573,36 @@ export class CreateClientComponent implements OnInit {
       file: new FormControl('')
     });
   }
+  /**
+   * 
+   * @param __index - This function is used to remove a document item from the form array.
+   * It takes an index parameter `__index` which specifies the position of the document item
+   */
   removeDocument(__index) {
     this.__docs.removeAt(__index);
   }
+  /**
+   * @description This function is used to get the form array of document details from the client form.
+   * It retrieves the "doc_dtls" form array from the `__clientForm` and returns it as a FormArray.
+   * This function is typically used to access the document details in the client form for further processing or validation.
+   * @returns The form array of document details.
+   */
   get __docs(): FormArray {
     return this.__clientForm.get("doc_dtls") as FormArray;
   }
+  /**
+   * 
+   * @param id - This function is used to set the form group for a document item.
+   * It takes four parameters: `id`, `type_id`, `doc`, and `cl_id`.
+   * The `id` parameter is used to set the id of the document item.
+   * @param type_id - The `type_id` parameter is used to set the document type id.
+   * The `doc` parameter is used to set the document name, and the `cl_id` parameter is used to set the client id.
+   * @param doc  - The function returns a new FormGroup instance with the specified controls and validators.
+   * @param cl_id - The `cl_id` parameter is used to set the client id for the document.
+   * This function is typically called when adding or editing a document item in the form.
+   * It initializes the form controls with the provided values and sets the file preview URL if a document is provided.
+   * @returns 
+   */
   setItem(id, type_id, doc, cl_id) {
     console.log(doc);
     return new FormGroup({
@@ -463,6 +613,12 @@ export class CreateClientComponent implements OnInit {
       file: new FormControl(doc ? `${environment.clientdocUrl}` + cl_id + '/' + doc : this.__noImg)
     });
   }
+  /**
+   * @description This function is used to handle the file selection event.
+   * It retrieves the selected file from the event object and updates the corresponding form control with the file details.
+   * It also sets the file preview URL for the selected file.
+   * If the selected file is valid (based on size and extension), it updates the form control with the file preview URL.
+   */
   getFiles(__ev, index, __type_id) {
     console.log(__ev.target.files[0]);
 
@@ -485,10 +641,23 @@ export class CreateClientComponent implements OnInit {
       this.setFileValue(index)
     }
   }
+  /**
+   * @description This function is used to reset the file value for a specific document item in the form array.
+   * It resets the 'file_preview' and 'file' form controls for the specified index in the document form array.
+   * This function is typically called when the user wants to clear the file selection for a document item.
+   * @param index - The index of the document item in the form array for which the file value needs to be reset.
+   */
   setFileValue(index) {
     this.__docs.controls[index].get('file_preview')?.reset();
     this.__docs.controls[index].get('file')?.reset();
   }
+  /**
+   * @description This function is used to set the validators for the form controls based on the client type.
+   * It sets the validators for the 'pan', 'gurdians_pan', 'gurdians_name', and 'relations' controls based on the client type.
+   * It also updates the validity of the form controls after setting the validators.
+   * This function is typically called when the client type is changed or when the form is initialized.
+   * @returns
+   */
   setfrmCtrlValidatior() {
     switch (this.data.cl_type) {
       case 'M': this.removeValidators(['pan']); break;
@@ -544,6 +713,14 @@ export class CreateClientComponent implements OnInit {
       default: break;
     }
   }
+  /**
+   * @description This function is used to set the validators for the form controls in the client form.
+   * It takes an array of form control objects as a parameter, where each object contains the name of the form control and its associated validators.
+   * It iterates over the array and sets the validators for each form control in the client form.
+   * After setting the validators, it updates the validity of each form control.
+   * This function is typically called when the client type is changed or when the form is initialized to ensure that the appropriate validators are applied to the form controls.
+   * @param __frmCtrl - An array of objects containing the name and validators for each form control.
+   */
   setValidators(__frmCtrl) {
     __frmCtrl.forEach(element => {
       console.log(element);
@@ -554,12 +731,25 @@ export class CreateClientComponent implements OnInit {
     console.log(this.__clientForm.status);
 
   }
+  /**
+   * @description This function is used to remove the validators from the specified form controls in the client form.
+   * It takes an array of form control names as a parameter and clears the validators for each form control.
+   * After removing the validators, it updates the validity of each form control.
+   * This function is typically called when the client type is changed or when the form is initialized to ensure that the appropriate validators are removed from the form controls.
+   * @param __frmCtrl - An array of form control names from which the validators need to be removed.
+   */
   removeValidators(__frmCtrl) {
     __frmCtrl.forEach(element => {
       this.__clientForm.get(element).clearValidators();
       this.__clientForm.get(element).updateValueAndValidity();
     });
   }
+  /**
+   * @description This function is used to delete a partner from the form array of partner details.
+   * It takes an index as a parameter and removes the partner details at that index from the `pertner_dtls` form array.
+   * This function is typically called when the user wants to remove a partner from the form.
+   * @param index - The index of the partner to be deleted from the form array.
+   */
   deletePertner(index){
     this.pertner_dtls.removeAt(index);
 

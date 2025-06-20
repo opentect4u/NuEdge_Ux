@@ -75,20 +75,37 @@ export class RegisteredStpComponent implements OnInit {
       this.reset_data = 'Y';
       this.column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes(this.sub_type == 'RR' ? 'LS-2' : 'U1'));
     }
-
+    /**
+     * Search STP Report based on form data
+     * @param ev - Event containing form data for searching STP report
+     */
     searchStpReport = (ev):void =>{
          this.registertStpMasterData(ev);
     }
-
+    /**
+     * Fetches and displays the registered STP report based on the provided form data.
+     * @param form_data - The form data containing the parameters for the report.
+     * @description This method makes an API call to retrieve the registered STP data and updates the component state accordingly.
+     */
     filterGlobal = (ev) =>{
       let value = ev.target.value;
       this.primeTbl.filterGlobal(value, 'contains');
     }
-
+    /**
+     * Sets the title for the component based on the provided title parameter.
+     * @param title - The title to be set for the component.
+     * @description This function is used to update the title dynamically when the tab changes or when a specific action requires a title update.
+     */
     setTitle = (title:string) =>{
       this.__title = title;
     }
-
+    /**
+     * 
+     * @param form_data - The form data containing the parameters for the STP report.
+     * @description This function fetches the registered STP report based on the provided form data.
+     * It makes an API call to retrieve the data and updates the component state accordingly.
+     * The report type is set based on the `report_type` input property.
+     */
     registertStpMasterData(form_data){
       this.register_stp = [];
       this.reset_data = 'N';
@@ -109,11 +126,19 @@ export class RegisteredStpComponent implements OnInit {
 
       })
     }
-
+    /**
+     * 
+     * @param event - The event object containing the value to change the display state.
+     * @description This function toggles the display state between 'expanded' and 'collapsed'.
+     * It checks the current state and switches it to the opposite state based on the provided event value.
+     */
     changeState = (event) =>{
       this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
     }
-
+    /**
+     * Exports the registered STP data to an Excel file.
+     * @description This function formats the registered STP data into a suitable structure for Excel export
+     */
     exportExcel = () =>{
       const column = this.column.map(el => el.header);
       let dt = [];

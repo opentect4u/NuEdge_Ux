@@ -39,7 +39,13 @@ export class TrendRptComponent implements OnInit {
   /*****End */
 
   ngOnInit(): void {}
-
+  /**
+   * @description This function is used to filter the search results based on the selected view and period type.
+   * It checks if the month and year are provided when the view is set to 'M' (monthly).
+   * If the month and year are not provided or invalid, it shows a snackbar message.
+   * If valid, it calls the API to fetch the monthly MIS trend report and processes the response.
+   * @param ev - The event object containing the filter criteria.
+   */
   searchFilter = (ev) =>{
     console.log(ev)
     this.__view_by = ev.view_by;
@@ -93,7 +99,12 @@ export class TrendRptComponent implements OnInit {
   // TabDetails = (ev) =>{
 
   // }
-
+  /**
+   * @description This function is used to filter the global search results in the table.
+   * It retrieves the value from the event target and applies a global filter to the table.
+   * The filter checks if the value is contained in any of the table's data.
+   * @param $event - The event object containing the search input value.
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.__MisTbleComponent.primeTbl.filterGlobal(value, 'contains')

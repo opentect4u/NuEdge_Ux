@@ -7,6 +7,11 @@ import { AU_TK as AUTH_KEY_TOKEN} from '../strings/localStorage_key';
 export class AuthService {
   // isLoggedIn = false;
   constructor() { }
+  /**
+   * @description This function checks if the user is authenticated by checking the presence of a token in localStorage.
+   * @returns {boolean} Returns true if the user is authenticated (token exists), otherwise false.
+   * @memberof AuthService
+   */
   isAuthenticated(){
     return localStorage.getItem(AUTH_KEY_TOKEN);
   }

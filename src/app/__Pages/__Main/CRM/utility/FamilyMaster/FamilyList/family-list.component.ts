@@ -25,6 +25,12 @@ export class FamilyListComponent implements OnInit {
     this.getFamilyList();
   }
 
+  /**
+   * @description This function is used to fetch the family list from the server.
+   * It makes an API call to '/clientFamilyDetailSearch' and processes the response data.
+   * The response data is then transformed to format the address fields and set the dataSource.
+   * It uses RxJS operators like pluck, tap, and subscribe to handle the asynchronous data flow.
+   */
   getFamilyList = () => {
     this.__dbIntr
       .api_call(0, '/clientFamilyDetailSearch', null)
@@ -54,6 +60,13 @@ export class FamilyListComponent implements OnInit {
       });
   };
 
+  /**
+   * 
+   * @param ev - The event object containing the original event and the data of the family list item
+   * @description This function is triggered when a row in the family list is expanded.
+   * It fetches the family members of the selected family head and updates the dataSource accordingly.
+   * It uses RxJS operators to handle the API call and update the family_member array of the corresponding family head.
+   */
   onRowExpand = (
     ev: Required<{ originalEvent: PointerEvent; data: IFamilyList }>
   ) => {
@@ -88,10 +101,23 @@ export class FamilyListComponent implements OnInit {
       console.log(ex);
     }
   };
+  /**
+   * 
+   * @param $event - The event object containing the target input field value
+   * @description This function is used to filter the global data in the PrimeNG table.
+   * It retrieves the value from the target input field and passes it to the filterGlobal method of the PrimeNG table with 'contains' as the filter match mode.
+   * This allows for global filtering of the table data based on the input value.
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.pTable.filterGlobal(value, 'contains');
   };
+  /**
+   *  * @description This function retrieves the columns for the family list table.
+   * It uses the utility service to get the columns defined in the FamilyListClm class.
+   * The columns are expected to be in a specific format that includes field names, headers, and visibility flags.
+   * @returns {column[]} - An array of column objects for the family list table
+   */
   getColumns = () => {
     return this.utility.getColumns(this.parent_column);
   };

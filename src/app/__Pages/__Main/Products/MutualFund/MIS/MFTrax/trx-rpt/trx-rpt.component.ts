@@ -121,6 +121,11 @@ export class TrxRptComponent implements OnInit,OnDestroy {
 
   }
   /*** End */
+  /**
+   * 
+   * @param ev - This function is triggered when the search button is clicked.
+   * It retrieves the search criteria from the event object and calls the API to fetch transaction details based on the provided filters.
+   */
   getMstDt(ev){
     this.dbIntr.api_call(1,'/mfTraxDetailSearch',ev).pipe(pluck("data")).subscribe((res: any) =>{
      this.MstDt = res;
@@ -143,6 +148,11 @@ export class TrxRptComponent implements OnInit,OnDestroy {
     const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
    }
   /*** End */
+  /**
+   *  @description This function is used to view the uploaded acknowledgement document.
+   *  It opens a dialog with the document preview.
+   *  @param element - The element containing the acknowledgement document details.
+   */
   viewAckDocument(element){
       console.log(element);
       const dialogConfig = new MatDialogConfig();

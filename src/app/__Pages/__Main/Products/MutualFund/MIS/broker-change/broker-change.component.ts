@@ -435,7 +435,13 @@ getTrxnTypeMst = () => {
       this.trxnTypeMst = res;
     });
 };
-
+/**
+ * 
+ * @param container - The container element to apply the wheel speed change
+ * @param speedY - The speed factor for vertical scrolling
+ * @description This function is used to change the wheel speed of the container
+ * @returns 
+ */
 changeWheelSpeed(container, speedY) {
   var scrollY = 0;
   var handleScrollReset = function() {
@@ -687,7 +693,12 @@ ngAfterViewInit() {
 
 }
 
-
+  /**
+   * 
+   * @param id - This function is used to get family members according to family head id
+   * @description It fetches family members from the API based on the provided family head ID.
+   * If no ID is provided, it resets the family members and sets the form control to an empty array.
+   */
 getFamilymemberAccordingToFamilyHead_Id = (id:number | undefined = undefined) =>{
   if(id){
     this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=${this.misTrxnRpt.value.view_type}`)
@@ -842,7 +853,10 @@ fetchTransaction = () =>{
     this.trxnRpt = res.data;
     });
 }
-
+  /**
+   * @description This function is used to get AMC Master Data
+   * @returns {void}
+   */
 exportExcel = () =>{
   let dt = [];
   this.trxnRpt.forEach((el,index) =>{
@@ -930,7 +944,11 @@ exportExcel = () =>{
   //     link.click();
   //     link.remove();
 }
-
+/**
+ *  @description This function is used to export the data to Excel
+ *  @param dt - The data to be exported
+ *  @returns {void}
+ */
 handleExport = (dt) =>{
   console.log(dt);
   let workbook = new ExcelJS.Workbook();
@@ -1011,14 +1029,22 @@ handleExport = (dt) =>{
     saveAs(blob, `BROKERCHANGEREPORT.xlsx`);
   })
 }
-
+/**
+ * @description This function is used to convert a string to an ArrayBuffer
+ * @param {string} s - The string to be converted
+ * @returns {ArrayBuffer} - The converted ArrayBuffer
+ */
 s2ab(s) {
 var buf = new ArrayBuffer(s.length);
 var view = new Uint8Array(buf);
 for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
 return buf;
 }
-
+/**
+ * @description This function is used to get the business type master data
+ * @param {number[]} brn_cd - The branch codes to filter the business types
+ * @returns {void}
+ */
 async calculateProcess_Reject(res:TrxnRpt[]){
   /*** Group by Category */
   const groupByCategory = await res.reduce((group, trxn) => {
@@ -1229,7 +1255,11 @@ onItemClick = (ev) => {
       //  this.searchTrxnReport();
   }
 };
-
+/**
+ * * Set EUIN Dropdown
+ * @param sub_brk_cd - Array of sub broker codes
+ * @param rm - Array of relationship managers
+ */
 setEuinDropdown = (sub_brk_cd, rm) => {
   this.__euinMst = rm.filter(
     (item) =>
@@ -1267,6 +1297,10 @@ setEuinDropdown = (sub_brk_cd, rm) => {
   const dt = this.misTrxnRpt.get('euin_no').value.filter(el => euin_no.includes( el.euin_no));
   this.misTrxnRpt.get('euin_no').setValue(dt,{emitEvent:false});
 };
+/**
+ * @description This function is used to disable the sub broker field based on the business type
+ * @param bu_type_ids - Array of business type IDs
+ */
 disabledSubBroker(bu_type_ids) {
   if (bu_type_ids.findIndex((item) => item.bu_code == 'B') != -1) {
     this.misTrxnRpt.controls['sub_brk_cd'].enable();
@@ -1274,6 +1308,10 @@ disabledSubBroker(bu_type_ids) {
     this.misTrxnRpt.controls['sub_brk_cd'].disable();
   }
 }
+/**
+ * @description This function is used to get sub broker master data
+ * @param arr_euin_no - Array of EUIN numbers
+ */
 getSubBrokerMst(arr_euin_no) {
   if (arr_euin_no.length > 0) {
     this.dbIntr
@@ -1306,6 +1344,10 @@ getSubBrokerMst(arr_euin_no) {
     this.misTrxnRpt.controls['sub_brk_cd'].setValue([]);
   }
 }
+/**
+ * @description This function is used to get business type master data
+ * @param brn_cd - Array of branch codes
+ */
 getBusinessTypeMst(brn_cd) {
   if (brn_cd.length > 0) {
     this.dbIntr
@@ -1331,6 +1373,11 @@ getBusinessTypeMst(brn_cd) {
     this.__bu_type = [];
   }
 }
+/**
+ * @description This function is used to get relationship manager master data
+ * @param bu_type_id - Array of business type IDs
+ * @param arr_branch_id - Array of branch IDs
+ */
 getRelationShipManagerMst(bu_type_id, arr_branch_id) {
   if (bu_type_id.length > 0 && arr_branch_id.length > 0) {
     this.dbIntr
@@ -1363,24 +1410,44 @@ getRelationShipManagerMst(bu_type_id, arr_branch_id) {
   }
 }
 
-
+/**
+ * @description This function is used to get investor master data
+ * @param view_type - The view type (F for family, I for individual)
+ */
 filterGlobal = ($event) => {
   let value = $event.target.value;
   this.primeTbl.filterGlobal(value,'contains')
 }
-
+/**
+ * @description This function is used to filter the secondary table globally
+ * @param $event - The event object containing the filter value
+ */
 filterGlobal_secondary = ($event) =>{
   let value = $event.target.value;
   this.secondaryTbl.filterGlobal(value,'contains')
 }
-
+/**
+ * @description This function is used to get the columns for the primary table
+ * @returns {Column[]} - An array of columns for the primary table
+ * @example
+ * const columns = this.getColumns();
+ * console.log(columns);
+ */
 getColumns = () =>{
   return this.utility.getColumns(this.column);
 }
-
+/**
+ * @description This function is used to get the columns for the secondary table
+ * @returns {Column[]} - An array of columns for the secondary table
+ * @example
+ */
 getcolumns_secondary = () =>{
   return this.utility.getColumns(this.column);
 }
+/**
+ * @description This function is used to get the client master data
+ * @param view_type - The view type (F for family, I for individual)
+ */
 loadInvestorOnScrollToEnd = (ev) =>{
   // console.log(this.misTrxnRpt.value.client_name);
   if(this.misTrxnRpt.value.client_name == ''){
@@ -1417,10 +1484,17 @@ onSubBrkDeSelect = (ev) =>{
 changePage = (ev) =>{
     // console.log(ev);
 }
-
+/**
+ * @description This function is used to toggle the state of the component between 'collapsed' and 'expanded' 
+ */
 toggle() {
   this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
 }
+/**
+ * @description This function is used to get the transaction details based on the selected column and transaction data
+ * @param column - The column name to filter the transaction data
+ * @param trxn - The array of transaction data
+ */
 getTransaction = async (column:string,trxn:TrxnRpt[],header:string,category:string) =>{
   this.utility.closeSnackBar();
   if(trxn.length > 0){

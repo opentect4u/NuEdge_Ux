@@ -47,7 +47,17 @@ export class MfReportwisePoretfolioComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  /**
+   * 
+   * @param ev This function is triggered when a row in the table is expanded.
+   * It retrieves the data associated with the expanded row and updates the selected row.
+   * It also sets the truncated value to 0 and clears the data in the report for the expanded row.
+   * @param j - The index of the report in the report array.
+   * @description This function is used to handle the expansion of a row in the table.
+   * It fetches additional data for the expanded row and updates the report with the new data.
+   * It also sets the columns for the child table based on the provided column configuration.
+   * @returns {void}
+   */
   onRowExpand = (ev:{originalEvent:Partial<PointerEvent>,data:ILivePortFolio},j) =>{
     try{
       this.subLiveMfPortFolio = null;
@@ -87,7 +97,10 @@ export class MfReportwisePoretfolioComponent implements OnInit {
     }
   }
 
-
+  /**
+   * @description This function calculates the total values for the table footer.
+   * It filters the input array to include only rows that do not have a transaction type containing
+   */
   calculat_Total_Value_For_Table_Footer(arr:Partial<ISubDataSource>[],final_arr){
     var tot_arr = arr.filter(row => (!row.transaction_type.toLowerCase().includes('redemption') && row.cumml_units > 0));
     try{
@@ -110,7 +123,10 @@ export class MfReportwisePoretfolioComponent implements OnInit {
     }
 }
   
-
+  /**
+   * @description This function is used to show more data in the table.
+   * It takes a mode, outer_index, and index as parameters.
+   */
   show_more = (mode:string,outer_index:number,index:number) =>{
     this.spinner.show()
       if(mode == 'A'){
@@ -127,7 +143,12 @@ export class MfReportwisePoretfolioComponent implements OnInit {
       }
     this.spinner.hide();
 }
-
+/*
+  * @description This function is used to set the columns for the table.
+  * It filters the input column array based on the visibility flag and the main form data.
+  * @param column_to_be_set_on_tble - An array of columns to be set on the table.
+  * @returns An array of columns that are visible based on the current column chooser and main form data.
+  */
 setcolumns = (column_to_be_set_on_tble:column[]) =>{
   const act_column =this.column_chooser.map(column => column.flag);
   const act_column_to_be_set = this.main_frm_dt?.clmn_chooser.map(column => column.flag);
@@ -142,22 +163,39 @@ setcolumns = (column_to_be_set_on_tble:column[]) =>{
   });
   return dt;
 }
+/**
+ * * @description This function sets the truncated value for the table.
+ * It takes the length of the actual array as a parameter and updates the truncated value.
+ */
 setTrancated_val = (length_of_actual_array:number) => {
   this.truncated_val = length_of_actual_array
 }
-
+  /**
+   * * @description This function is triggered when a row in the table is clicked.
+   * It emits the details of the clicked transaction to the parent component.
+   * @param
+   */
   OpenDialog(trans_dtls){
     // console.log(trans_dtls)
     this.openModal.emit(trans_dtls);
   }
-
+  /**
+   * @description This function is used to get the columns for the details table.
+   * It returns an array of columns that includes the parent column and additional columns for details.
+   * @returns {Array} An array of columns formatted for the details table.
+   * @description This function is used to get the columns for the details table.
+   * It uses the utility service to get the columns based on the input parent column array.
+   */
   getColumnsForDetails = () =>{
     return [...this.utility.getColumns(this.parent_column),
       'group_by','report.folio_no','report.plan_name',
       'report.option_name','report.isin_no'
     ];
   }
-
+  /**
+   * * @description This function filters the global search input for the table.
+   * It takes the event object as a parameter and retrieves the value from the input field.
+   */
   filterGlobal($event){
     let value = $event.target.value;
     this.primeTble.filterGlobal(value,'contains')

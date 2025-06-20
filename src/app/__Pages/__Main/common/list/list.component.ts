@@ -42,8 +42,20 @@ export class ListComponent implements OnInit {
   }
 
 
-
+  /**
+   * * @description This function toggles the visibility of the profile dropdown menu.
+   * * It adds or removes the "show" class to the profile dropdown element.
+   * * This is typically used to display or hide the profile options when the user clicks on their profile icon.
+   */
   openProfileMenu() { this.__profileDrpDown.nativeElement.classList.toggle("show"); }
+  /**
+   * 
+   * @param __items - The menu item object containing the URL to navigate to
+   * @description This function is used to handle the click event on a menu item.
+   * It emits the clicked item through the clickItems EventEmitter if the flag is 'N'.
+   * If the flag is not 'N', it toggles a CSS class on the search input element.
+   * This can be used to highlight or style the search input when a different menu item is clicked.
+   */
   getItems(__items) {
     if (__items.flag == 'N') {
       this.clickItems.emit(__items)
@@ -52,9 +64,20 @@ export class ListComponent implements OnInit {
       this.__searchInput.nativeElement.classList.toggle('mystyle');
     }
   }
+  /**
+   * * @description This function is used to navigate to the home route.
+   * * It uses the UtiliService to perform the navigation.
+   * * This is typically used to redirect the user to the home page of the application.
+   */
   route() {
     this.__utils.navigate('/')
   }
+  /**
+   * * @description This function is used to log out the user.
+   * * It makes an API call to the '/logout' endpoint using the DbIntrService.
+   * * If the logout is successful, it clears the storage, closes all open dialogs, and navigates to the home route.
+   * * This is typically used to end the user's session and redirect them to the login page or home page.
+   */
   logout = () =>{
     this.dbIntr.api_call(1,'/logout',null)
     .pipe(pluck('suc'))

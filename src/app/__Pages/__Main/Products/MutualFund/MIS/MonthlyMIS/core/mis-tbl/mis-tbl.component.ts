@@ -47,11 +47,21 @@ export class MisTblComponent implements OnInit {
   ngOnInit(): void {
 
   }
-
+  /**
+   * @description This function is used to get the columns for the table
+   * It uses the utility service to get the columns based on the input column array.
+   * @returns {Array} An array of columns formatted for the table.
+   */
   getColumns = () => {
     return this.utility.getColumns(this.column);
   }
-
+  /**
+   * @description This function is used to change the wheel speed of the container
+   * It allows for smoother scrolling by adjusting the scroll speed based on the mouse wheel movement.
+   * @param {HTMLElement} container - The container element to apply the wheel speed change.
+   * @param {number} speedY - The speed factor for vertical scrolling.
+   * @returns {Function} A function to remove the event listeners when no longer needed.
+   */
   changeWheelSpeed(container, speedY) {
     var scrollY = 0;
     var handleScrollReset = function () {

@@ -30,6 +30,12 @@ export class NonFamilyListComponent implements OnInit {
     this.fetchNonFamilyMasterData();
   }
 
+  /**
+   * @description This function is used to fetch the non-family master data from the server.
+   * It makes an API call to '/nonFamilylist' and processes the response data.
+   * The response data is then assigned to the non_family_mst_dt property.
+   * It uses RxJS operators like pluck and subscribe to handle the asynchronous data flow.
+   */
   fetchNonFamilyMasterData = () => {
     this.dbIntr
       .api_call(0, '/nonFamilylist', null)
@@ -39,10 +45,23 @@ export class NonFamilyListComponent implements OnInit {
       });
   };
 
+  /**
+   * 
+   * @returns This function returns the columns for the non-family list table.
+   * It uses the utility service to get the columns defined in the nonFamilyClmn property.
+   * The columns are used to display the non-family master data in a table format.
+   */
   getColumns = () =>{
     return this.utility.getColumns(this.nonFamilyClmn);
   }
 
+  /**
+   * 
+   * @param $event This function is used to filter the global search input in the non-family list table.
+   * It takes an event object as a parameter, retrieves the value from the input field,
+   * and applies the filter to the primeTbl component.
+   * The filter is applied using the 'contains' match mode.
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')

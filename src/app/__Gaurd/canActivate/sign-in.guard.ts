@@ -8,6 +8,11 @@ import { AuthService } from 'src/app/__Services/auth.service';
 })
 export class SignInGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router){}
+  /**
+   * @description This method is used to check if the user can activate the route.
+   * It checks if the user is authenticated. If not, it allows access to the route.
+   * If the user is authenticated, it redirects to the main page.
+   */
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot):boolean  {
